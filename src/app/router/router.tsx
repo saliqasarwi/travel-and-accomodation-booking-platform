@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import AppShell from "@app/layout/AppShell";
+import UserLayout from "@app/layout/UserLayout";
 
 import LoginPage from "@features/auth/pages/LoginPage";
 import HomePage from "@features/home/pages/HomePage";
@@ -15,7 +15,7 @@ import NotFoundPage from "@shared/components/NotFoundPage";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppShell />,
+    element: <UserLayout />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "login", element: <LoginPage /> },
@@ -26,5 +26,9 @@ export const router = createBrowserRouter([
       { path: "admin", element: <AdminPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
+  },
+  {
+    path: "/admin",
+    element: <AdminPage />,
   },
 ]);
