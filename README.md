@@ -1,73 +1,41 @@
-# React + TypeScript + Vite
+# Travel & Accommodation Booking Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application for browsing hotels, booking rooms, and managing reservations.  
+Built with **React 19**, **TypeScript**, and a feature-based folder architecture.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19.2** – UI rendering
+- **TypeScript** – Static type checking
+- **Vite** – Fast development & build tooling
+- **React Router** – Client-side routing
+- **Formik** – Form state management
+- **ESLint + Prettier** – Code quality & formatting
+- **Husky + lint-staged** – Pre-commit quality checks
+- **Storybook** – Component isolation
+- **React Testing Library** – Unit testing
 
-## React Compiler
+## Requirements
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 
+- npm
 
-## Expanding the ESLint configuration
+Check your versions:
+```bash
+node -v
+npm -v
+## Setup Instructions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Clone the repository:Bashgit clone https://github.com/sali.qasarwi/travel-and-accomodation-booking-platform.git
+Navigate to the project directory: cd travel-and-accomodation-booking-platform
+Install dependencies:npm install
+Start the development server:npm run dev
+The app will be available at:
+http://localhost:5173
+## Code Quality Commands
+npm run lint          # Check linting issues
+npm run lint:fix      # Auto-fix linting issues
+npm run format        # Format all files with Prettier
+npm run format:check  # Check formatting consistency
+## Pre-commit Hooks
+This project uses Husky + lint-staged to automatically run ESLint and Prettier on staged files before every commit.
