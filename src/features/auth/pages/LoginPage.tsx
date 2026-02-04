@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoginForm from "../components/LoginForm";
-import { login } from "../api/auth.api";
 import { parseApiError } from "@shared/api";
-
+import { setAuthSession } from "../utils/authStorage";
+import LoginForm from "../components/LoginForm";
+import { authenticate } from "../api/auth.api";
 export default function LoginPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -12,9 +12,8 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const res = await login(values);
-      localStorage.setItem("auth_token", res.authentication);
-      localStorage.setItem("user_type", res.userType);
+      const res = await authenticate(values);
+      setAuthSession(res.authentication, res.userType);
       navigate(res.userType === "Admin" ? "/admin" : "/");
     } catch (e) {
       setError(parseApiError(e).message);

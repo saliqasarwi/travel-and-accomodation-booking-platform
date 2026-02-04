@@ -1,11 +1,11 @@
 export type UserType = "User" | "Admin";
 
-export interface LoginRequest {
+export interface AuthenticateRequest {
   userName: string;
   password: string;
 }
 
-export interface LoginResponse {
+export interface AuthenticateResponse {
   authentication: string;
   userType: UserType;
 }
