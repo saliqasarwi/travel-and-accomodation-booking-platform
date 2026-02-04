@@ -11,6 +11,12 @@ import ConfirmationPage from "@features/confirmation/pages/ConfirmationPage";
 import AdminPage from "@features/admin/pages/AdminPage";
 
 import NotFoundPage from "@shared/components/NotFoundPage";
+import AdminLayout from "@app/layout/AdminLayout";
+
+import AdminHomePage from "@features/admin/pages/AdminHomePage";
+import AdminCitiesPage from "@features/admin/pages/AdminCitiesPage";
+import AdminHotelsPage from "@features/admin/pages/AdminHotelsPage";
+import AdminRoomsPage from "@features/admin/pages/AdminRoomsPage";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +35,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminPage />,
+    element: <AdminLayout />,
+    children: [
+      { index: true, element: <AdminHomePage /> },
+      { path: "cities", element: <AdminCitiesPage /> },
+      { path: "hotels", element: <AdminHotelsPage /> },
+      { path: "rooms", element: <AdminRoomsPage /> },
+    ],
   },
 ]);
