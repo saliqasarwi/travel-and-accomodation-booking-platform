@@ -1,5 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
-
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "@app/providers/AuthContext";
 const linkStyle: React.CSSProperties = {
   display: "block",
   padding: "0.75rem 1rem",
@@ -14,14 +14,25 @@ const activeLinkStyle: React.CSSProperties = {
 };
 
 export default function AdminLayout() {
+  const { userType, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/login", { replace: true });
+  }
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <aside style={{ width: 240, borderRight: "1px solid #ddd" }}>
         <div style={{ padding: "1rem", borderBottom: "1px solid #ddd" }}>
-          <strong>Admin</strong>
+          <h3>Admin</h3>
+          <p>
+            Role: <b>{userType}</b>
+          </p>
         </div>
-
-        <nav>
+        <nav
+          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+        >
           <NavLink
             to="/admin/cities"
             style={({ isActive }) => (isActive ? activeLinkStyle : linkStyle)}
@@ -43,6 +54,12 @@ export default function AdminLayout() {
             Manage Rooms
           </NavLink>
         </nav>
+        <button
+          style={{ marginTop: "1rem", marginLeft: "10%" }}
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </aside>
 
       <main style={{ flex: 1, padding: "1rem" }}>
