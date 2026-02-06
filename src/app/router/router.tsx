@@ -17,7 +17,8 @@ import AdminHomePage from "@features/admin/pages/AdminHomePage";
 import AdminCitiesPage from "@features/admin/pages/AdminCitiesPage";
 import AdminHotelsPage from "@features/admin/pages/AdminHotelsPage";
 import AdminRoomsPage from "@features/admin/pages/AdminRoomsPage";
-
+import RequireAuth from "@features/auth/guards/RequireAuth";
+import RequireAdmin from "@features/auth/guards/RequireAdmin";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -27,15 +28,33 @@ export const router = createBrowserRouter([
       { path: "login", element: <LoginPage /> },
       { path: "search", element: <SearchResultsPage /> },
       { path: "hotels/:hotelId", element: <HotelPage /> },
-      { path: "checkout", element: <CheckoutPage /> },
-      { path: "confirmation/:bookingId", element: <ConfirmationPage /> },
+      {
+        path: "checkout",
+        element: (
+          <RequireAuth>
+            <CheckoutPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "confirmation/:bookingId",
+        element: (
+          <RequireAuth>
+            <ConfirmationPage />
+          </RequireAuth>
+        ),
+      },
       { path: "admin", element: <AdminPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <RequireAdmin>
+        <AdminLayout />
+      </RequireAdmin>
+    ),
     children: [
       { index: true, element: <AdminHomePage /> },
       { path: "cities", element: <AdminCitiesPage /> },
