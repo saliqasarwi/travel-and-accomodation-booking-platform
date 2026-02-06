@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_URL } from "./config";
-import { getAuthToken } from "@features/auth/utils/authStorage";
+import { getItem } from "@shared/utils/storage";
 export const httpClient = axios.create({
   baseURL: API_URL,
   headers: {
@@ -10,7 +10,7 @@ export const httpClient = axios.create({
 });
 httpClient.interceptors.request.use(
   (config) => {
-    const token = getAuthToken();
+    const token = getItem("auth_token");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
