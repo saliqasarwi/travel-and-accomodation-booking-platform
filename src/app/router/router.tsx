@@ -8,7 +8,6 @@ import SearchResultsPage from "@features/search/pages/SearchResultsPage";
 import HotelPage from "@features/hotel/pages/HotelPage";
 import CheckoutPage from "@features/checkout/pages/CheckoutPage";
 import ConfirmationPage from "@features/confirmation/pages/ConfirmationPage";
-import AdminPage from "@features/admin/pages/AdminPage";
 
 import NotFoundPage from "@shared/components/NotFoundPage";
 import AdminLayout from "@app/layout/AdminLayout";
@@ -24,10 +23,32 @@ export const router = createBrowserRouter([
     path: "/",
     element: <UserLayout />,
     children: [
-      { index: true, element: <HomePage /> },
+      {
+        index: true,
+        element: (
+          <RequireAuth>
+            <HomePage />{" "}
+          </RequireAuth>
+        ),
+      },
       { path: "login", element: <LoginPage /> },
-      { path: "search", element: <SearchResultsPage /> },
-      { path: "hotels/:hotelId", element: <HotelPage /> },
+      {
+        path: "search",
+        element: (
+          <RequireAuth>
+            <SearchResultsPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "hotels/:hotelId",
+        element: (
+          <RequireAuth>
+            {" "}
+            <HotelPage />{" "}
+          </RequireAuth>
+        ),
+      },
       {
         path: "checkout",
         element: (
@@ -44,7 +65,6 @@ export const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
-      { path: "admin", element: <AdminPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
