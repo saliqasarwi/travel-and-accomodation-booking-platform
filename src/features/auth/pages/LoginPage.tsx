@@ -19,11 +19,14 @@ export default function LoginPage() {
     try {
       const res = await authenticate(values);
       setSession(res.authentication, res.userType);
+      const isAdmin = res.userType === "Admin";
       //  role-based redirect + return-to
-      if (fromPath) {
-        navigate(fromPath, { replace: true });
+      if (isAdmin) {
+        navigate(fromPath?.startsWith("/admin") ? fromPath : "/admin", {
+          replace: true,
+        });
       } else {
-        navigate(res.userType === "Admin" ? "/admin" : "/", { replace: true });
+        navigate(fromPath ?? "/", { replace: true });
       }
     } catch (e) {
       setError(parseApiError(e).message);

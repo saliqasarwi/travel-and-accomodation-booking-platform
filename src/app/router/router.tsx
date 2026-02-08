@@ -8,7 +8,6 @@ import SearchResultsPage from "@features/search/pages/SearchResultsPage";
 import HotelPage from "@features/hotel/pages/HotelPage";
 import CheckoutPage from "@features/checkout/pages/CheckoutPage";
 import ConfirmationPage from "@features/confirmation/pages/ConfirmationPage";
-
 import NotFoundPage from "@shared/components/NotFoundPage";
 import AdminLayout from "@app/layout/AdminLayout";
 
@@ -27,7 +26,7 @@ export const router = createBrowserRouter([
         index: true,
         element: (
           <RequireAuth>
-            <HomePage />{" "}
+            <HomePage />
           </RequireAuth>
         ),
       },
@@ -44,8 +43,7 @@ export const router = createBrowserRouter([
         path: "hotels/:hotelId",
         element: (
           <RequireAuth>
-            {" "}
-            <HotelPage />{" "}
+            <HotelPage />
           </RequireAuth>
         ),
       },
