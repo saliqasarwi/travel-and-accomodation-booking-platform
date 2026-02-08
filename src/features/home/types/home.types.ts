@@ -22,32 +22,35 @@ export interface HomeSearchResult {
 }
 
 export interface FeaturedDeal {
-  id?: number;
-  hotelName?: string;
-  name?: string;
-  city?: string;
-  starRating?: number;
-  originalPrice?: number;
+  hotelId?: number;
+  originalRoomPrice?: number;
   discount?: number;
   finalPrice?: number;
-  imageUrl?: string;
-
+  cityName?: string;
+  hotelName?: string;
+  hotelStarRating?: number;
+  title?: string;
+  description?: string;
+  roomPhotoUrl?: string;
   [key: string]: unknown;
 }
 
 export interface RecentHotel {
+  hotelId?: number;
   hotelName?: string;
-  city?: string;
   starRating?: number;
   visitDate?: IsoDateTime;
+  cityName?: string;
   thumbnailUrl?: string;
-
+  priceLowerBound?: number;
+  priceUpperBound: number;
   [key: string]: unknown;
 }
 
 export interface TrendingDestination {
+  cityId?: number;
   cityName?: string;
-  country?: string;
+  countryName?: string;
   description?: string;
   thumbnailUrl?: string;
 
