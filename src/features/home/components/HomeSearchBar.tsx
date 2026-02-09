@@ -91,11 +91,11 @@ export default function HomeSearchBar() {
             }}
           >
             <div style={{ gridColumn: "1 / -1" }}>
-              <label htmlFor="city">City / Hotel</label>
+              <label htmlFor="city">City</label>
               <input
                 id="city"
                 name="city"
-                placeholder="Search for hotels, cities..."
+                placeholder="Where are you going?"
                 value={values.city}
                 onChange={handleChange}
                 onBlur={handleBlur}
