@@ -1,40 +1,52 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "@app/providers/AuthContext";
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Box,
+  Container,
+  Typography,
+} from "@mui/material";
 export default function UserLayout() {
   const { isAuthenticated, userType, logout } = useAuth();
-  const navigate = useNavigate();
-
-  function handleLogout() {
-    logout();
-    navigate("/login", { replace: true });
-  }
   return (
-    <div>
-      <header style={{ padding: "1rem", borderBottom: "1px solid #ddd" }}>
-        <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <Link to="/">Home</Link>
-          <Link to="/search">Search</Link>
-          <Link to="/checkout">Checkout</Link>
-          <div>
-            {isAuthenticated ? (
-              <>
-                <span>
-                  Role: <b>{userType}</b>
-                </span>
-                <button onClick={handleLogout} style={{ marginLeft: "5px" }}>
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link to="/login">Login</Link>
-            )}
-          </div>
-        </nav>
-      </header>
+    <Box sx={{ minHeight: "100vh" }}>
+      <AppBar position="static" color="transparent" elevation={0}>
+        <Toolbar sx={{ gap: 1 }}>
+          <Button component={RouterLink} to="/">
+            Home
+          </Button>
+          <Button component={RouterLink} to="/search">
+            Search
+          </Button>
+          <Button component={RouterLink} to="/checkout">
+            Checkout
+          </Button>
 
-      <main style={{ padding: "1rem" }}>
+          <Box sx={{ flexGrow: 1 }} />
+
+          {isAuthenticated ? (
+            <>
+              <Typography variant="body2" sx={{ mr: 1 }}>
+                Role: <b>{userType}</b>
+              </Typography>
+
+              <Button onClick={logout} variant="contained">
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Button component={RouterLink} to="/login" variant="contained">
+              Login
+            </Button>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      <Container sx={{ py: 3 }}>
         <Outlet />
-      </main>
-    </div>
+      </Container>
+    </Box>
   );
 }
