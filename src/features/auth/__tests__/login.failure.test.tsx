@@ -30,9 +30,7 @@ describe("Login - failure", () => {
         data: { message: "Invalid user or password" },
       }
     );
-    (authenticate as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(
-      axiosError
-    );
+    vi.mocked(authenticate).mockRejectedValue(axiosError);
 
     renderAuthApp("/login");
 
@@ -41,7 +39,6 @@ describe("Login - failure", () => {
     await userEvent.click(screen.getByRole("button", { name: /login/i }));
 
     // Error shown
-    screen.debug();
     expect(
       await screen.findByText(/invalid user or password/i)
     ).toBeInTheDocument();
