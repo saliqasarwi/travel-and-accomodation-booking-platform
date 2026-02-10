@@ -4,6 +4,7 @@ import { parseApiError } from "@shared/api";
 import { useAuth } from "@app/providers/AuthContext";
 import LoginForm from "../components/LoginForm";
 import { authenticate } from "../api/auth.api";
+import { Container, Paper, Typography, Box } from "@mui/material";
 export default function LoginPage() {
   const navigate = useNavigate();
   const { setSession } = useAuth();
@@ -35,9 +36,20 @@ export default function LoginPage() {
     }
   }
   return (
-    <div>
-      <h1>Login</h1>
-      <LoginForm onSubmit={handleSubmit} isLoading={loading} error={error} />
-    </div>
+    <Container maxWidth="sm" sx={{ py: 6 }}>
+      <Paper elevation={3} sx={{ p: 3 }}>
+        <Typography variant="h4" sx={{ mb: 2 }}>
+          Login
+        </Typography>
+
+        <Box>
+          <LoginForm
+            onSubmit={handleSubmit}
+            isLoading={loading}
+            error={error}
+          />
+        </Box>
+      </Paper>
+    </Container>
   );
 }
