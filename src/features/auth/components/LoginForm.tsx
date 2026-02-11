@@ -1,5 +1,6 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 type Values = {
   userName: string;
   password: string;
@@ -37,48 +38,45 @@ export default function LoginForm({
         handleSubmit,
         isSubmitting,
       }) => (
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: "grid", gap: "0.75rem", maxWidth: 360 }}
-        >
-          <div style={{ display: "grid", gap: "0.25rem" }}>
-            <label htmlFor="userName">Username</label>
-            <input
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <Stack spacing={2}>
+            {error ? <Alert severity="error">{error}</Alert> : null}
+            <TextField
               id="userName"
               name="userName"
+              label="Username"
               value={values.userName}
               onChange={handleChange}
               onBlur={handleBlur}
-              placeholder="Enter username"
               autoComplete="username"
+              error={Boolean(touched.userName && errors.userName)}
+              helperText={touched.userName ? errors.userName : ""}
+              fullWidth
             />
-            {touched.userName && errors.userName ? (
-              <small style={{ color: "crimson" }}>{errors.userName}</small>
-            ) : null}
-          </div>
-
-          <div style={{ display: "grid", gap: "0.25rem" }}>
-            <label htmlFor="password">Password</label>
-            <input
+            <TextField
               id="password"
               name="password"
+              label="Password"
               type="password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              placeholder="Enter password"
               autoComplete="current-password"
+              error={Boolean(touched.password && errors.password)}
+              helperText={touched.password ? errors.password : ""}
+              fullWidth
             />
-            {touched.password && errors.password ? (
-              <small style={{ color: "crimson" }}>{errors.password}</small>
-            ) : null}
-          </div>
 
-          <button type="submit" disabled={isLoading || isSubmitting}>
-            {isLoading || isSubmitting ? "Signing in…" : "Login"}
-          </button>
-          {error ? <p style={{ color: "crimson" }}>{error}</p> : null}
-        </form>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isLoading || isSubmitting}
+              fullWidth
+            >
+              {isLoading || isSubmitting ? "Signing in…" : "Login"}
+            </Button>
+          </Stack>
+        </Box>
       )}
     </Formik>
   );
