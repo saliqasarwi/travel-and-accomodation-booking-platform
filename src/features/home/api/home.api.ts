@@ -19,7 +19,7 @@ export async function getFeaturedDeals() {
   return res.data;
 }
 
-export async function getRecentHotels(userId: number) {
+export async function getRecentHotels(userId: number = 2) {
   const res = await httpClient.get<RecentHotel[]>(
     `/home/users/${userId}/recent-hotels`
   );
