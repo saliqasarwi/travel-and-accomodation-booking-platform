@@ -24,7 +24,7 @@ export default function SearchResultsPage() {
 
       <Section title="Search Results">
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          {query.cityName} | {query.checkInDate} → {query.checkOutDate}
+          {query.city} | {query.checkInDate} → {query.checkOutDate}
         </Typography>
 
         <Stack

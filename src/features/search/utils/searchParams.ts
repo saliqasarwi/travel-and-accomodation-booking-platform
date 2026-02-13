@@ -1,11 +1,11 @@
 import type { URLSearchParamsInit } from "react-router-dom";
 
 export type SearchQuery = {
-  cityName: string;
+  city: string;
   checkInDate: string;
   checkOutDate: string;
-  numberOfAdults: number;
-  numberOfChildren: number;
+  adults: number;
+  children: number;
   numberOfRooms: number;
 
   minPrice?: number;
@@ -17,11 +17,11 @@ export type SearchQuery = {
 
 export function parseSearchParams(searchParams: URLSearchParams): SearchQuery {
   return {
-    cityName: searchParams.get("cityName") ?? "",
+    city: searchParams.get("city") ?? "",
     checkInDate: searchParams.get("checkInDate") ?? "",
     checkOutDate: searchParams.get("checkOutDate") ?? "",
-    numberOfAdults: Number(searchParams.get("numberOfAdults") ?? 1),
-    numberOfChildren: Number(searchParams.get("numberOfChildren") ?? 0),
+    adults: Number(searchParams.get("adults") ?? 1),
+    children: Number(searchParams.get("children") ?? 0),
     numberOfRooms: Number(searchParams.get("numberOfRooms") ?? 1),
 
     minPrice: searchParams.get("minPrice")

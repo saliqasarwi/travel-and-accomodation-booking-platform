@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Stack, CircularProgress, Typography, Alert } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
-import HotelCard from "./HotelCard.tsx";
+import HotelCard from "./HotelCard";
 import type { HotelSearchItem } from "../types/types";
 import { fetchSearchResults } from "../api/search.api";
 
@@ -23,14 +23,14 @@ export default function HotelResults() {
 
         const results = await fetchSearchResults(
           {
-            city: searchParams.get("cityName") ?? undefined,
+            city: searchParams.get("city") ?? undefined,
             checkInDate: searchParams.get("checkInDate") ?? undefined,
             checkOutDate: searchParams.get("checkOutDate") ?? undefined,
-            adults: searchParams.get("numberOfAdults")
-              ? Number(searchParams.get("numberOfAdults"))
+            adults: searchParams.get("adults")
+              ? Number(searchParams.get("adults"))
               : undefined,
-            children: searchParams.get("numberOfChildren")
-              ? Number(searchParams.get("numberOfChildren"))
+            children: searchParams.get("children")
+              ? Number(searchParams.get("children"))
               : undefined,
             numberOfRooms: searchParams.get("numberOfRooms")
               ? Number(searchParams.get("numberOfRooms"))
@@ -55,7 +55,6 @@ export default function HotelResults() {
     }
 
     load();
-
     return () => controller.abort();
   }, [searchParams]);
 

@@ -7,7 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import HomeSearchBar from "../components/HomeSearchBar";
+import HomeSearchBar from "../../../shared/components/HomeSearchBar";
 
 function SearchSpy() {
   const location = useLocation();

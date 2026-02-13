@@ -4,7 +4,7 @@ import { Alert, Box, Skeleton, Typography } from "@mui/material";
 import Container from "@shared/ui/Container/PageContainer";
 import Section from "@shared/ui/Section/Section";
 
-import HomeSearchBar from "../components/HomeSearchBar";
+import HomeSearchBar from "../../../shared/components/HomeSearchBar";
 import FeaturedDeals from "../components/FeaturedDeals";
 import TrendingDestinations from "../components/TrendingDestinations";
 import RecentlyVisited from "../components/RecentlyVisited";

@@ -8,12 +8,12 @@ export type SearchRequest = {
   numberOfRooms?: number;
 };
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function fetchSearchResults(
   req: SearchRequest,
   signal?: AbortSignal
-) {
+): Promise<HotelSearchItem[]> {
   const params = new URLSearchParams();
 
   if (req.city) params.set("city", req.city);
