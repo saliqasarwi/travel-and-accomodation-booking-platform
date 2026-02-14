@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Stack, CircularProgress, Typography, Alert } from "@mui/material";
+import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 
 import HotelCard from "./HotelCard";
@@ -44,12 +45,7 @@ export default function HotelResults() {
         const filtered = applyFilters(results, query);
         setData(filtered);
       } catch (err) {
-        if (
-          typeof err === "object" &&
-          err !== null &&
-          "name" in err &&
-          (err as { name?: unknown }).name !== "AbortError"
-        ) {
+        if (!axios.isCancel(err)) {
           setError("Failed to load search results");
         }
       } finally {

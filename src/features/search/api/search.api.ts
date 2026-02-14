@@ -1,3 +1,5 @@
+import { httpClient } from "@shared/api";
+
 import type { HotelSearchItem, Amenity } from "../types/types";
 export type SearchRequest = {
   city?: string;
@@ -8,39 +10,22 @@ export type SearchRequest = {
   numberOfRooms?: number;
 };
 
-const BASE_URL = import.meta.env.VITE_API_URL;
-
 export async function fetchSearchResults(
   req: SearchRequest,
   signal?: AbortSignal
 ): Promise<HotelSearchItem[]> {
-  const params = new URLSearchParams();
-
-  if (req.city) params.set("city", req.city);
-  if (req.checkInDate) params.set("checkInDate", req.checkInDate);
-  if (req.checkOutDate) params.set("checkOutDate", req.checkOutDate);
-  if (typeof req.adults === "number") params.set("adults", String(req.adults));
-  if (typeof req.children === "number")
-    params.set("children", String(req.children));
-  if (typeof req.numberOfRooms === "number")
-    params.set("numberOfRooms", String(req.numberOfRooms));
-
-  const res = await fetch(`${BASE_URL}/home/search?${params.toString()}`, {
+  const res = await httpClient.get<HotelSearchItem[]>("/home/search", {
+    params: req,
     signal,
   });
 
-  if (!res.ok) {
-    throw new Error(`Search request failed (${res.status})`);
-  }
-
-  return (await res.json()) as HotelSearchItem[];
+  return res.data;
 }
 
-export async function fetchAmenities(signal?: AbortSignal) {
-  const res = await fetch(`${BASE_URL}/search-results/amenities`, { signal });
-  if (!res.ok) {
-    throw new Error(`Amenities request failed (${res.status})`);
-  }
+export async function fetchAmenities(signal?: AbortSignal): Promise<Amenity[]> {
+  const res = await httpClient.get<Amenity[]>("/search-results/amenities", {
+    signal,
+  });
 
-  return (await res.json()) as Amenity[];
+  return res.data;
 }

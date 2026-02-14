@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -91,13 +92,7 @@ export default function SearchFilters() {
         const list = await fetchAmenities(controller.signal);
         setAmenities(list);
       } catch (err) {
-        if (
-          typeof err === "object" &&
-          err !== null &&
-          "name" in err &&
-          (err as { name?: unknown }).name === "AbortError"
-        )
-          return;
+        if (axios.isCancel(err)) return;
         setAmenitiesError("Failed to load amenities");
       } finally {
         setAmenitiesLoading(false);
@@ -150,13 +145,7 @@ export default function SearchFilters() {
 
         setRoomTypes(types);
       } catch (err) {
-        if (
-          typeof err === "object" &&
-          err !== null &&
-          "name" in err &&
-          (err as { name?: unknown }).name === "AbortError"
-        )
-          return;
+        if (axios.isCancel(err)) return;
         setRoomTypesError("Failed to load room types");
       } finally {
         setRoomTypesLoading(false);
