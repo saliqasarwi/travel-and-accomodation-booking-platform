@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { addDays, toIsoDate } from "@shared/utils/date";
 
 type Values = {
@@ -33,9 +33,9 @@ const schema: Yup.ObjectSchema<Values> = Yup.object({
 });
 
 export default function HomeSearchBar() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
   const today = new Date();
   const defaultCheckIn = toIsoDate(today);
   const defaultCheckOut = toIsoDate(addDays(today, 1));
@@ -57,7 +57,6 @@ export default function HomeSearchBar() {
 
       <Formik<Values>
         initialValues={initialValues}
-        enableReinitialize // ✅ critical
         validationSchema={schema}
         onSubmit={(values, actions) => {
           try {

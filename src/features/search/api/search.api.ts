@@ -38,7 +38,6 @@ export async function fetchSearchResults(
 
 export async function fetchAmenities(signal?: AbortSignal) {
   const res = await fetch(`${BASE_URL}/search-results/amenities`, { signal });
-
   if (!res.ok) {
     throw new Error(`Amenities request failed (${res.status})`);
   }
