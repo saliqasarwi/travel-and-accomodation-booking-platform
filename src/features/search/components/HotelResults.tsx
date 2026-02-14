@@ -5,7 +5,8 @@ import { useSearchParams } from "react-router-dom";
 import HotelCard from "./HotelCard";
 import type { HotelSearchItem } from "../types/types";
 import { fetchSearchResults } from "../api/search.api";
-
+import { parseSearchParams } from "../utils/searchParams";
+import { applyFilters } from "../utils/applyFilters";
 export default function HotelResults() {
   const [searchParams] = useSearchParams();
 
@@ -39,41 +40,8 @@ export default function HotelResults() {
           controller.signal
         );
 
-        const filtered = results.filter((r) => {
-          const minPrice = searchParams.get("minPrice")
-            ? Number(searchParams.get("minPrice"))
-            : undefined;
-
-          const maxPrice = searchParams.get("maxPrice")
-            ? Number(searchParams.get("maxPrice"))
-            : undefined;
-
-          const stars = searchParams.get("stars")
-            ? searchParams.get("stars")!.split(",").map(Number)
-            : undefined;
-
-          const roomType = searchParams.get("roomType") ?? undefined;
-
-          const amenities = searchParams.get("amenities")
-            ? searchParams.get("amenities")!.split(",").map(Number)
-            : undefined;
-
-          if (minPrice !== undefined && r.roomPrice < minPrice) return false;
-          if (maxPrice !== undefined && r.roomPrice > maxPrice) return false;
-
-          if (stars?.length && !stars.includes(r.starRating)) return false;
-
-          if (roomType && r.roomType !== roomType) return false;
-
-          if (amenities?.length) {
-            const ids = r.amenities?.map((a) => a.id) ?? [];
-            const hasAll = amenities.every((id) => ids.includes(id));
-            if (!hasAll) return false;
-          }
-
-          return true;
-        });
-
+        const query = parseSearchParams(searchParams);
+        const filtered = applyFilters(results, query);
         setData(filtered);
       } catch (err) {
         if (
