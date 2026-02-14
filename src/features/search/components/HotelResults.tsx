@@ -39,7 +39,42 @@ export default function HotelResults() {
           controller.signal
         );
 
-        setData(results);
+        const filtered = results.filter((r) => {
+          const minPrice = searchParams.get("minPrice")
+            ? Number(searchParams.get("minPrice"))
+            : undefined;
+
+          const maxPrice = searchParams.get("maxPrice")
+            ? Number(searchParams.get("maxPrice"))
+            : undefined;
+
+          const stars = searchParams.get("stars")
+            ? searchParams.get("stars")!.split(",").map(Number)
+            : undefined;
+
+          const roomType = searchParams.get("roomType") ?? undefined;
+
+          const amenities = searchParams.get("amenities")
+            ? searchParams.get("amenities")!.split(",").map(Number)
+            : undefined;
+
+          if (minPrice !== undefined && r.roomPrice < minPrice) return false;
+          if (maxPrice !== undefined && r.roomPrice > maxPrice) return false;
+
+          if (stars?.length && !stars.includes(r.starRating)) return false;
+
+          if (roomType && r.roomType !== roomType) return false;
+
+          if (amenities?.length) {
+            const ids = r.amenities?.map((a) => a.id) ?? [];
+            const hasAll = amenities.every((id) => ids.includes(id));
+            if (!hasAll) return false;
+          }
+
+          return true;
+        });
+
+        setData(filtered);
       } catch (err) {
         if (
           typeof err === "object" &&
