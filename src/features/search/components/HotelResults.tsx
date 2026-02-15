@@ -60,7 +60,7 @@ export default function HotelResults() {
 
     load();
     return () => controller.abort();
-  }, [searchParams]);
+  }, [searchParams, resetPage]);
 
   if (loading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;
@@ -74,7 +74,13 @@ export default function HotelResults() {
       {visibleHotels.map((hotel) => (
         <HotelCard key={hotel.hotelId} hotel={hotel} />
       ))}
-      {hasMore && <div ref={sentinelRef} style={{ height: 1 }} />}
+      {hasMore && (
+        <div
+          ref={sentinelRef}
+          data-testid="infinite-scroll-sentinel"
+          style={{ height: 1 }}
+        />
+      )}
     </Stack>
   );
 }
