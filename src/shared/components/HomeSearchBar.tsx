@@ -1,6 +1,6 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { addDays, toIsoDate } from "@shared/utils/date";
 
 type Values = {
@@ -11,7 +11,6 @@ type Values = {
   children: number;
   numberOfRooms: number;
 };
-
 const schema: Yup.ObjectSchema<Values> = Yup.object({
   city: Yup.string().trim().required("City is required"),
 
@@ -23,7 +22,6 @@ const schema: Yup.ObjectSchema<Values> = Yup.object({
       "Check-out must be after check-in",
       function (checkOut) {
         const { checkInDate } = this.parent as Values;
-        //prevents unnecessary errors when user hasn't filled both yet
         if (!checkInDate || !checkOut) return true;
         return checkOut > checkInDate;
       }
@@ -35,19 +33,20 @@ const schema: Yup.ObjectSchema<Values> = Yup.object({
 });
 
 export default function HomeSearchBar() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
-
   const today = new Date();
-  const initialCheckIn = toIsoDate(today);
-  const initialCheckOut = toIsoDate(addDays(today, 1));
+  const defaultCheckIn = toIsoDate(today);
+  const defaultCheckOut = toIsoDate(addDays(today, 1));
 
   const initialValues: Values = {
-    city: "",
-    checkInDate: initialCheckIn,
-    checkOutDate: initialCheckOut,
-    adults: 2,
-    children: 0,
-    numberOfRooms: 1,
+    city: searchParams.get("city") ?? "",
+    checkInDate: searchParams.get("checkInDate") ?? defaultCheckIn,
+    checkOutDate: searchParams.get("checkOutDate") ?? defaultCheckOut,
+    adults: Number(searchParams.get("adults") ?? 2),
+    children: Number(searchParams.get("children") ?? 0),
+    numberOfRooms: Number(searchParams.get("numberOfRooms") ?? 1),
   };
 
   return (
@@ -59,17 +58,21 @@ export default function HomeSearchBar() {
       <Formik<Values>
         initialValues={initialValues}
         validationSchema={schema}
-        onSubmit={(values) => {
-          const params = new URLSearchParams({
-            city: values.city.trim(),
-            checkInDate: values.checkInDate,
-            checkOutDate: values.checkOutDate,
-            adults: String(values.adults),
-            children: String(values.children),
-            numberOfRooms: String(values.numberOfRooms),
-          });
+        onSubmit={(values, actions) => {
+          try {
+            const params = new URLSearchParams({
+              city: values.city.trim(),
+              checkInDate: values.checkInDate,
+              checkOutDate: values.checkOutDate,
+              adults: String(values.adults),
+              children: String(values.children),
+              numberOfRooms: String(values.numberOfRooms),
+            });
 
-          navigate(`/search?${params.toString()}`);
+            navigate(`/search?${params.toString()}`);
+          } finally {
+            actions.setSubmitting(false);
+          }
         }}
       >
         {({

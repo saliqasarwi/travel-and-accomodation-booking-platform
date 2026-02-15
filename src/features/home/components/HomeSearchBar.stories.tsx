@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import HomeSearchBar from "./HomeSearchBar";
+import HomeSearchBar from "../../../shared/components/HomeSearchBar";
 import { MemoryRouter } from "react-router-dom";
 
 const meta: Meta<typeof HomeSearchBar> = {

@@ -1,65 +1,42 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { searchHome } from "@features/home/api/home.api";
-import type { HomeSearchResult } from "@features/home/types/home.types";
-import { parseApiError } from "@shared/api";
+import { Stack, Typography } from "@mui/material";
+
+import Container from "@shared/ui/Container/PageContainer";
+import Section from "@shared/ui/Section/Section";
+import HomeSearchBar from "@shared/components/HomeSearchBar";
+
+import SearchFilters from "../components/SearchFilters.tsx";
+import HotelResults from "../components/HotelResults.tsx";
+
+import { parseSearchParams } from "../utils/searchParams";
+
 export default function SearchResultsPage() {
-  const [params] = useSearchParams();
-  const [data, setData] = useState<HomeSearchResult[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    const query = {
-      city: params.get("city") || undefined,
-      checkInDate: params.get("checkInDate") || undefined,
-      checkOutDate: params.get("checkOutDate") || undefined,
-      adults: params.get("adults") ? Number(params.get("adults")) : undefined,
-      children: params.get("children")
-        ? Number(params.get("children"))
-        : undefined,
-      numberOfRooms: params.get("numberOfRooms")
-        ? Number(params.get("numberOfRooms"))
-        : undefined,
-    };
+  const [searchParams] = useSearchParams();
 
-    let cancelled = false;
-
-    (async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await searchHome(query);
-        if (!cancelled) setData(res);
-      } catch (e) {
-        if (!cancelled) setError(parseApiError(e).message);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [params]);
-
-  if (loading) return <p>Loading search results…</p>;
-  if (error) return <p style={{ color: "crimson" }}>{error}</p>;
+  const query = useMemo(() => {
+    return parseSearchParams(searchParams);
+  }, [searchParams]);
 
   return (
-    <div>
-      <h1>Search Results</h1>
+    <Container>
+      <HomeSearchBar />
 
-      {data.length === 0 ? (
-        <p>No results found.</p>
-      ) : (
-        <ul>
-          {data.map((item, idx) => (
-            <li key={idx}>
-              <b>{item.cityName}</b> — Rooms: {item.numberOfRooms}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+      <Section title="Search Results">
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          {query.city} | {query.checkInDate} → {query.checkOutDate}
+        </Typography>
+
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={4}
+          alignItems="flex-start"
+        >
+          <SearchFilters />
+
+          <HotelResults />
+        </Stack>
+      </Section>
+    </Container>
   );
 }
