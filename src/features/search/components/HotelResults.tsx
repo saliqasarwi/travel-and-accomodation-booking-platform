@@ -8,8 +8,12 @@ import type { HotelSearchItem } from "../types/types";
 import { fetchSearchResults } from "../api/search.api";
 import { parseSearchParams } from "../utils/searchParams";
 import { applyFilters } from "../utils/applyFilters";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
+
+const PAGE_SIZE = 6;
 export default function HotelResults() {
   const [searchParams] = useSearchParams();
+  const { sentinelRef, page, resetPage } = useInfiniteScroll();
 
   const [data, setData] = useState<HotelSearchItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -44,6 +48,7 @@ export default function HotelResults() {
         const query = parseSearchParams(searchParams);
         const filtered = applyFilters(results, query);
         setData(filtered);
+        resetPage();
       } catch (err) {
         if (!axios.isCancel(err)) {
           setError("Failed to load search results");
@@ -61,11 +66,15 @@ export default function HotelResults() {
   if (error) return <Alert severity="error">{error}</Alert>;
   if (!data.length) return <Typography>No results found.</Typography>;
 
+  const visibleHotels = data.slice(0, page * PAGE_SIZE);
+  const hasMore = visibleHotels.length < data.length;
+
   return (
     <Stack spacing={3} sx={{ flex: 1 }}>
-      {data.map((hotel) => (
+      {visibleHotels.map((hotel) => (
         <HotelCard key={hotel.hotelId} hotel={hotel} />
       ))}
+      {hasMore && <div ref={sentinelRef} style={{ height: 1 }} />}
     </Stack>
   );
 }
