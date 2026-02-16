@@ -1,5 +1,6 @@
 import { Outlet, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "@app/providers/AuthContext";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import {
   AppBar,
   Toolbar,
@@ -7,8 +8,12 @@ import {
   Box,
   Container,
   Typography,
+  IconButton,
+  Badge,
 } from "@mui/material";
+import { useCart } from "@features/cart/useCart";
 export default function UserLayout() {
+  const { totalItems } = useCart();
   const { isAuthenticated, userType, logout } = useAuth();
   return (
     <Box sx={{ minHeight: "100vh" }}>
@@ -20,14 +25,14 @@ export default function UserLayout() {
           <Button component={RouterLink} to="/search">
             Search
           </Button>
-          <Button component={RouterLink} to="/checkout">
-            Checkout
-          </Button>
-
           <Box sx={{ flexGrow: 1 }} />
-
           {isAuthenticated ? (
             <>
+              <IconButton component={RouterLink} to="/checkout">
+                <Badge badgeContent={totalItems} color="primary">
+                  <ShoppingBasketIcon />
+                </Badge>
+              </IconButton>
               <Typography variant="body2" sx={{ mr: 1 }}>
                 Role: <b>{userType}</b>
               </Typography>
