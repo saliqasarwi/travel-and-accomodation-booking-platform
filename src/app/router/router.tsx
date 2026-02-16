@@ -63,6 +63,7 @@ export const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
+
       { path: "*", element: <NotFoundPage /> },
     ],
   },
