@@ -6,15 +6,17 @@ import {
   Stack,
   Chip,
   Box,
+  Button,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import type { HotelSearchItem } from "../types/types";
-
+import { useCart } from "@features/cart/useCart";
 type Props = {
   hotel: HotelSearchItem;
 };
 
 export default function HotelCard({ hotel }: Props) {
+  const { addItem } = useCart();
   return (
     <Card
       sx={{
@@ -58,6 +60,30 @@ export default function HotelCard({ hotel }: Props) {
             </Box>
           )}
         </Stack>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={(e) => {
+            e.stopPropagation(); // prevent card click navigation
+            addItem({
+              hotelId: hotel.hotelId,
+              hotelName: hotel.hotelName,
+              cityName: hotel.cityName,
+              starRating: hotel.starRating,
+              roomType: hotel.roomType,
+              roomPhotoUrl: hotel.roomPhotoUrl,
+              checkInDate: hotel.checkInDate,
+              checkOutDate: hotel.checkOutDate,
+              adults: hotel.numberOfAdults,
+              children: hotel.numberOfChildren,
+              numberOfRooms: hotel.numberOfRooms,
+              pricePerNight: hotel.roomPrice,
+              discount: hotel.discount,
+            });
+          }}
+        >
+          Add to Cart
+        </Button>
       </CardContent>
     </Card>
   );
