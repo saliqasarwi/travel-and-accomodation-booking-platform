@@ -18,12 +18,16 @@ export default function HotelPage() {
   const { hotelId } = useParams();
   const [hotel, setHotel] = useState<HotelDetails | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [gallery, setGallery] = useState<string[]>([]);
   useEffect(() => {
     async function fetchHotel() {
       try {
         const res = await httpClient.get(`/hotels/${hotelId}`);
         setHotel(res.data);
+        const galleryRes = await httpClient.get(`/hotels/${hotelId}/gallery`);
+        const data = galleryRes.data as string[];
+        const urls = data.map((x) => (typeof x === "string" ? x : x.url));
+        setGallery(urls);
       } catch (error) {
         console.error("Failed to fetch hotel", error);
       } finally {
@@ -60,7 +64,28 @@ export default function HotelPage() {
       </Stack>
 
       <Typography>{hotel.description}</Typography>
+      <Box>
+        <Typography variant="h5" fontWeight={700} mb={1}>
+          Gallery
+        </Typography>
 
+        <Stack direction="row" spacing={2} flexWrap="wrap">
+          {gallery.map((url) => (
+            <Box
+              key={url}
+              component="img"
+              src={url}
+              alt="Hotel"
+              sx={{
+                width: 220,
+                height: 140,
+                objectFit: "cover",
+                borderRadius: 2,
+              }}
+            />
+          ))}
+        </Stack>
+      </Box>
       <Stack spacing={1}>
         <Box component="h2">Amenities</Box>
         {hotel.amenities?.map((amenity) => (
