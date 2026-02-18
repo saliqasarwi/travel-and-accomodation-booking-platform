@@ -1,7 +1,7 @@
 import { httpClient } from "@shared/api/httpClient";
 import type { HotelDetails } from "../types/hotel.types";
 import type { AvailableRoom } from "../types/room.types";
-
+import type { HotelReview } from "../types/review.types";
 type GalleryItem = { url: string };
 
 export async function getHotelDetails(hotelId: number) {
@@ -32,4 +32,9 @@ export async function getAvailableRooms(hotelId: number | string) {
   }));
 
   return rooms;
+}
+
+export async function getHotelReviews(hotelId: number) {
+  const res = await httpClient.get<HotelReview[]>(`/hotels/${hotelId}/reviews`);
+  return res.data ?? [];
 }
