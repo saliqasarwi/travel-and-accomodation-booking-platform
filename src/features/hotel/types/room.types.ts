@@ -11,7 +11,7 @@ export type AvailableRoom = {
   roomType: string;
   capacityOfAdults: number;
   capacityOfChildren: number;
-  roomAmenities: Amenity[];
+  amenities: Amenity[];
   price: number;
   availability: boolean;
 };
