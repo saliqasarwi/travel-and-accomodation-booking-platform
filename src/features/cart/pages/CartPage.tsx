@@ -1,66 +1,33 @@
-import { Stack, Typography, Card, CardContent, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useCart } from "../useCart";
+import { Stack, Typography, Divider } from "@mui/material";
+import CartItemsList from "../components/CartItemsList";
+import CartSummary from "../components/CartSummary";
 export default function CartPage() {
-  const { state } = useCart();
-  const navigate = useNavigate();
-  if (!state.items.length) {
-    return (
-      <Stack spacing={3}>
+  return (
+    <Stack spacing={3}>
+      <Stack spacing={0.5}>
         <Typography variant="h4" fontWeight={800}>
           Cart
         </Typography>
-
-        <Card sx={{ borderRadius: 3 }}>
-          <CardContent>
-            <Typography fontWeight={700}>Your cart is empty.</Typography>
-
-            <Typography variant="body2" color="text.secondary">
-              Add a room from any hotel page.
-            </Typography>
-
-            <Button
-              sx={{ mt: 2 }}
-              variant="contained"
-              onClick={() => navigate("/")}
-            >
-              Back to Home
-            </Button>
-          </CardContent>
-        </Card>
+        <Typography variant="body2" color="text.secondary">
+          Review selected rooms before checkout.
+        </Typography>
       </Stack>
-    );
-  }
 
-  return (
-    <Stack spacing={3}>
-      <Typography variant="h4" fontWeight={800}>
-        Cart
-      </Typography>
+      <Divider />
 
-      {state.items.map((item, index) => (
-        <Card key={index} sx={{ borderRadius: 3 }}>
-          <CardContent>
-            <Stack spacing={1}>
-              <Typography fontWeight={800}>{item.hotelName}</Typography>
-
-              <Typography variant="body2" color="text.secondary">
-                {item.roomType}
-              </Typography>
-
-              <Typography>${item.pricePerNight} / night</Typography>
-            </Stack>
-          </CardContent>
-        </Card>
-      ))}
-
-      <Button
-        variant="contained"
-        size="large"
-        onClick={() => navigate("/checkout")}
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={3}
+        alignItems="flex-start"
       >
-        Proceed to Checkout
-      </Button>
+        <Stack flex={1}>
+          <CartItemsList />
+        </Stack>
+
+        <Stack width={{ xs: "100%", md: 360 }}>
+          <CartSummary />
+        </Stack>
+      </Stack>
     </Stack>
   );
 }
