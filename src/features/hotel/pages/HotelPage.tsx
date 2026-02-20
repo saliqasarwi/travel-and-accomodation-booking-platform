@@ -1,38 +1,46 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
+  Alert,
+  Box,
+  CircularProgress,
+  Container,
+  Divider,
+  Grid,
+  Rating,
   Stack,
   Typography,
-  CircularProgress,
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Button,
-  Divider,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
-import { httpClient } from "@shared/api/httpClient";
-import type { Amenity } from "@features/search/types/types";
-import { useSearchParams } from "react-router-dom";
+
 import { useCart } from "@features/cart/useCart";
-import type { AvailableRoom } from "../types/hotelRooms.types.ts";
-type HotelDetails = {
-  hotelName: string;
-  location: string;
-  description: string;
-  amenities: Amenity[];
-  starRating: number;
-  availableRooms: number;
-  imageUrl: string;
-};
+
+import type { HotelDetails } from "../types/hotel.types";
+import type { AvailableRoom } from "../types/room.types";
+import type { HotelReview } from "../types/review.types";
+
+import {
+  getHotelDetails,
+  getHotelGallery,
+  getAvailableRooms,
+  getHotelReviews,
+} from "../api/hotel.api";
+
+import HotelGallery from "../components/HotelGallery";
+import HotelLocationMap from "../components/HotelLocationMap";
+import HotelRooms from "../components/HotelRooms";
+import HotelReviews from "../components/HotelReviews";
+import HotelInformation from "../components/HotelInformation";
 
 export default function HotelPage() {
   const { hotelId } = useParams();
+  const numericHotelId = useMemo(() => Number(hotelId), [hotelId]);
+
   const [hotel, setHotel] = useState<HotelDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [gallery, setGallery] = useState<string[]>([]);
+  const [gallery, setGallery] = useState<{ url: string }[]>([]);
   const [rooms, setRooms] = useState<AvailableRoom[]>([]);
+  const [reviews, setReviews] = useState<HotelReview[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [searchParams] = useSearchParams();
   const { addItem } = useCart();
 
@@ -41,159 +49,139 @@ export default function HotelPage() {
   const adults = Number(searchParams.get("adults") ?? 2);
   const children = Number(searchParams.get("children") ?? 0);
   const numberOfRooms = Number(searchParams.get("numberOfRooms") ?? 1);
+
   useEffect(() => {
-    async function fetchHotel() {
+    async function load() {
       try {
-        const res = await httpClient.get(`/hotels/${hotelId}`);
-        setHotel(res.data);
-        const galleryRes = await httpClient.get(`/hotels/${hotelId}/gallery`);
-        const data = galleryRes.data as (string | { url: string })[];
-        const urls = data.map((x) => (typeof x === "string" ? x : x.url));
-        setGallery(urls);
-        const roomsRes = await httpClient.get(
-          `/hotels/${hotelId}/available-rooms`
-        );
-        setRooms(roomsRes.data);
-      } catch (error) {
-        console.error("Failed to fetch hotel", error);
+        if (!Number.isFinite(numericHotelId)) return;
+
+        const [hotelDetails, hotelGallery, availableRooms, hotelReviews] =
+          await Promise.all([
+            getHotelDetails(numericHotelId),
+            getHotelGallery(numericHotelId),
+            getAvailableRooms(numericHotelId),
+            getHotelReviews(numericHotelId),
+          ]);
+
+        setHotel(hotelDetails);
+        setGallery(hotelGallery ?? []);
+        setRooms(availableRooms ?? []);
+        setReviews(hotelReviews ?? []);
+      } catch (e) {
+        console.error("Failed to load hotel:", e);
       } finally {
         setLoading(false);
       }
     }
-
-    fetchHotel();
-  }, [hotelId]);
+    load();
+  }, [numericHotelId]);
 
   if (loading) {
     return (
-      <Stack alignItems="center" mt={4}>
-        <CircularProgress />
-      </Stack>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "60vh",
+        }}
+      >
+        <CircularProgress size={60} thickness={4} />
+      </Box>
     );
   }
 
   if (!hotel) {
-    return <Typography>Hotel not found</Typography>;
+    return <Alert color="error">Hotel not found</Alert>;
   }
 
   return (
-    <Stack spacing={3}>
-      <Typography variant="h4" fontWeight={700}>
-        {hotel.hotelName}
-      </Typography>
+    <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
+      <Stack spacing={6}>
+        <Stack spacing={1.5} alignItems={{ xs: "center", md: "flex-start" }}>
+          <Typography
+            variant="h3"
+            component="h1"
+            fontWeight={800}
+            sx={{
+              fontSize: { xs: "2.5rem", md: "3.8rem" },
+              background: "linear-gradient(90deg, #1976d2, #42a5f5)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "-0.5px",
+            }}
+          >
+            {hotel.hotelName}
+          </Typography>
 
-      <Typography color="text.secondary">{hotel.location}</Typography>
-
-      <Stack direction="row">
-        Stars:{hotel.starRating}
-        <StarIcon sx={{ color: "gold" }} />
-      </Stack>
-
-      <Typography>{hotel.description}</Typography>
-      <Box>
-        <Typography variant="h5" fontWeight={700} mb={1}>
-          Gallery
-        </Typography>
-
-        <Stack direction="row" spacing={2} flexWrap="wrap">
-          {gallery.map((url) => (
-            <Box
-              key={url}
-              component="img"
-              src={url}
-              alt="Hotel"
-              sx={{
-                width: 220,
-                height: 140,
-                objectFit: "cover",
-                borderRadius: 2,
-              }}
-            />
-          ))}
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            flexWrap="wrap"
+            justifyContent={{ xs: "center", md: "flex-start" }}
+          >
+            <Typography variant="h6" color="text.secondary" fontWeight={500}>
+              {hotel.location}
+            </Typography>
+            <Typography variant="h6" fontWeight={600}>
+              <Rating
+                value={hotel.starRating}
+                precision={0.1}
+                readOnly
+                size="medium"
+              />
+            </Typography>
+          </Stack>
         </Stack>
-      </Box>
-      <Stack spacing={1}>
-        <Box component="h2">Amenities</Box>
-        {hotel.amenities?.map((amenity) => (
-          <Box key={amenity.id ?? amenity.name}>
-            <b>{amenity.name}:</b> {amenity.description}
-          </Box>
-        ))}
-      </Stack>
-      <Typography>Available Rooms: {hotel.availableRooms}</Typography>
-      <Divider />
 
-      <Typography variant="h5" fontWeight={700}>
-        Room Availability
-      </Typography>
+        <HotelInformation hotel={hotel} reviews={reviews} />
 
-      <Stack spacing={2}>
-        {rooms.map((room) => (
-          <Card key={room.roomId} sx={{ borderRadius: 3 }} elevation={2}>
-            <Stack direction={{ xs: "column", md: "row" }}>
-              <CardMedia
-                component="img"
-                image={room.roomPhotoUrl || hotel.imageUrl}
-                alt={room.roomType}
-                sx={{
-                  width: { md: 260 },
-                  height: { xs: 180, md: "auto" },
-                  objectFit: "cover",
+        <Divider sx={{ my: 3 }} />
+
+        <Grid container spacing={5}>
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <Stack spacing={6}>
+              <HotelGallery items={gallery} />
+
+              <HotelRooms
+                rooms={rooms}
+                onAddToCart={(room) => {
+                  addItem({
+                    hotelId: numericHotelId,
+                    hotelName: hotel.hotelName,
+                    cityName: hotel.location,
+                    starRating: hotel.starRating,
+                    roomType: room.roomType,
+                    roomPhotoUrl: room.roomPhotoUrl,
+                    checkInDate,
+                    checkOutDate,
+                    adults,
+                    children,
+                    numberOfRooms,
+                    pricePerNight: room.price,
+                    discount: 0,
+                  });
                 }}
               />
 
-              <CardContent sx={{ flex: 1 }}>
-                <Stack spacing={1}>
-                  <Typography variant="h6" fontWeight={800}>
-                    {room.roomType} (#{room.roomNumber})
-                  </Typography>
-
-                  <Typography variant="body2" color="text.secondary">
-                    Capacity: {room.capacityOfAdults} adults •{" "}
-                    {room.capacityOfChildren} children
-                  </Typography>
-
-                  {room.roomAmenities?.length > 0 && (
-                    <Typography variant="body2" color="text.secondary">
-                      Amenities: {room.roomAmenities.join(" • ")}
-                    </Typography>
-                  )}
-
-                  <Typography variant="h6" fontWeight={800}>
-                    ${room.price} / night
-                  </Typography>
-
-                  <Button
-                    variant="contained"
-                    disabled={!room.availability}
-                    onClick={() => {
-                      addItem({
-                        hotelId: Number(hotelId),
-                        hotelName: hotel.hotelName,
-                        cityName: hotel.location,
-                        starRating: hotel.starRating,
-                        roomType: room.roomType,
-                        roomPhotoUrl: room.roomPhotoUrl,
-
-                        checkInDate,
-                        checkOutDate,
-                        adults,
-                        children,
-                        numberOfRooms,
-
-                        pricePerNight: room.price,
-                        discount: 0,
-                      });
-                    }}
-                  >
-                    {room.availability ? "Add to cart" : "Not available"}
-                  </Button>
-                </Stack>
-              </CardContent>
+              <HotelReviews reviews={reviews} />
             </Stack>
-          </Card>
-        ))}
+          </Grid>
+
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <Box
+              sx={{
+                position: { lg: "sticky" },
+                top: { lg: 24 },
+                pb: { lg: 4 },
+              }}
+            >
+              <HotelLocationMap hotel={hotel} />
+            </Box>
+          </Grid>
+        </Grid>
       </Stack>
-    </Stack>
+    </Container>
   );
 }
