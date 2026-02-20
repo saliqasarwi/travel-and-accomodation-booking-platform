@@ -17,6 +17,7 @@ import AdminHotelsPage from "@features/admin/pages/AdminHotelsPage";
 import AdminRoomsPage from "@features/admin/pages/AdminRoomsPage";
 import RequireAuth from "@features/auth/guards/RequireAuth";
 import RequireAdmin from "@features/auth/guards/RequireAdmin";
+import CartPage from "@features/cart/pages/CartPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -63,7 +64,14 @@ export const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
-
+      {
+        path: "cart",
+        element: (
+          <RequireAuth>
+            <CartPage />
+          </RequireAuth>
+        ),
+      },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
