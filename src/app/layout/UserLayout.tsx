@@ -28,7 +28,7 @@ export default function UserLayout() {
           <Box sx={{ flexGrow: 1 }} />
           {isAuthenticated ? (
             <>
-              <IconButton component={RouterLink} to="/checkout">
+              <IconButton component={RouterLink} to="/cart">
                 <Badge badgeContent={totalItems} color="primary">
                   <ShoppingBasketIcon />
                 </Badge>
