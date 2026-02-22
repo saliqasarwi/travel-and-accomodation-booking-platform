@@ -2,7 +2,8 @@ import { Button, Card, CardContent, Stack } from "@mui/material";
 import CheckoutStepper from "../components/CheckoutStepper";
 import { useState } from "react";
 import GuestInfoStep from "../components/GuestInfoStep";
-import type { GuestInfo } from "../types/checkout.types";
+import type { GuestInfo, PaymentInfo } from "../types/checkout.types";
+import PaymentStep from "../components/PaymentStep";
 const stepsCount = 3;
 export default function CheckoutPage() {
   const [guestInfo, setGuestInfo] = useState<GuestInfo>({
@@ -10,6 +11,14 @@ export default function CheckoutPage() {
     lastName: "",
     email: "",
     phone: "",
+  });
+
+  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
+    method: "credit_card",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+    cardholderName: "",
   });
 
   const handleNext = () =>
@@ -25,7 +34,9 @@ export default function CheckoutPage() {
           {activeStep === 0 && (
             <GuestInfoStep value={guestInfo} onChange={setGuestInfo} />
           )}
-          {activeStep === 1 && <div>Payment step</div>}
+          {activeStep === 1 && (
+            <PaymentStep value={paymentInfo} onChange={setPaymentInfo} />
+          )}
           {activeStep === 2 && <div>Special requests + review step</div>}
         </CardContent>
       </Card>
