@@ -10,6 +10,9 @@ import type {
 import PaymentStep from "../components/PaymentStep";
 import SpecialRequestsStep from "../components/SpecialRequestsStep";
 import BookingSummaryCard from "../components/BookingSummaryCard";
+import { useNavigate } from "react-router-dom";
+import { createBooking } from "../api/checkout.api";
+import { useCart } from "@features/cart/useCart";
 const stepsCount = 3;
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
@@ -30,7 +33,23 @@ export default function CheckoutPage() {
   const [specialRequests, setSpecialRequests] = useState<SpecialRequests>({
     notes: "",
   });
+  const navigate = useNavigate();
+  const { state, clearCart } = useCart();
+  async function handleConfirmaBooking() {
+    try {
+      const result = await createBooking({
+        guestInfo,
+        paymentInfo,
+        specialRequests,
+        items: state.items,
+      });
 
+      clearCart();
+      navigate(`/confirmation/${result.bookingId}`);
+    } catch (e) {
+      console.error("Create booking failed", e);
+    }
+  }
   const handleNext = () =>
     setActiveStep((s) => Math.min(s + 1, stepsCount - 1));
   const handleBack = () => setActiveStep((s) => Math.max(s - 1, 0));
@@ -68,8 +87,15 @@ export default function CheckoutPage() {
               Back
             </Button>
 
-            <Button variant="contained" onClick={handleNext}>
-              {activeStep === stepsCount - 1 ? "Review Booking" : "Next"}
+            <Button
+              variant="contained"
+              onClick={
+                activeStep === stepsCount - 1
+                  ? handleConfirmaBooking
+                  : handleNext
+              }
+            >
+              {activeStep === stepsCount - 1 ? "Confirm booking" : "Next"}
             </Button>
           </Stack>
         </Stack>
