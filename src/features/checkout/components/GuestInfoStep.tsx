@@ -1,12 +1,25 @@
 import { Card, CardContent, Stack, Typography, TextField } from "@mui/material";
 import type { GuestInfo } from "../types/checkout.types";
+import type { FormikErrors, FormikTouched } from "formik";
 
 type Props = {
   value: GuestInfo;
   onChange: (value: GuestInfo) => void;
+  errors?: FormikErrors<GuestInfo>;
+  touched?: FormikTouched<GuestInfo>;
+  onBlur?: (e: React.FocusEvent) => void;
 };
 
-export default function GuestInfoStep({ value, onChange }: Props) {
+export default function GuestInfoStep({
+  value,
+  onChange,
+  errors = {},
+  touched = {},
+  onBlur,
+}: Props) {
+  const fieldError = (field: keyof GuestInfo) =>
+    touched[field] ? errors[field] : undefined;
+
   return (
     <Card sx={{ borderRadius: 3 }}>
       <CardContent>
@@ -22,19 +35,27 @@ export default function GuestInfoStep({ value, onChange }: Props) {
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <TextField
+              name="guestInfo.firstName"
               label="First name"
               value={value.firstName}
               onChange={(e) =>
                 onChange({ ...value, firstName: e.target.value })
               }
+              onBlur={onBlur}
+              error={!!fieldError("firstName")}
+              helperText={fieldError("firstName")}
               fullWidth
               required
             />
 
             <TextField
+              name="guestInfo.lastName"
               label="Last name"
               value={value.lastName}
               onChange={(e) => onChange({ ...value, lastName: e.target.value })}
+              onBlur={onBlur}
+              error={!!fieldError("lastName")}
+              helperText={fieldError("lastName")}
               fullWidth
               required
             />
@@ -42,17 +63,25 @@ export default function GuestInfoStep({ value, onChange }: Props) {
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <TextField
+              name="guestInfo.email"
               label="Email"
               value={value.email}
               onChange={(e) => onChange({ ...value, email: e.target.value })}
+              onBlur={onBlur}
+              error={!!fieldError("email")}
+              helperText={fieldError("email")}
               fullWidth
               required
             />
 
             <TextField
+              name="guestInfo.phone"
               label="Phone number"
               value={value.phone}
               onChange={(e) => onChange({ ...value, phone: e.target.value })}
+              onBlur={onBlur}
+              error={!!fieldError("phone")}
+              helperText={fieldError("phone")}
               fullWidth
               required
             />

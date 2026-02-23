@@ -101,11 +101,11 @@ export default function CheckoutPage() {
     initialValues,
     validationSchema: getStepSchema(activeStep),
     validateOnBlur: true,
-    validateOnChange: false,
+    validateOnChange: true,
     onSubmit: async (values, helpers) => {
       try {
         if (!state.items.length) {
-          navigate("/cart");
+          navigate("/home/search");
           return;
         }
         const result = await createBooking({
@@ -122,15 +122,54 @@ export default function CheckoutPage() {
       }
     },
   });
+
+  // Helper to extract nested errors for a step section
+  const getNestedErrors = (section: string) => {
+    const raw = formik.errors as Record<string, unknown>;
+    return (raw[section] ?? {}) as Record<string, string>;
+  };
+
+  const getNestedTouched = (section: string) => {
+    const raw = formik.touched as Record<string, unknown>;
+    return (raw[section] ?? {}) as Record<string, boolean>;
+  };
+
   async function handleNext() {
+    // Mark all fields for the current step as touched so errors show immediately
+    if (activeStep === 0) {
+      await formik.setTouched({
+        guestInfo: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+        },
+      });
+    } else if (activeStep === 1) {
+      await formik.setTouched({
+        paymentInfo: {
+          method: true,
+          cardNumber: true,
+          expiry: true,
+          cvv: true,
+          cardholderName: true,
+        },
+      });
+    } else {
+      await formik.setTouched({
+        specialRequests: { notes: true },
+      });
+    }
+
     // validate current step only
     const stepSchema = getStepSchema(activeStep);
 
     try {
       await stepSchema.validate(formik.values, { abortEarly: false });
       setActiveStep((s) => Math.min(s + 1, stepsCount - 1));
-      // clear step errors when moving forward
+      // clear step errors & touched when moving forward
       formik.setErrors({});
+      formik.setTouched({});
     } catch (err) {
       const nextErrors: Record<string, string> = {};
       if (err instanceof Yup.ValidationError) {
@@ -143,6 +182,8 @@ export default function CheckoutPage() {
   }
 
   function handleBack() {
+    formik.setErrors({});
+    formik.setTouched({});
     setActiveStep((s) => Math.max(s - 1, 0));
   }
 
@@ -167,6 +208,9 @@ export default function CheckoutPage() {
                   onChange={(next) => {
                     formik.setFieldValue("guestInfo", next);
                   }}
+                  errors={getNestedErrors("guestInfo")}
+                  touched={getNestedTouched("guestInfo")}
+                  onBlur={formik.handleBlur}
                 />
               )}
               {activeStep === 1 && (
@@ -175,6 +219,9 @@ export default function CheckoutPage() {
                   onChange={(next) => {
                     formik.setFieldValue("paymentInfo", next);
                   }}
+                  errors={getNestedErrors("paymentInfo")}
+                  touched={getNestedTouched("paymentInfo")}
+                  onBlur={formik.handleBlur}
                 />
               )}
               {activeStep === 2 && (
@@ -183,6 +230,9 @@ export default function CheckoutPage() {
                   onChange={(next) => {
                     formik.setFieldValue("specialRequests", next);
                   }}
+                  errors={getNestedErrors("specialRequests")}
+                  touched={getNestedTouched("specialRequests")}
+                  onBlur={formik.handleBlur}
                 />
               )}
             </CardContent>
