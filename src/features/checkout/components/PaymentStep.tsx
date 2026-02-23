@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Radio,
   TextField,
+  Box,
 } from "@mui/material";
 import type { PaymentInfo, PaymentMethod } from "../types/checkout.types";
 
@@ -67,42 +68,50 @@ export default function PaymentStep({ value, onChange }: Props) {
           </RadioGroup>
 
           {isCard && (
-            <Stack spacing={2}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                columnGap: 2,
+                rowGap: 2,
+                alignItems: "start",
+              }}
+            >
               <TextField
+                size="small"
                 label="Card number"
                 placeholder="1234 5678 9012 3456"
                 value={value.cardNumber}
                 onChange={(e) => setField("cardNumber", e.target.value)}
-                fullWidth
               />
 
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                <TextField
-                  label="Expiry"
-                  placeholder="MM/YY"
-                  value={value.expiry}
-                  onChange={(e) => setField("expiry", e.target.value)}
-                  fullWidth
-                />
-                <TextField
-                  label="CVV"
-                  placeholder="123"
-                  value={value.cvv}
-                  onChange={(e) => setField("cvv", e.target.value)}
-                  fullWidth
-                />
-              </Stack>
+              <TextField
+                size="small"
+                label="Expiry"
+                placeholder="MM/YY"
+                value={value.expiry}
+                onChange={(e) => setField("expiry", e.target.value)}
+              />
 
               <TextField
+                size="small"
+                fullWidth
+                label="CVV"
+                placeholder="123"
+                value={value.cvv}
+                onChange={(e) => setField("cvv", e.target.value)}
+              />
+
+              <TextField
+                size="small"
+                fullWidth
                 label="Cardholder name"
                 placeholder="Name on card"
                 value={value.cardholderName}
                 onChange={(e) => setField("cardholderName", e.target.value)}
-                fullWidth
               />
-            </Stack>
+            </Box>
           )}
-
           {!isCard && (
             <Typography variant="body2" color="text.secondary">
               You’ll pay during check-in. No card details needed now.

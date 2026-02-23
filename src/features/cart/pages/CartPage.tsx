@@ -1,7 +1,11 @@
-import { Stack, Typography, Divider } from "@mui/material";
+import { Stack, Typography, Divider, Button } from "@mui/material";
 import CartItemsList from "../components/CartItemsList";
-import CartSummary from "../components/CartSummary";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../useCart";
 export default function CartPage() {
+  const navigate = useNavigate();
+  const { state } = useCart();
+  const items = state.items;
   return (
     <Stack spacing={3}>
       <Stack spacing={0.5}>
@@ -15,19 +19,19 @@ export default function CartPage() {
 
       <Divider />
 
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={3}
-        alignItems="flex-start"
-      >
+      <Stack direction="row" spacing={3}>
         <Stack flex={1}>
           <CartItemsList />
         </Stack>
-
-        <Stack width={{ xs: "100%", md: 360 }}>
-          <CartSummary />
-        </Stack>
       </Stack>
+      <Button
+        variant="contained"
+        size="large"
+        disabled={items.length === 0}
+        onClick={() => navigate("/checkout")}
+      >
+        Proceed to checkout
+      </Button>
     </Stack>
   );
 }
