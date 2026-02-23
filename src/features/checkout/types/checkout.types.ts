@@ -63,3 +63,8 @@ export type CreateBookingPayload = {
     discount?: number;
   }>;
 };
+export type CheckoutFormValues = {
+  guestInfo: GuestInfo;
+  paymentInfo: PaymentInfo;
+  specialRequests: SpecialRequests;
+};

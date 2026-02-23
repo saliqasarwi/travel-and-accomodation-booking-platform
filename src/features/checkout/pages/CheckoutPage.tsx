@@ -1,58 +1,152 @@
 import { Button, Card, CardContent, Stack } from "@mui/material";
 import CheckoutStepper from "../components/CheckoutStepper";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import GuestInfoStep from "../components/GuestInfoStep";
-import type {
-  GuestInfo,
-  PaymentInfo,
-  SpecialRequests,
-} from "../types/checkout.types";
 import PaymentStep from "../components/PaymentStep";
 import SpecialRequestsStep from "../components/SpecialRequestsStep";
 import BookingSummaryCard from "../components/BookingSummaryCard";
 import { useNavigate } from "react-router-dom";
 import { createBooking } from "../api/checkout.api";
 import { useCart } from "@features/cart/useCart";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import type { CheckoutFormValues, PaymentInfo } from "../types/checkout.types";
 const stepsCount = 3;
+const guestInfoSchema = Yup.object({
+  firstName: Yup.string().trim().required("First name is required"),
+  lastName: Yup.string().trim().required("Last name is required"),
+  email: Yup.string()
+    .trim()
+    .email("Invalid email")
+    .required("Email is required"),
+  phone: Yup.string().trim().required("Phone is required"),
+});
+
+const paymentSchema = Yup.object({
+  method: Yup.mixed<PaymentInfo["method"]>()
+    .oneOf(["credit_card", "pay_at_hotel"])
+    .required("Payment method is required"),
+  cardNumber: Yup.string().when("method", {
+    is: "credit_card",
+    then: (num) =>
+      num
+        .trim()
+        .required("Card number is required")
+        .matches(/^[0-9 ]+$/, "Only digits/spaces")
+        .min(12, "Too short"),
+    otherwise: (num) => num.notRequired(),
+  }),
+  expiry: Yup.string().when("method", {
+    is: "credit_card",
+    then: (expiry) =>
+      expiry
+        .trim()
+        .required("Expiry is required")
+        .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Use MM/YY"),
+    otherwise: (expiry) => expiry.notRequired(),
+  }),
+  cvv: Yup.string().when("method", {
+    is: "credit_card",
+    then: (cvv) =>
+      cvv
+        .trim()
+        .required("CVV is required")
+        .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
+    otherwise: (cvv) => cvv.notRequired(),
+  }),
+  cardholderName: Yup.string().when("method", {
+    is: "credit_card",
+    then: (cardholderName) =>
+      cardholderName.trim().required("Cardholder name is required"),
+    otherwise: (cardholderName) => cardholderName.notRequired(),
+  }),
+});
+
+const requestsSchema = Yup.object({
+  notes: Yup.string().max(500, "Too long (max 500 chars)").nullable(),
+});
+
+function getStepSchema(step: number) {
+  if (step === 0) return Yup.object({ guestInfo: guestInfoSchema });
+  if (step === 1) return Yup.object({ paymentInfo: paymentSchema });
+  return Yup.object({ specialRequests: requestsSchema });
+}
 export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
-  const [guestInfo, setGuestInfo] = useState<GuestInfo>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-  });
-
-  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
-    method: "credit_card",
-    cardNumber: "",
-    expiry: "",
-    cvv: "",
-    cardholderName: "",
-  });
-  const [specialRequests, setSpecialRequests] = useState<SpecialRequests>({
-    notes: "",
-  });
   const navigate = useNavigate();
   const { state, clearCart } = useCart();
-  async function handleConfirmaBooking() {
-    try {
-      const result = await createBooking({
-        guestInfo,
-        paymentInfo,
-        specialRequests,
-        items: state.items,
-      });
+  const initialValues: CheckoutFormValues = useMemo(
+    () => ({
+      guestInfo: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+      },
+      paymentInfo: {
+        method: "credit_card",
+        cardNumber: "",
+        expiry: "",
+        cvv: "",
+        cardholderName: "",
+      },
+      specialRequests: {
+        notes: "",
+      },
+    }),
+    []
+  );
 
-      clearCart();
-      navigate(`/confirmation/${result.bookingId}`);
-    } catch (e) {
-      console.error("Create booking failed", e);
+  const formik = useFormik<CheckoutFormValues>({
+    initialValues,
+    validationSchema: getStepSchema(activeStep),
+    validateOnBlur: true,
+    validateOnChange: false,
+    onSubmit: async (values, helpers) => {
+      try {
+        if (!state.items.length) {
+          navigate("/cart");
+          return;
+        }
+        const result = await createBooking({
+          guestInfo: values.guestInfo,
+          paymentInfo: values.paymentInfo,
+          specialRequests: values.specialRequests,
+          items: state.items,
+        });
+        clearCart();
+        navigate(`/confirmation/${result.bookingId}`);
+      } catch (e) {
+        console.error("Create booking failed", e);
+        helpers.setSubmitting(false);
+      }
+    },
+  });
+  async function handleNext() {
+    // validate current step only
+    const stepSchema = getStepSchema(activeStep);
+
+    try {
+      await stepSchema.validate(formik.values, { abortEarly: false });
+      setActiveStep((s) => Math.min(s + 1, stepsCount - 1));
+      // clear step errors when moving forward
+      formik.setErrors({});
+    } catch (err) {
+      const nextErrors: Record<string, string> = {};
+      if (err instanceof Yup.ValidationError) {
+        for (const e of err.inner) {
+          if (e.path && !nextErrors[e.path]) nextErrors[e.path] = e.message;
+        }
+      }
+      formik.setErrors(nextErrors);
     }
   }
-  const handleNext = () =>
-    setActiveStep((s) => Math.min(s + 1, stepsCount - 1));
-  const handleBack = () => setActiveStep((s) => Math.max(s - 1, 0));
+
+  function handleBack() {
+    setActiveStep((s) => Math.max(s - 1, 0));
+  }
+
+  const isLastStep = activeStep === stepsCount - 1;
 
   return (
     <Stack spacing={2}>
@@ -60,7 +154,7 @@ export default function CheckoutPage() {
 
       <Stack
         direction={{ xs: "column", md: "row" }}
-        alignItems="flex-start"
+        alignItems="center"
         spacing={10}
       >
         {/* LEFT COLUMN */}
@@ -68,39 +162,53 @@ export default function CheckoutPage() {
           <Card sx={{ borderRadius: 3 }}>
             <CardContent sx={{ p: 2 }}>
               {activeStep === 0 && (
-                <GuestInfoStep value={guestInfo} onChange={setGuestInfo} />
+                <GuestInfoStep
+                  value={formik.values.guestInfo}
+                  onChange={(next) => {
+                    formik.setFieldValue("guestInfo", next);
+                  }}
+                />
               )}
               {activeStep === 1 && (
-                <PaymentStep value={paymentInfo} onChange={setPaymentInfo} />
+                <PaymentStep
+                  value={formik.values.paymentInfo}
+                  onChange={(next) => {
+                    formik.setFieldValue("paymentInfo", next);
+                  }}
+                />
               )}
               {activeStep === 2 && (
                 <SpecialRequestsStep
-                  value={specialRequests}
-                  onChange={setSpecialRequests}
+                  value={formik.values.specialRequests}
+                  onChange={(next) => {
+                    formik.setFieldValue("specialRequests", next);
+                  }}
                 />
               )}
             </CardContent>
           </Card>
 
           <Stack direction="row" justifyContent="space-between">
-            <Button onClick={handleBack} disabled={activeStep === 0}>
+            <Button
+              onClick={handleBack}
+              disabled={activeStep === 0 || formik.isSubmitting}
+            >
               Back
             </Button>
 
             <Button
               variant="contained"
-              onClick={
-                activeStep === stepsCount - 1
-                  ? handleConfirmaBooking
-                  : handleNext
-              }
+              onClick={isLastStep ? () => formik.handleSubmit() : handleNext}
             >
-              {activeStep === stepsCount - 1 ? "Confirm booking" : "Next"}
+              {isLastStep ? "Confirm booking" : "Next"}
             </Button>
           </Stack>
         </Stack>
 
-        <Stack width={{ xs: "100%", md: 380 }}>
+        <Stack
+          width={{ xs: "100%", md: 380 }}
+          sx={{ position: "sticky", top: 100, height: "fit-content" }}
+        >
           <BookingSummaryCard />
         </Stack>
       </Stack>
