@@ -1,4 +1,7 @@
 import { Card, CardContent, Divider, Stack, Typography } from "@mui/material";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PeopleIcon from "@mui/icons-material/People";
+import HotelIcon from "@mui/icons-material/Hotel";
 import { useCart } from "@features/cart/useCart";
 
 function formatMoney(value: number) {
@@ -41,31 +44,64 @@ export default function BookingSummaryCard() {
 
           <Divider />
 
-          <Stack spacing={1}>
+          <Stack spacing={1.5}>
             {items.slice(0, 3).map((item) => (
-              <Stack
-                key={item.id}
-                direction="row"
-                justifyContent="space-between"
-                spacing={2}
-              >
-                <Stack sx={{ minWidth: 0 }}>
-                  <Typography variant="body2" fontWeight={700} noWrap>
-                    {item.hotelName}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" noWrap>
-                    {item.roomType} • {item.numberOfRooms} room
-                    {item.numberOfRooms === 1 ? "" : "s"}
+              <Stack key={item.id} spacing={0.5}>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  spacing={2}
+                >
+                  <Stack sx={{ minWidth: 0 }}>
+                    <Typography variant="body2" fontWeight={700} noWrap>
+                      {item.hotelName}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" noWrap>
+                      {item.roomType} • {item.numberOfRooms} room
+                      {item.numberOfRooms === 1 ? "" : "s"}
+                    </Typography>
+                  </Stack>
+
+                  <Typography
+                    variant="body2"
+                    fontWeight={700}
+                    whiteSpace="nowrap"
+                  >
+                    {formatMoney(
+                      item.pricePerNight * (item.numberOfRooms || 1)
+                    )}
                   </Typography>
                 </Stack>
 
-                <Typography
-                  variant="body2"
-                  fontWeight={700}
-                  whiteSpace="nowrap"
-                >
-                  {formatMoney(item.pricePerNight)}
-                </Typography>
+                <Stack spacing={0.25} sx={{ pl: 0.5 }}>
+                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                    <CalendarMonthIcon
+                      sx={{ fontSize: 14, color: "text.secondary" }}
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      {item.checkInDate} → {item.checkOutDate}
+                    </Typography>
+                  </Stack>
+
+                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                    <PeopleIcon
+                      sx={{ fontSize: 14, color: "text.secondary" }}
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      {item.adults} adult{item.adults !== 1 ? "s" : ""} •{" "}
+                      {item.children} child
+                      {item.children !== 1 ? "ren" : ""}
+                    </Typography>
+                  </Stack>
+
+                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                    <HotelIcon sx={{ fontSize: 14, color: "text.secondary" }} />
+                    <Typography variant="caption" color="text.secondary">
+                      {item.numberOfRooms} room
+                      {item.numberOfRooms !== 1 ? "s" : ""}
+                    </Typography>
+                  </Stack>
+                </Stack>
               </Stack>
             ))}
 

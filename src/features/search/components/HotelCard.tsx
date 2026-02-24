@@ -6,41 +6,33 @@ import {
   Stack,
   Chip,
   Box,
-  Button,
   CardActionArea,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PeopleIcon from "@mui/icons-material/People";
+import HotelIcon from "@mui/icons-material/Hotel";
 import type { HotelSearchItem } from "../types/types";
-import { useCart } from "@features/cart/useCart";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 type Props = {
   hotel: HotelSearchItem;
 };
 
 export default function HotelCard({ hotel }: Props) {
   const navigate = useNavigate();
-  const { addItem } = useCart();
+  const [searchParams] = useSearchParams();
+
+  const checkIn = searchParams.get("checkInDate") ?? "";
+  const checkOut = searchParams.get("checkOutDate") ?? "";
+  const adults = Number(searchParams.get("adults") ?? 2);
+  const children = Number(searchParams.get("children") ?? 0);
+  const rooms = Number(searchParams.get("numberOfRooms") ?? 1);
+
   const onCardClick = () => {
-    navigate(`/hotels/${hotel.hotelId}`);
+    navigate(`/hotels/${hotel.hotelId}?${searchParams.toString()}`);
   };
-  const onAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation(); // prevent card click navigation
-    addItem({
-      hotelId: hotel.hotelId,
-      hotelName: hotel.hotelName,
-      cityName: hotel.cityName,
-      starRating: hotel.starRating,
-      roomType: hotel.roomType,
-      roomPhotoUrl: hotel.roomPhotoUrl,
-      checkInDate: hotel.checkInDate,
-      checkOutDate: hotel.checkOutDate,
-      adults: hotel.numberOfAdults,
-      children: hotel.numberOfChildren,
-      numberOfRooms: hotel.numberOfRooms,
-      pricePerNight: hotel.roomPrice,
-      discount: hotel.discount,
-    });
-  };
+
   return (
     <Card
       sx={{
@@ -77,6 +69,35 @@ export default function HotelCard({ hotel }: Props) {
               <Typography variant="body2" color="text.secondary">
                 {hotel.roomType} • {hotel.cityName}
               </Typography>
+
+              {checkIn && checkOut && (
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <CalendarMonthIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    {checkIn} → {checkOut}
+                  </Typography>
+                </Stack>
+              )}
+
+              <Stack direction="row" spacing={2}>
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <PeopleIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                  <Typography variant="body2" color="text.secondary">
+                    {adults} adult{adults !== 1 ? "s" : ""}
+                    {children > 0 &&
+                      ` • ${children} child${children !== 1 ? "ren" : ""}`}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <HotelIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                  <Typography variant="body2" color="text.secondary">
+                    {rooms} room{rooms !== 1 ? "s" : ""}
+                  </Typography>
+                </Stack>
+              </Stack>
+
               {hotel.discount > 0 && (
                 <Box>
                   <Chip
@@ -86,11 +107,6 @@ export default function HotelCard({ hotel }: Props) {
                   />
                 </Box>
               )}
-              <Box sx={{ pt: 1 }}>
-                <Button variant="contained" size="small" onClick={onAddToCart}>
-                  Add to Cart
-                </Button>
-              </Box>
             </Stack>
           </CardContent>
         </Stack>
