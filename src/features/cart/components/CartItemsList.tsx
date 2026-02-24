@@ -7,6 +7,9 @@ import {
   Rating,
   IconButton,
 } from "@mui/material";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PeopleIcon from "@mui/icons-material/People";
+import HotelIcon from "@mui/icons-material/Hotel";
 import { useCart } from "../useCart";
 import DeleteIcon from "@mui/icons-material/Delete";
 export default function CartItemsList() {
@@ -60,9 +63,31 @@ export default function CartItemsList() {
                   {item.roomType} • {item.cityName}
                 </Typography>
 
-                <Typography variant="body2" color="text.secondary">
-                  {item.checkInDate} → {item.checkOutDate}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <CalendarMonthIcon
+                    sx={{ fontSize: 16, color: "text.secondary" }}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    {item.checkInDate} → {item.checkOutDate}
+                  </Typography>
+                </Stack>
+
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <PeopleIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                  <Typography variant="body2" color="text.secondary">
+                    {item.adults} adult{item.adults !== 1 ? "s" : ""} •{" "}
+                    {item.children} child
+                    {item.children !== 1 ? "ren" : ""}
+                  </Typography>
+                </Stack>
+
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <HotelIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                  <Typography variant="body2" color="text.secondary">
+                    {item.numberOfRooms} room
+                    {item.numberOfRooms !== 1 ? "s" : ""}
+                  </Typography>
+                </Stack>
               </Stack>
 
               <Stack
@@ -71,7 +96,17 @@ export default function CartItemsList() {
                 alignItems="center"
               >
                 <Typography variant="h6" fontWeight={900}>
-                  ${item.pricePerNight} / night
+                  ${item.pricePerNight * (item.numberOfRooms || 1)} / night
+                  {item.numberOfRooms > 1 && (
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ ml: 0.5 }}
+                    >
+                      ({item.numberOfRooms} × ${item.pricePerNight})
+                    </Typography>
+                  )}
                 </Typography>
 
                 <IconButton

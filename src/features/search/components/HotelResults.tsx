@@ -30,17 +30,6 @@ export default function HotelResults() {
         const results = await fetchSearchResults(
           {
             city: searchParams.get("city") ?? undefined,
-            checkInDate: searchParams.get("checkInDate") ?? undefined,
-            checkOutDate: searchParams.get("checkOutDate") ?? undefined,
-            adults: searchParams.get("adults")
-              ? Number(searchParams.get("adults"))
-              : undefined,
-            children: searchParams.get("children")
-              ? Number(searchParams.get("children"))
-              : undefined,
-            numberOfRooms: searchParams.get("numberOfRooms")
-              ? Number(searchParams.get("numberOfRooms"))
-              : undefined,
           },
           controller.signal
         );
