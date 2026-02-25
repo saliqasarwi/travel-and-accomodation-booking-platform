@@ -1,3 +1,86 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
+import HomeRounded from "@mui/icons-material/HomeRounded";
+import { getBookingDetails } from "../api/confirmation.api";
+import type { BookingApiResponse } from "../types/confirmation.types";
 export default function ConfirmationPage() {
-  return <h1>Confirmation</h1>;
+  const { bookingId } = useParams();
+  const navigate = useNavigate();
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [booking, setBooking] = useState<BookingApiResponse | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+
+    async function run() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const id = Number(bookingId);
+        if (!bookingId || Number.isNaN(id))
+          throw new Error("Invalid booking id");
+
+        const data = await getBookingDetails(id);
+        if (!alive) return;
+
+        setBooking(data);
+      } catch (e) {
+        if (!alive) return;
+        setError(e instanceof Error ? e.message : "Failed to load booking");
+      } finally {
+        if (alive) setLoading(false);
+      }
+    }
+
+    run();
+    return () => {
+      alive = false;
+    };
+  }, [bookingId]);
+
+  if (loading) {
+    return (
+      <Stack alignItems="center" mt={6} spacing={2}>
+        <CircularProgress />
+        <Typography color="text.secondary">Loading confirmation…</Typography>
+      </Stack>
+    );
+  }
+
+  if (error || !booking) {
+    return (
+      <Stack spacing={2} mt={3}>
+        <Alert severity="error">{error ?? "Booking not found"}</Alert>
+        <Button
+          startIcon={<HomeRounded />}
+          variant="contained"
+          onClick={() => navigate("/")}
+          sx={{ width: "fit-content" }}
+        >
+          Back to Home
+        </Button>
+      </Stack>
+    );
+  }
+
+  return (
+    <Stack spacing={3}>
+      <div ref={printRef} data-print-root>
+        <Typography variant="h5" fontWeight={900}>
+          Booking confirmed
+        </Typography>
+      </div>
+    </Stack>
+  );
 }
