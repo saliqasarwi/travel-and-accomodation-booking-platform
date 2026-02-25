@@ -15,6 +15,9 @@ import ConfirmationHeaderCard from "../components/ConfirmationHeaderCard";
 import HotelRoomsCard from "../components/HotelRoomsCard";
 import GuestInfoCard from "../components/GuestInfoCard";
 import SpecialRequestsCard from "../components/SpecialRequestCard";
+import { calculateBookingTotals } from "../utils/booking.utils";
+import TotalsCard from "../components/TotalsCard";
+
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
@@ -79,6 +82,10 @@ export default function ConfirmationPage() {
     );
   }
 
+  const { subtotal, discounts, total } = calculateBookingTotals(
+    booking.request.items
+  );
+
   return (
     <Stack spacing={3} sx={{ width: "100%" }}>
       <div ref={printRef} data-print-root>
@@ -96,6 +103,7 @@ export default function ConfirmationPage() {
           <HotelRoomsCard items={booking.request.items} />
           <GuestInfoCard guest={booking.request.guestInfo} />
           <SpecialRequestsCard notes={booking.request.specialRequests} />
+          <TotalsCard subtotal={subtotal} discounts={discounts} total={total} />
         </Grid>
       </div>
     </Stack>
