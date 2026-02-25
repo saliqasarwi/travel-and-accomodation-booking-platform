@@ -19,7 +19,7 @@ import SpecialRequestsCard from "../components/SpecialRequestCard";
 import { calculateBookingTotals } from "../utils/booking.utils";
 import TotalsCard from "../components/TotalsCard";
 import { printBookingDocument } from "../components/printBookingDocument";
-
+import HomeIcon from "@mui/icons-material/Home";
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
@@ -89,25 +89,6 @@ export default function ConfirmationPage() {
 
   return (
     <Stack spacing={3} sx={{ width: "100%" }}>
-      <div>
-        <Grid
-          container
-          display="grid"
-          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
-          gap={4}
-        >
-          <ConfirmationHeaderCard
-            confirmationNumber={booking.confirmationNumber}
-            status={booking.bookingStatus}
-            createdAt={booking.createdAt}
-          />
-          <HotelRoomsCard items={booking.request.items} />
-          <GuestInfoCard guest={booking.request.guestInfo} />
-          <SpecialRequestsCard notes={booking.request.specialRequests} />
-          <TotalsCard subtotal={subtotal} discounts={discounts} total={total} />
-        </Grid>
-      </div>
-
       <Stack direction="row" spacing={2} justifyContent="flex-end">
         <Button
           variant="outlined"
@@ -116,7 +97,31 @@ export default function ConfirmationPage() {
         >
           Print Booking
         </Button>
+        <Button
+          variant="outlined"
+          startIcon={<HomeIcon />}
+          onClick={() => navigate("/")}
+        >
+          Back to Home
+        </Button>
       </Stack>
+
+      <Grid
+        container
+        display="grid"
+        gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+        gap={4}
+      >
+        <ConfirmationHeaderCard
+          confirmationNumber={booking.confirmationNumber}
+          status={booking.bookingStatus}
+          createdAt={booking.createdAt}
+        />
+        <HotelRoomsCard items={booking.request.items} />
+        <GuestInfoCard guest={booking.request.guestInfo} />
+        <SpecialRequestsCard notes={booking.request.specialRequests} />
+        <TotalsCard subtotal={subtotal} discounts={discounts} total={total} />
+      </Grid>
     </Stack>
   );
 }
