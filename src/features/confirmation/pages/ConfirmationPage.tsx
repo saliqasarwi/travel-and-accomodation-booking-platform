@@ -12,6 +12,7 @@ import { getBookingDetails } from "../api/confirmation.api";
 import type { BookingApiResponse } from "../types/confirmation.types";
 import ConfirmationHeaderCard from "../components/ConfirmationHeaderCard";
 import HotelRoomsCard from "../components/HotelRoomsCard";
+import GuestInfoCard from "../components/GuestInfoCard";
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
@@ -86,6 +87,7 @@ export default function ConfirmationPage() {
             createdAt={booking.createdAt}
           />
           <HotelRoomsCard items={booking.request.items} />
+          <GuestInfoCard guest={booking.request.guestInfo} />
         </Stack>
       </div>
     </Stack>
