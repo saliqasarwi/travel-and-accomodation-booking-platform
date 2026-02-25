@@ -4,6 +4,7 @@ import {
   Alert,
   Button,
   CircularProgress,
+  Grid,
   Stack,
   Typography,
 } from "@mui/material";
@@ -13,6 +14,7 @@ import type { BookingApiResponse } from "../types/confirmation.types";
 import ConfirmationHeaderCard from "../components/ConfirmationHeaderCard";
 import HotelRoomsCard from "../components/HotelRoomsCard";
 import GuestInfoCard from "../components/GuestInfoCard";
+import SpecialRequestsCard from "../components/SpecialRequestCard";
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
@@ -80,7 +82,12 @@ export default function ConfirmationPage() {
   return (
     <Stack spacing={3} sx={{ width: "100%" }}>
       <div ref={printRef} data-print-root>
-        <Stack direction="column" spacing={5}>
+        <Grid
+          container
+          display="grid"
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          gap={4}
+        >
           <ConfirmationHeaderCard
             confirmationNumber={booking.confirmationNumber}
             status={booking.bookingStatus}
@@ -88,7 +95,8 @@ export default function ConfirmationPage() {
           />
           <HotelRoomsCard items={booking.request.items} />
           <GuestInfoCard guest={booking.request.guestInfo} />
-        </Stack>
+          <SpecialRequestsCard notes={booking.request.specialRequests} />
+        </Grid>
       </div>
     </Stack>
   );
