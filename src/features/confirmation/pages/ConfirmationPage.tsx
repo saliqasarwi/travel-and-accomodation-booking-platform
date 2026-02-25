@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Alert,
@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import HomeRounded from "@mui/icons-material/HomeRounded";
+import PrintRounded from "@mui/icons-material/PrintRounded";
 import { getBookingDetails } from "../api/confirmation.api";
 import type { BookingApiResponse } from "../types/confirmation.types";
 import ConfirmationHeaderCard from "../components/ConfirmationHeaderCard";
@@ -17,11 +18,11 @@ import GuestInfoCard from "../components/GuestInfoCard";
 import SpecialRequestsCard from "../components/SpecialRequestCard";
 import { calculateBookingTotals } from "../utils/booking.utils";
 import TotalsCard from "../components/TotalsCard";
+import { printBookingDocument } from "../components/printBookingDocument";
 
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
-  const printRef = useRef<HTMLDivElement>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -88,7 +89,7 @@ export default function ConfirmationPage() {
 
   return (
     <Stack spacing={3} sx={{ width: "100%" }}>
-      <div ref={printRef} data-print-root>
+      <div>
         <Grid
           container
           display="grid"
@@ -106,6 +107,16 @@ export default function ConfirmationPage() {
           <TotalsCard subtotal={subtotal} discounts={discounts} total={total} />
         </Grid>
       </div>
+
+      <Stack direction="row" spacing={2} justifyContent="flex-end">
+        <Button
+          variant="outlined"
+          startIcon={<PrintRounded />}
+          onClick={() => printBookingDocument(booking)}
+        >
+          Print Booking
+        </Button>
+      </Stack>
     </Stack>
   );
 }
