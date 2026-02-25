@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { CheckCircleRounded } from "@mui/icons-material";
+import { formatDate } from "../utils/formatters";
 
 type Props = {
   confirmationNumber: string;
@@ -64,7 +65,9 @@ export default function ConfirmationHeaderCard({
                 <Typography variant="caption" color="text.secondary">
                   Created
                 </Typography>
-                <Typography fontWeight={700}>{createdAt}</Typography>
+                <Typography fontWeight={700}>
+                  {formatDate(createdAt)}
+                </Typography>
               </Stack>
             </Stack>
           </Stack>
