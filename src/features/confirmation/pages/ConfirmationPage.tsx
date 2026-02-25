@@ -11,6 +11,7 @@ import HomeRounded from "@mui/icons-material/HomeRounded";
 import { getBookingDetails } from "../api/confirmation.api";
 import type { BookingApiResponse } from "../types/confirmation.types";
 import ConfirmationHeaderCard from "../components/ConfirmationHeaderCard";
+import HotelRoomsCard from "../components/HotelRoomsCard";
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
@@ -78,11 +79,14 @@ export default function ConfirmationPage() {
   return (
     <Stack spacing={3} sx={{ width: "100%" }}>
       <div ref={printRef} data-print-root>
-        <ConfirmationHeaderCard
-          confirmationNumber={booking.confirmationNumber}
-          status={booking.bookingStatus}
-          createdAt={booking.createdAt}
-        />
+        <Stack direction="column" spacing={5}>
+          <ConfirmationHeaderCard
+            confirmationNumber={booking.confirmationNumber}
+            status={booking.bookingStatus}
+            createdAt={booking.createdAt}
+          />
+          <HotelRoomsCard items={booking.request.items} />
+        </Stack>
       </div>
     </Stack>
   );
