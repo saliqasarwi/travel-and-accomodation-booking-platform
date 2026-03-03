@@ -23,7 +23,7 @@ export default function AdminLayout() {
   const { userType, logout } = useAuth();
   const [open, setOpen] = useState(true);
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", minHeight: "100vh", width: "100%" }}>
       <AppBar
         position="fixed"
         sx={{
@@ -97,7 +97,7 @@ export default function AdminLayout() {
         </List>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, minWidth: 0 }}>
         <Toolbar />
         <Outlet />
       </Box>
