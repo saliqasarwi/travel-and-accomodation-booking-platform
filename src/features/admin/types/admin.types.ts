@@ -20,8 +20,9 @@ export interface HotelRow {
   hotelName: string;
 
   starRating?: number;
-  owner?: string;
-  roomNumber?: number;
+  description?: string;
+  availableRooms?: number;
+  location?: string;
   createdAt?: string;
   modifiedAt?: string;
 }
@@ -48,9 +49,10 @@ export interface CityFormValues {
 
 export interface HotelFormValues {
   hotelName: string;
-  city?: string;
-  owner?: string;
+  description?: string;
   starRating?: number;
+  availableRooms?: number;
+  location?: string;
 }
 
 export interface RoomFormValues {
