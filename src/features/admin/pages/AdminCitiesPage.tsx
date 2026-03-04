@@ -97,8 +97,8 @@ export default function AdminCitiesPage() {
         minWidth: 160,
       },
       { field: "numberOfHotels", headerName: "# Hotels", width: 110 },
-      { field: "createdAt", headerName: "Created", flex: 1, minWidth: 160 },
-      { field: "modifiedAt", headerName: "Modified", flex: 1, minWidth: 160 },
+      { field: "createdAt", headerName: "Created", flex: 1, minWidth: 170 },
+      { field: "modifiedAt", headerName: "Modified", flex: 1, minWidth: 170 },
       {
         field: "actions",
         headerName: "Actions",
