@@ -1,12 +1,17 @@
+import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { Stack, TextField, Button } from "@mui/material";
 import type { HotelFormValues } from "../../types/admin.types";
+import type { FormikProps } from "formik";
 
 type Props = {
   initialValues: HotelFormValues;
   onSubmit: (values: HotelFormValues) => void | Promise<void>;
   submitLabel?: string;
+
+  //  allow drawer to submit from outside
+  innerRef?: React.Ref<FormikProps<HotelFormValues>>;
 };
 
 const hotelSchema = Yup.object({
@@ -29,9 +34,11 @@ export default function HotelForm({
   initialValues,
   onSubmit,
   submitLabel = "Save",
+  innerRef,
 }: Props) {
   return (
-    <Formik
+    <Formik<HotelFormValues>
+      innerRef={innerRef}
       initialValues={initialValues}
       validationSchema={hotelSchema}
       onSubmit={onSubmit}
@@ -75,9 +82,7 @@ export default function HotelForm({
               name="starRating"
               label="Star Rating"
               type="number"
-              slotProps={{
-                htmlInput: { min: 1, max: 5 },
-              }}
+              slotProps={{ htmlInput: { min: 1, max: 5 } }}
               value={values.starRating ?? ""}
               onBlur={handleBlur}
               onChange={(e) =>
@@ -95,9 +100,7 @@ export default function HotelForm({
               name="availableRooms"
               label="Available Rooms"
               type="number"
-              slotProps={{
-                htmlInput: { min: 0 },
-              }}
+              slotProps={{ htmlInput: { min: 0 } }}
               value={values.availableRooms ?? ""}
               onBlur={handleBlur}
               onChange={(e) =>
@@ -113,6 +116,7 @@ export default function HotelForm({
               fullWidth
             />
 
+            {/* optional in-form submit */}
             <Button type="submit" variant="contained" disabled={isSubmitting}>
               {submitLabel}
             </Button>

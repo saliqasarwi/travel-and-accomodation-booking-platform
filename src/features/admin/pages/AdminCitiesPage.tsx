@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import {
   DataGrid,
@@ -8,8 +8,15 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import AdminToolbar from "../components/AdminToolbar";
-import { getCities, deleteCity } from "../api/admin.api";
-import type { CityRow } from "../types/admin.types";
+import AdminEntityDrawer from "../components/AdminEntityDrawer";
+
+import {
+  getCities,
+  deleteCity,
+  createCity,
+  updateCity,
+} from "../api/admin.api";
+import type { CityFormValues, CityRow } from "../types/admin.types";
 
 const ALL_VISIBLE: GridColumnVisibilityModel = {
   name: true,
@@ -21,40 +28,53 @@ const ALL_VISIBLE: GridColumnVisibilityModel = {
   actions: true,
 };
 
+const EMPTY_CITY: CityFormValues = {
+  name: "",
+  country: "",
+  postOffice: "",
+  numberOfHotels: undefined,
+};
+
 export default function AdminCitiesPage() {
   const [rows, setRows] = useState<CityRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
+  //  drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [drawerInitialValues, setDrawerInitialValues] =
+    useState<CityFormValues>(EMPTY_CITY);
+  const [saving, setSaving] = useState(false);
+
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // < 600
-  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600-899
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   const [colVisibility, setColVisibility] =
     useState<GridColumnVisibilityModel>(ALL_VISIBLE);
 
-  const fetchCities = async () => {
+  const fetchCities = useCallback(async () => {
     try {
       setLoading(true);
+
       const data = await getCities(
         searchValue ? { name: searchValue } : undefined
       );
+
       setRows(data);
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchValue]);
 
-  // fetch once
   useEffect(() => {
     fetchCities();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchCities]);
 
-  // responsive visibility model (mobile/tablet/desktop)
   useEffect(() => {
     if (isMobile) {
-      // Mobile: only name + actions
       setColVisibility({
         ...ALL_VISIBLE,
         country: false,
@@ -67,7 +87,6 @@ export default function AdminCitiesPage() {
     }
 
     if (isTablet) {
-      // Tablet: name + country + #hotels + actions
       setColVisibility({
         ...ALL_VISIBLE,
         postOffice: false,
@@ -77,13 +96,52 @@ export default function AdminCitiesPage() {
       return;
     }
 
-    // Desktop: all columns
     setColVisibility(ALL_VISIBLE);
   }, [isMobile, isTablet]);
 
-  const handleDelete = async (id: number) => {
-    await deleteCity(id);
-    fetchCities();
+  const handleDelete = useCallback(
+    async (id: number) => {
+      await deleteCity(id);
+      fetchCities();
+    },
+    [fetchCities]
+  );
+
+  const openCreate = () => {
+    setDrawerMode("create");
+    setSelectedId(null);
+    setDrawerInitialValues(EMPTY_CITY);
+    setDrawerOpen(true);
+  };
+
+  const openEdit = (row: CityRow) => {
+    setDrawerMode("edit");
+    setSelectedId(row.id);
+    setDrawerInitialValues({
+      name: row.name ?? "",
+      country: row.country ?? "",
+      postOffice: row.postOffice ?? "",
+      numberOfHotels: row.numberOfHotels,
+    });
+    setDrawerOpen(true);
+  };
+
+  const handleSubmit = async (values: CityFormValues) => {
+    try {
+      setSaving(true);
+
+      if (drawerMode === "create") {
+        await createCity(values);
+      } else {
+        if (selectedId == null) return;
+        await updateCity(selectedId, values);
+      }
+
+      setDrawerOpen(false);
+      await fetchCities();
+    } finally {
+      setSaving(false);
+    }
   };
 
   const columns: GridColDef[] = useMemo(
@@ -106,13 +164,19 @@ export default function AdminCitiesPage() {
         sortable: false,
         filterable: false,
         renderCell: (params) => (
-          <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
+          <IconButton
+            color="error"
+            onClick={(e) => {
+              e.stopPropagation(); // prevent row click opening edit
+              handleDelete(params.row.id);
+            }}
+          >
             <DeleteIcon />
           </IconButton>
         ),
       },
     ],
-    []
+    [handleDelete]
   );
 
   return (
@@ -122,16 +186,14 @@ export default function AdminCitiesPage() {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         onSearchSubmit={fetchCities}
-        onCreateClick={() => console.log("Open create city form")}
+        onCreateClick={openCreate}
       />
 
-      {/* DataGrid needs a height (or autoHeight) */}
       <Box
         sx={{
           mt: 3,
           width: "100%",
           minWidth: 0,
-          height: { xs: 420, sm: 520, md: 620 },
         }}
       >
         <DataGrid
@@ -147,11 +209,23 @@ export default function AdminCitiesPage() {
           density={isMobile ? "compact" : "standard"}
           rowHeight={isMobile ? 36 : 52}
           columnHeaderHeight={isMobile ? 40 : 56}
+          onRowClick={(params) => openEdit(params.row as CityRow)} //  edit on row click
           sx={{
             "& .MuiDataGrid-cell": { py: isMobile ? 0.5 : 1 },
           }}
         />
       </Box>
+
+      <AdminEntityDrawer
+        open={drawerOpen}
+        mode={drawerMode}
+        entity="cities"
+        title={drawerMode === "create" ? "Create City" : "Edit City"}
+        initialValues={drawerInitialValues}
+        onClose={() => setDrawerOpen(false)}
+        onSubmit={handleSubmit}
+        saving={saving}
+      />
     </Box>
   );
 }

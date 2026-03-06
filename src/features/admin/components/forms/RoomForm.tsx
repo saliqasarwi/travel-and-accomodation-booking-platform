@@ -1,3 +1,4 @@
+import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -8,11 +9,15 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import type { RoomFormValues } from "../../types/admin.types";
+import type { FormikProps } from "formik";
 
 type Props = {
   initialValues: RoomFormValues;
   onSubmit: (values: RoomFormValues) => void | Promise<void>;
   submitLabel?: string;
+
+  // ✅ allow drawer to submit from outside
+  innerRef?: React.Ref<FormikProps<RoomFormValues>>;
 };
 
 const roomSchema = Yup.object({
@@ -38,9 +43,11 @@ export default function RoomForm({
   initialValues,
   onSubmit,
   submitLabel = "Save",
+  innerRef,
 }: Props) {
   return (
-    <Formik
+    <Formik<RoomFormValues>
+      innerRef={innerRef}
       initialValues={initialValues}
       validationSchema={roomSchema}
       onSubmit={onSubmit}
@@ -77,7 +84,7 @@ export default function RoomForm({
               name="adultCapacity"
               label="Adults"
               type="number"
-              inputProps={{ min: 0 }}
+              slotProps={{ htmlInput: { min: 0 } }}
               value={values.adultCapacity ?? ""}
               onBlur={handleBlur}
               onChange={(e) =>
@@ -97,9 +104,7 @@ export default function RoomForm({
               name="childrenCapacity"
               label="Children"
               type="number"
-              slotProps={{
-                htmlInput: { min: 0 },
-              }}
+              slotProps={{ htmlInput: { min: 0 } }}
               value={values.childrenCapacity ?? ""}
               onBlur={handleBlur}
               onChange={(e) =>
@@ -130,6 +135,7 @@ export default function RoomForm({
               label="Available"
             />
 
+            {/* optional in-form submit */}
             <Button type="submit" variant="contained" disabled={isSubmitting}>
               {submitLabel}
             </Button>

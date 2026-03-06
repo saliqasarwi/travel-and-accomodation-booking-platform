@@ -1,18 +1,39 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, IconButton, Rating } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import AdminToolbar from "../components/AdminToolbar";
-import { getHotels, deleteHotel } from "../api/admin.api";
-import type { HotelRow } from "../types/admin.types";
+import AdminEntityDrawer from "../components/AdminEntityDrawer";
+
+import {
+  getHotels,
+  deleteHotel,
+  createHotel,
+  updateHotel,
+} from "../api/admin.api";
+import type { HotelFormValues, HotelRow } from "../types/admin.types";
+
+const EMPTY_HOTEL: HotelFormValues = {
+  hotelName: "",
+  location: "",
+  starRating: undefined,
+  availableRooms: undefined,
+};
 
 export default function AdminHotelsPage() {
   const [rows, setRows] = useState<HotelRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const fetchHotels = async () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [drawerInitialValues, setDrawerInitialValues] =
+    useState<HotelFormValues>(EMPTY_HOTEL);
+  const [saving, setSaving] = useState(false);
+
+  const fetchHotels = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getHotels(
@@ -22,15 +43,52 @@ export default function AdminHotelsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchValue]);
 
   useEffect(() => {
     fetchHotels();
-  }, []);
+  }, [fetchHotels]);
 
   const handleDelete = async (id: number) => {
     await deleteHotel(id);
     fetchHotels();
+  };
+
+  const openCreate = () => {
+    setDrawerMode("create");
+    setSelectedId(null);
+    setDrawerInitialValues(EMPTY_HOTEL);
+    setDrawerOpen(true);
+  };
+
+  const openEdit = (row: HotelRow) => {
+    setDrawerMode("edit");
+    setSelectedId(row.id);
+    setDrawerInitialValues({
+      hotelName: row.hotelName ?? "",
+      location: row.location ?? "",
+      starRating: row.starRating,
+      availableRooms: row.availableRooms,
+    });
+    setDrawerOpen(true);
+  };
+
+  const handleSubmit = async (values: HotelFormValues) => {
+    try {
+      setSaving(true);
+
+      if (drawerMode === "create") {
+        await createHotel(values);
+      } else {
+        if (selectedId == null) return;
+        await updateHotel(selectedId, values);
+      }
+
+      setDrawerOpen(false);
+      await fetchHotels();
+    } finally {
+      setSaving(false);
+    }
   };
 
   const columns: GridColDef[] = [
@@ -61,22 +119,27 @@ export default function AdminHotelsPage() {
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
+        <IconButton
+          color="error"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete(params.row.id);
+          }}
+        >
           <DeleteIcon />
         </IconButton>
       ),
     },
   ];
+
   return (
-    <Box>
+    <Box sx={{ width: "100%" }}>
       <AdminToolbar
         title="Hotels"
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         onSearchSubmit={fetchHotels}
-        onCreateClick={() => {
-          console.log("Open create hotel form");
-        }}
+        onCreateClick={openCreate}
       />
 
       <Box sx={{ mt: 3, width: "100%" }}>
@@ -88,8 +151,20 @@ export default function AdminHotelsPage() {
           initialState={{
             pagination: { paginationModel: { pageSize: 5, page: 0 } },
           }}
+          onRowClick={(params) => openEdit(params.row as HotelRow)}
         />
       </Box>
+
+      <AdminEntityDrawer
+        open={drawerOpen}
+        mode={drawerMode}
+        entity="hotels"
+        title={drawerMode === "create" ? "Create Hotel" : "Edit Hotel"}
+        initialValues={drawerInitialValues}
+        onClose={() => setDrawerOpen(false)}
+        onSubmit={handleSubmit}
+        saving={saving}
+      />
     </Box>
   );
 }

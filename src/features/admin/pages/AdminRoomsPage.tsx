@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -12,7 +12,7 @@ export default function AdminRoomsPage() {
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const fetchRooms = async () => {
+  const fetchRooms = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getRooms(
@@ -22,11 +22,11 @@ export default function AdminRoomsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchValue]);
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+  }, [fetchRooms]);
 
   const handleDelete = async (roomId: number) => {
     await deleteRoom(roomId);

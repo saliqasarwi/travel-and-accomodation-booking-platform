@@ -1,12 +1,17 @@
+import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { Stack, TextField, Button } from "@mui/material";
 import type { CityFormValues } from "../../types/admin.types";
+import type { FormikProps } from "formik";
 
 type Props = {
   initialValues: CityFormValues;
   onSubmit: (values: CityFormValues) => void | Promise<void>;
   submitLabel?: string;
+
+  // allow drawer to submit from outside
+  innerRef?: React.Ref<FormikProps<CityFormValues>>;
 };
 
 const citySchema = Yup.object({
@@ -24,9 +29,11 @@ export default function CityForm({
   initialValues,
   onSubmit,
   submitLabel = "Save",
+  innerRef,
 }: Props) {
   return (
-    <Formik
+    <Formik<CityFormValues>
+      innerRef={innerRef}
       initialValues={initialValues}
       validationSchema={citySchema}
       onSubmit={onSubmit}
@@ -81,9 +88,7 @@ export default function CityForm({
               name="numberOfHotels"
               label="Number of Hotels"
               type="number"
-              slotProps={{
-                htmlInput: { min: 0 },
-              }}
+              slotProps={{ htmlInput: { min: 0 } }}
               value={values.numberOfHotels ?? ""}
               onBlur={handleBlur}
               onChange={(e) =>
@@ -98,7 +103,6 @@ export default function CityForm({
               }
               fullWidth
             />
-
             <Button type="submit" variant="contained" disabled={isSubmitting}>
               {submitLabel}
             </Button>
