@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, IconButton, Rating } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,7 +13,7 @@ import {
   updateHotel,
 } from "../api/admin.api";
 import type { HotelFormValues, HotelRow } from "../types/admin.types";
-
+import { useSearchParams } from "react-router-dom";
 const EMPTY_HOTEL: HotelFormValues = {
   hotelName: "",
   location: "",
@@ -24,8 +24,8 @@ const EMPTY_HOTEL: HotelFormValues = {
 export default function AdminHotelsPage() {
   const [rows, setRows] = useState<HotelRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchValue = searchParams.get("hotelName") ?? "";
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -33,21 +33,19 @@ export default function AdminHotelsPage() {
     useState<HotelFormValues>(EMPTY_HOTEL);
   const [saving, setSaving] = useState(false);
 
-  const fetchHotels = useCallback(async () => {
+  const fetchHotels = async () => {
     try {
       setLoading(true);
-      const data = await getHotels(
-        searchValue ? { hotelName: searchValue } : undefined
-      );
+      const hotelName = searchParams.get("hotelName") ?? undefined;
+      const data = await getHotels(hotelName ? { hotelName } : undefined);
       setRows(data);
     } finally {
       setLoading(false);
     }
-  }, [searchValue]);
-
+  };
   useEffect(() => {
     fetchHotels();
-  }, [fetchHotels]);
+  }, [searchParams]);
 
   const handleDelete = async (id: number) => {
     await deleteHotel(id);
@@ -137,8 +135,15 @@ export default function AdminHotelsPage() {
       <AdminToolbar
         title="Hotels"
         searchValue={searchValue}
-        onSearchChange={setSearchValue}
-        onSearchSubmit={fetchHotels}
+        onSearchChange={(value) => {
+          setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            if (value) next.set("hotelName", value);
+            else next.delete("hotelName");
+            return next;
+          });
+        }}
+        onSearchSubmit={() => {}}
         onCreateClick={openCreate}
       />
 

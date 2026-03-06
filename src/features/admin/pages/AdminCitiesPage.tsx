@@ -17,7 +17,7 @@ import {
   updateCity,
 } from "../api/admin.api";
 import type { CityFormValues, CityRow } from "../types/admin.types";
-
+import { useSearchParams } from "react-router-dom";
 const ALL_VISIBLE: GridColumnVisibilityModel = {
   name: true,
   country: true,
@@ -38,8 +38,8 @@ const EMPTY_CITY: CityFormValues = {
 export default function AdminCitiesPage() {
   const [rows, setRows] = useState<CityRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchValue = searchParams.get("name") ?? "";
   //  drawer state
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
@@ -55,23 +55,20 @@ export default function AdminCitiesPage() {
   const [colVisibility, setColVisibility] =
     useState<GridColumnVisibilityModel>(ALL_VISIBLE);
 
-  const fetchCities = useCallback(async () => {
+  const fetchCities = async () => {
     try {
       setLoading(true);
-
-      const data = await getCities(
-        searchValue ? { name: searchValue } : undefined
-      );
-
+      const cityName = searchParams.get("name") ?? undefined;
+      const data = await getCities(cityName ? { name: cityName } : undefined);
       setRows(data);
     } finally {
       setLoading(false);
     }
-  }, [searchValue]);
+  };
 
   useEffect(() => {
     fetchCities();
-  }, [fetchCities]);
+  }, [searchParams]);
 
   useEffect(() => {
     if (isMobile) {
@@ -184,8 +181,15 @@ export default function AdminCitiesPage() {
       <AdminToolbar
         title="Cities"
         searchValue={searchValue}
-        onSearchChange={setSearchValue}
-        onSearchSubmit={fetchCities}
+        onSearchChange={(value) => {
+          setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            if (value) next.set("name", value);
+            else next.delete("name");
+            return next;
+          });
+        }}
+        onSearchSubmit={() => {}}
         onCreateClick={openCreate}
       />
 

@@ -1,36 +1,90 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AdminToolbar from "../components/AdminToolbar";
-import { getRooms, deleteRoom } from "../api/admin.api";
-import type { RoomRow } from "../types/admin.types";
+import AdminEntityDrawer from "../components/AdminEntityDrawer";
+import { getRooms, deleteRoom, createRoom, updateRoom } from "../api/admin.api";
+import type { RoomFormValues, RoomRow } from "../types/admin.types";
 import Chip from "@mui/material/Chip";
+import { useSearchParams } from "react-router-dom";
+
+const EMPTY_ROOM: RoomFormValues = {
+  roomNumber: undefined,
+  adultCapacity: undefined,
+  childrenCapacity: undefined,
+  availability: false,
+};
 
 export default function AdminRoomsPage() {
   const [rows, setRows] = useState<RoomRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchValue = searchParams.get("roomNumber") ?? "";
 
-  const fetchRooms = useCallback(async () => {
+  // drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [drawerInitialValues, setDrawerInitialValues] =
+    useState<RoomFormValues>(EMPTY_ROOM);
+  const [saving, setSaving] = useState(false);
+
+  const fetchRooms = async () => {
     try {
       setLoading(true);
-      const data = await getRooms(
-        searchValue ? { roomNumber: searchValue } : undefined
-      );
+      const roomNumber = searchParams.get("roomNumber") ?? undefined;
+      const data = await getRooms(roomNumber ? { roomNumber } : undefined);
       setRows(data);
     } finally {
       setLoading(false);
     }
-  }, [searchValue]);
+  };
 
   useEffect(() => {
     fetchRooms();
-  }, [fetchRooms]);
+  }, [searchParams]);
 
   const handleDelete = async (roomId: number) => {
     await deleteRoom(roomId);
     fetchRooms();
+  };
+
+  const openCreate = () => {
+    setDrawerMode("create");
+    setSelectedId(null);
+    setDrawerInitialValues(EMPTY_ROOM);
+    setDrawerOpen(true);
+  };
+
+  const openEdit = (row: RoomRow) => {
+    setDrawerMode("edit");
+    setSelectedId(row.roomId);
+    setDrawerInitialValues({
+      roomNumber: row.roomNumber,
+      adultCapacity: row.adultCapacity,
+      childrenCapacity: row.childrenCapacity,
+      availability: row.availability,
+    });
+    setDrawerOpen(true);
+  };
+
+  const handleSubmit = async (values: RoomFormValues) => {
+    try {
+      setSaving(true);
+
+      if (drawerMode === "create") {
+        await createRoom(values);
+      } else {
+        if (selectedId == null) return;
+        await updateRoom(selectedId, values);
+      }
+
+      setDrawerOpen(false);
+      await fetchRooms();
+    } finally {
+      setSaving(false);
+    }
   };
 
   const columns: GridColDef[] = [
@@ -75,7 +129,10 @@ export default function AdminRoomsPage() {
       renderCell: (params) => (
         <IconButton
           color="error"
-          onClick={() => handleDelete(params.row.roomId)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete(params.row.roomId);
+          }}
         >
           <DeleteIcon />
         </IconButton>
@@ -84,15 +141,20 @@ export default function AdminRoomsPage() {
   ];
 
   return (
-    <Box>
+    <Box sx={{ width: "100%" }}>
       <AdminToolbar
         title="Rooms"
         searchValue={searchValue}
-        onSearchChange={setSearchValue}
-        onSearchSubmit={fetchRooms}
-        onCreateClick={() => {
-          console.log("Open create room form");
+        onSearchChange={(value) => {
+          setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            if (value) next.set("roomNumber", value);
+            else next.delete("roomNumber");
+            return next;
+          });
         }}
+        onSearchSubmit={() => {}}
+        onCreateClick={openCreate}
       />
 
       <Box sx={{ height: 520, mt: 3, width: "100%" }}>
@@ -105,8 +167,20 @@ export default function AdminRoomsPage() {
           initialState={{
             pagination: { paginationModel: { pageSize: 5, page: 0 } },
           }}
+          onRowClick={(params) => openEdit(params.row as RoomRow)}
         />
       </Box>
+
+      <AdminEntityDrawer
+        open={drawerOpen}
+        mode={drawerMode}
+        entity="rooms"
+        title={drawerMode === "create" ? "Create Room" : "Edit Room"}
+        initialValues={drawerInitialValues}
+        onClose={() => setDrawerOpen(false)}
+        onSubmit={handleSubmit}
+        saving={saving}
+      />
     </Box>
   );
 }
