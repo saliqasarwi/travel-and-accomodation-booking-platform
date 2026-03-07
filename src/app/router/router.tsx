@@ -81,6 +81,7 @@ export const router = createBrowserRouter([
       </RequireAdmin>
     ),
     children: [
+      { index: true, element: <AdminCitiesPage /> },
       { path: "cities", element: <AdminCitiesPage /> },
       { path: "hotels", element: <AdminHotelsPage /> },
       { path: "rooms", element: <AdminRoomsPage /> },

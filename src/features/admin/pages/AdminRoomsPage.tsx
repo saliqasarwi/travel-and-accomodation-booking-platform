@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -8,7 +8,7 @@ import { getRooms, deleteRoom, createRoom, updateRoom } from "../api/admin.api";
 import type { RoomFormValues, RoomRow } from "../types/admin.types";
 import Chip from "@mui/material/Chip";
 import { useSearchParams } from "react-router-dom";
-
+import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 const EMPTY_ROOM: RoomFormValues = {
   roomNumber: undefined,
   adultCapacity: undefined,
@@ -29,8 +29,12 @@ export default function AdminRoomsPage() {
   const [drawerInitialValues, setDrawerInitialValues] =
     useState<RoomFormValues>(EMPTY_ROOM);
   const [saving, setSaving] = useState(false);
+  //dialog state
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const fetchRooms = async () => {
+  const fetchRooms = useCallback(async () => {
     try {
       setLoading(true);
       const roomNumber = searchParams.get("roomNumber") ?? undefined;
@@ -39,16 +43,11 @@ export default function AdminRoomsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams]);
 
   useEffect(() => {
     fetchRooms();
-  }, [searchParams]);
-
-  const handleDelete = async (roomId: number) => {
-    await deleteRoom(roomId);
-    fetchRooms();
-  };
+  }, [fetchRooms]);
 
   const openCreate = () => {
     setDrawerMode("create");
@@ -86,7 +85,24 @@ export default function AdminRoomsPage() {
       setSaving(false);
     }
   };
+  const openDeleteDialog = (id: number) => {
+    setSelectedDeleteId(id);
+    setConfirmOpen(true);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (selectedDeleteId == null) return;
+
+    try {
+      setDeleting(true);
+      await deleteRoom(selectedDeleteId);
+      setConfirmOpen(false);
+      setSelectedDeleteId(null);
+      await fetchRooms();
+    } finally {
+      setDeleting(false);
+    }
+  };
   const columns: GridColDef[] = [
     { field: "roomNumber", headerName: "Number", flex: 1, minWidth: 80 },
     {
@@ -131,7 +147,7 @@ export default function AdminRoomsPage() {
           color="error"
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete(params.row.roomId);
+            openDeleteDialog(params.row.roomId);
           }}
         >
           <DeleteIcon />
@@ -141,46 +157,63 @@ export default function AdminRoomsPage() {
   ];
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <AdminToolbar
-        title="Rooms"
-        searchValue={searchValue}
-        onSearchChange={(value) => {
-          setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            if (value) next.set("roomNumber", value);
-            else next.delete("roomNumber");
-            return next;
-          });
-        }}
-        onSearchSubmit={() => {}}
-        onCreateClick={openCreate}
-      />
-
-      <Box sx={{ height: 520, mt: 3, width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          loading={loading}
-          getRowId={(row) => row.roomId}
-          pageSizeOptions={[5, 10]}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 5, page: 0 } },
+    <>
+      <Box sx={{ width: "100%" }}>
+        <AdminToolbar
+          title="Rooms"
+          searchValue={searchValue}
+          onSearchChange={(value) => {
+            setSearchParams((prev) => {
+              const next = new URLSearchParams(prev);
+              if (value) next.set("roomNumber", value);
+              else next.delete("roomNumber");
+              return next;
+            });
           }}
-          onRowClick={(params) => openEdit(params.row as RoomRow)}
+          onSearchSubmit={() => {}}
+          onCreateClick={openCreate}
+        />
+
+        <Box sx={{ height: 520, mt: 3, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            getRowId={(row) => row.roomId}
+            pageSizeOptions={[5, 10]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            }}
+            onRowClick={(params) => openEdit(params.row as RoomRow)}
+          />
+        </Box>
+
+        <AdminEntityDrawer
+          open={drawerOpen}
+          mode={drawerMode}
+          entity="rooms"
+          title={drawerMode === "create" ? "Create Room" : "Edit Room"}
+          initialValues={drawerInitialValues}
+          onClose={() => setDrawerOpen(false)}
+          onSubmit={handleSubmit}
+          saving={saving}
         />
       </Box>
-
-      <AdminEntityDrawer
-        open={drawerOpen}
-        mode={drawerMode}
-        entity="rooms"
-        title={drawerMode === "create" ? "Create Room" : "Edit Room"}
-        initialValues={drawerInitialValues}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={handleSubmit}
-        saving={saving}
+      <ConfirmActionDialog
+        open={confirmOpen}
+        title="Delete room"
+        message="Are you sure you want to delete this room?"
+        confirmText="Delete"
+        confirmColor="error"
+        loading={deleting}
+        onClose={() => {
+          if (!deleting) {
+            setConfirmOpen(false);
+            setSelectedDeleteId(null);
+          }
+        }}
+        onConfirm={handleConfirmDelete}
       />
-    </Box>
+    </>
   );
 }

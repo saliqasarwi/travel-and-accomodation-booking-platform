@@ -18,6 +18,7 @@ import {
 } from "../api/admin.api";
 import type { CityFormValues, CityRow } from "../types/admin.types";
 import { useSearchParams } from "react-router-dom";
+import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 const ALL_VISIBLE: GridColumnVisibilityModel = {
   name: true,
   country: true,
@@ -54,8 +55,11 @@ export default function AdminCitiesPage() {
 
   const [colVisibility, setColVisibility] =
     useState<GridColumnVisibilityModel>(ALL_VISIBLE);
-
-  const fetchCities = async () => {
+  //dialog state
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const fetchCities = useCallback(async () => {
     try {
       setLoading(true);
       const cityName = searchParams.get("name") ?? undefined;
@@ -64,11 +68,11 @@ export default function AdminCitiesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams]);
 
   useEffect(() => {
     fetchCities();
-  }, [searchParams]);
+  }, [fetchCities]);
 
   useEffect(() => {
     if (isMobile) {
@@ -95,14 +99,6 @@ export default function AdminCitiesPage() {
 
     setColVisibility(ALL_VISIBLE);
   }, [isMobile, isTablet]);
-
-  const handleDelete = useCallback(
-    async (id: number) => {
-      await deleteCity(id);
-      fetchCities();
-    },
-    [fetchCities]
-  );
 
   const openCreate = () => {
     setDrawerMode("create");
@@ -165,7 +161,7 @@ export default function AdminCitiesPage() {
             color="error"
             onClick={(e) => {
               e.stopPropagation(); // prevent row click opening edit
-              handleDelete(params.row.id);
+              openDeleteDialog(params.row.id);
             }}
           >
             <DeleteIcon />
@@ -173,63 +169,99 @@ export default function AdminCitiesPage() {
         ),
       },
     ],
-    [handleDelete]
+    []
   );
 
-  return (
-    <Box sx={{ width: "100%" }}>
-      <AdminToolbar
-        title="Cities"
-        searchValue={searchValue}
-        onSearchChange={(value) => {
-          setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            if (value) next.set("name", value);
-            else next.delete("name");
-            return next;
-          });
-        }}
-        onSearchSubmit={() => {}}
-        onCreateClick={openCreate}
-      />
+  const openDeleteDialog = (id: number) => {
+    setSelectedDeleteId(id);
+    setConfirmOpen(true);
+  };
 
-      <Box
-        sx={{
-          mt: 3,
-          width: "100%",
-          minWidth: 0,
-        }}
-      >
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          loading={loading}
-          pageSizeOptions={[5, 10]}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 5, page: 0 } },
+  const handleConfirmDelete = async () => {
+    if (selectedDeleteId == null) return;
+
+    try {
+      setDeleting(true);
+      await deleteCity(selectedDeleteId);
+      setConfirmOpen(false);
+      setSelectedDeleteId(null);
+      await fetchCities();
+    } finally {
+      setDeleting(false);
+    }
+  };
+  return (
+    <>
+      <Box sx={{ width: "100%" }}>
+        <AdminToolbar
+          title="Cities"
+          searchValue={searchValue}
+          onSearchChange={(value) => {
+            setSearchParams((prev) => {
+              const next = new URLSearchParams(prev);
+              if (value) next.set("name", value);
+              else next.delete("name");
+              return next;
+            });
           }}
-          columnVisibilityModel={colVisibility}
-          onColumnVisibilityModelChange={setColVisibility}
-          density={isMobile ? "compact" : "standard"}
-          rowHeight={isMobile ? 36 : 52}
-          columnHeaderHeight={isMobile ? 40 : 56}
-          onRowClick={(params) => openEdit(params.row as CityRow)} //  edit on row click
+          onSearchSubmit={() => {}}
+          onCreateClick={openCreate}
+        />
+
+        <Box
           sx={{
-            "& .MuiDataGrid-cell": { py: isMobile ? 0.5 : 1 },
+            mt: 3,
+            width: "100%",
+            minWidth: 0,
           }}
+        >
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            pageSizeOptions={[5, 10]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            }}
+            columnVisibilityModel={colVisibility}
+            onColumnVisibilityModelChange={setColVisibility}
+            density={isMobile ? "compact" : "standard"}
+            rowHeight={isMobile ? 36 : 52}
+            columnHeaderHeight={isMobile ? 40 : 56}
+            onRowClick={(params) => openEdit(params.row as CityRow)} //  edit on row click
+            sx={{
+              "& .MuiDataGrid-cell": { py: isMobile ? 0.5 : 1 },
+            }}
+          />
+        </Box>
+
+        <AdminEntityDrawer
+          open={drawerOpen}
+          mode={drawerMode}
+          entity="cities"
+          title={drawerMode === "create" ? "Create City" : "Edit City"}
+          initialValues={drawerInitialValues}
+          onClose={() => setDrawerOpen(false)}
+          onSubmit={handleSubmit}
+          saving={saving}
         />
       </Box>
 
-      <AdminEntityDrawer
-        open={drawerOpen}
-        mode={drawerMode}
-        entity="cities"
-        title={drawerMode === "create" ? "Create City" : "Edit City"}
-        initialValues={drawerInitialValues}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={handleSubmit}
-        saving={saving}
+      <ConfirmActionDialog
+        open={confirmOpen}
+        title="Delete city"
+        message="Are you sure you want to delete this city?"
+        confirmText="Delete"
+        confirmColor="error"
+        loading={deleting}
+        onClose={() => {
+          if (!deleting) {
+            setConfirmOpen(false);
+            setSelectedDeleteId(null);
+          }
+        }}
+        onConfirm={handleConfirmDelete}
       />
-    </Box>
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, IconButton, Rating } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,6 +14,7 @@ import {
 } from "../api/admin.api";
 import type { HotelFormValues, HotelRow } from "../types/admin.types";
 import { useSearchParams } from "react-router-dom";
+import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 const EMPTY_HOTEL: HotelFormValues = {
   hotelName: "",
   location: "",
@@ -32,8 +33,11 @@ export default function AdminHotelsPage() {
   const [drawerInitialValues, setDrawerInitialValues] =
     useState<HotelFormValues>(EMPTY_HOTEL);
   const [saving, setSaving] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const fetchHotels = async () => {
+  const fetchHotels = useCallback(async () => {
     try {
       setLoading(true);
       const hotelName = searchParams.get("hotelName") ?? undefined;
@@ -42,15 +46,10 @@ export default function AdminHotelsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams]);
   useEffect(() => {
     fetchHotels();
-  }, [searchParams]);
-
-  const handleDelete = async (id: number) => {
-    await deleteHotel(id);
-    fetchHotels();
-  };
+  }, [fetchHotels]);
 
   const openCreate = () => {
     setDrawerMode("create");
@@ -88,7 +87,24 @@ export default function AdminHotelsPage() {
       setSaving(false);
     }
   };
+  const openDeleteDialog = (id: number) => {
+    setSelectedDeleteId(id);
+    setConfirmOpen(true);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (selectedDeleteId == null) return;
+
+    try {
+      setDeleting(true);
+      await deleteHotel(selectedDeleteId);
+      setConfirmOpen(false);
+      setSelectedDeleteId(null);
+      await fetchHotels();
+    } finally {
+      setDeleting(false);
+    }
+  };
   const columns: GridColDef[] = [
     { field: "hotelName", headerName: "Name", flex: 1, minWidth: 180 },
     {
@@ -121,7 +137,7 @@ export default function AdminHotelsPage() {
           color="error"
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete(params.row.id);
+            openDeleteDialog(params.row.id);
           }}
         >
           <DeleteIcon />
@@ -131,45 +147,62 @@ export default function AdminHotelsPage() {
   ];
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <AdminToolbar
-        title="Hotels"
-        searchValue={searchValue}
-        onSearchChange={(value) => {
-          setSearchParams((prev) => {
-            const next = new URLSearchParams(prev);
-            if (value) next.set("hotelName", value);
-            else next.delete("hotelName");
-            return next;
-          });
-        }}
-        onSearchSubmit={() => {}}
-        onCreateClick={openCreate}
-      />
-
-      <Box sx={{ mt: 3, width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          loading={loading}
-          pageSizeOptions={[5, 10]}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 5, page: 0 } },
+    <>
+      <Box sx={{ width: "100%" }}>
+        <AdminToolbar
+          title="Hotels"
+          searchValue={searchValue}
+          onSearchChange={(value) => {
+            setSearchParams((prev) => {
+              const next = new URLSearchParams(prev);
+              if (value) next.set("hotelName", value);
+              else next.delete("hotelName");
+              return next;
+            });
           }}
-          onRowClick={(params) => openEdit(params.row as HotelRow)}
+          onSearchSubmit={() => {}}
+          onCreateClick={openCreate}
+        />
+
+        <Box sx={{ mt: 3, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            pageSizeOptions={[5, 10]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            }}
+            onRowClick={(params) => openEdit(params.row as HotelRow)}
+          />
+        </Box>
+
+        <AdminEntityDrawer
+          open={drawerOpen}
+          mode={drawerMode}
+          entity="hotels"
+          title={drawerMode === "create" ? "Create Hotel" : "Edit Hotel"}
+          initialValues={drawerInitialValues}
+          onClose={() => setDrawerOpen(false)}
+          onSubmit={handleSubmit}
+          saving={saving}
         />
       </Box>
-
-      <AdminEntityDrawer
-        open={drawerOpen}
-        mode={drawerMode}
-        entity="hotels"
-        title={drawerMode === "create" ? "Create Hotel" : "Edit Hotel"}
-        initialValues={drawerInitialValues}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={handleSubmit}
-        saving={saving}
+      <ConfirmActionDialog
+        open={confirmOpen}
+        title="Delete hotel"
+        message="Are you sure you want to delete this hotel?"
+        confirmText="Delete"
+        confirmColor="error"
+        loading={deleting}
+        onClose={() => {
+          if (!deleting) {
+            setConfirmOpen(false);
+            setSelectedDeleteId(null);
+          }
+        }}
+        onConfirm={handleConfirmDelete}
       />
-    </Box>
+    </>
   );
 }
