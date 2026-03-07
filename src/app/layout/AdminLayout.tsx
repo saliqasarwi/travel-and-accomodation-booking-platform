@@ -9,16 +9,21 @@ import {
   Box,
   Typography,
   Button,
+  IconButton,
+  Stack,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { useState } from "react";
 import { useAuth } from "@app/providers/AuthContext";
 
 const drawerWidth = 240;
-
+const collapsedWidth = 72;
 export default function AdminLayout() {
   const { userType, logout } = useAuth();
-
+  const [open, setOpen] = useState(true);
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", minHeight: "100vh", width: "100%" }}>
       <AppBar
         position="fixed"
         sx={{
@@ -26,52 +31,73 @@ export default function AdminLayout() {
         }}
       >
         <Toolbar sx={{ gap: 2 }}>
-          <Typography variant="h6" noWrap>
-            Admin Panel
-          </Typography>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{ width: "100%" }}
+          >
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? "Collapse navigation" : "Expand navigation"}
+            >
+              {open ? <ChevronLeftIcon /> : <MenuIcon />}
+            </IconButton>
 
-          <Box sx={{ flexGrow: 1 }} />
+            <Typography variant="h6" noWrap>
+              Admin Panel
+            </Typography>
 
-          <Typography variant="body2">
-            Role: <b>{userType}</b>
-          </Typography>
+            <Box sx={{ flexGrow: 1 }} />
 
-          <Button color="inherit" onClick={logout}>
-            Logout
-          </Button>
+            <Typography variant="body2">
+              Role: <b>{userType}</b>
+            </Typography>
+
+            <Button color="inherit" onClick={logout}>
+              Logout
+            </Button>
+          </Stack>
         </Toolbar>
       </AppBar>
       <Drawer
         variant="permanent"
+        open={open}
         sx={{
-          width: drawerWidth,
+          width: open ? drawerWidth : collapsedWidth,
           flexShrink: 0,
+          whiteSpace: "nowrap",
           [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
+            width: open ? drawerWidth : collapsedWidth,
+            overflowX: "hidden",
+            transition: (theme) =>
+              theme.transitions.create("width", {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.shortest,
+              }),
             boxSizing: "border-box",
           },
         }}
       >
         <Toolbar />
-        <List>
-          <ListItemButton component={RouterLink} to="/admin">
-            <ListItemText primary="Dashboard" />
-          </ListItemButton>
-
+        <List sx={{ px: 1 }}>
           <ListItemButton component={RouterLink} to="/admin/cities">
-            <ListItemText primary="Cities" />
+            <ListItemText primary="Cities" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
 
           <ListItemButton component={RouterLink} to="/admin/hotels">
-            <ListItemText primary="Hotels" />
+            <ListItemText primary="Hotels" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
 
           <ListItemButton component={RouterLink} to="/admin/rooms">
-            <ListItemText primary="Rooms" />
+            <ListItemText primary="Rooms" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+
+      <Box component="main" sx={{ flexGrow: 1, p: 3, minWidth: 0 }}>
         <Toolbar />
         <Outlet />
       </Box>
