@@ -5,7 +5,8 @@ import { parseApiError } from "@shared/api";
 import { useAuth } from "@app/providers/AuthContext";
 import LoginForm from "../components/LoginForm";
 import { authenticate } from "../api/auth.api";
-
+import { useEffect } from "react";
+import SplashScreen from "@shared/components/SplashScreen";
 export default function LoginPage() {
   const navigate = useNavigate();
   const { setSession } = useAuth();
@@ -13,7 +14,7 @@ export default function LoginPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [showSplash, setShowSplash] = useState(true);
   const fromPath =
     (location.state as { from?: Location })?.from?.pathname ?? null;
 
@@ -40,7 +41,16 @@ export default function LoginPage() {
       setLoading(false);
     }
   }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 1800);
 
+    return () => clearTimeout(timer);
+  }, []);
+  if (showSplash) {
+    return <SplashScreen />;
+  }
   return (
     <Box
       sx={{
