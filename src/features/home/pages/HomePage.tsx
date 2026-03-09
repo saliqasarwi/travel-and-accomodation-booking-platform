@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Box, Skeleton, Typography } from "@mui/material";
 
-import Container from "@shared/ui/Container/PageContainer";
-import Section from "@shared/ui/Section/Section";
-
 import HomeSearchBar from "../../../shared/components/HomeSearchBar";
 import FeaturedDeals from "../components/FeaturedDeals";
 import TrendingDestinations from "../components/TrendingDestinations";
@@ -47,18 +44,31 @@ export default function HomePage() {
     const loadData = async () => {
       try {
         const [featuredRes, trendingRes, recentRes] = await Promise.all([
-          getFeaturedDeals(),
+          getFeaturedDeals(2),
           getTrendingDestinations(),
           getRecentHotels(2),
         ]);
 
         if (cancelled) return;
 
-        setFeatured({ data: featuredRes, loading: false, error: null });
-        setTrending({ data: trendingRes, loading: false, error: null });
-        setRecent({ data: recentRes, loading: false, error: null });
+        setFeatured({
+          data: featuredRes,
+          loading: false,
+          error: null,
+        });
+        setTrending({
+          data: trendingRes,
+          loading: false,
+          error: null,
+        });
+        setRecent({
+          data: recentRes,
+          loading: false,
+          error: null,
+        });
       } catch (err: unknown) {
         if (cancelled) return;
+
         const message =
           typeof err === "object" && err !== null && "message" in err
             ? String(
@@ -83,48 +93,110 @@ export default function HomePage() {
   const anyError = featured.error || trending.error || recent.error;
 
   return (
-    <Container>
-      <Box sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+    <Box sx={{ py: 4 }}>
+      <Box
+        sx={{
+          mb: 6,
+          p: { xs: 3, md: 5 },
+          borderRadius: 4,
+          background:
+            "linear-gradient(135deg, rgba(25,118,210,0.10) 0%, rgba(25,118,210,0.04) 100%)",
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <Typography variant="h3" component="h1" sx={{ fontWeight: 800, mb: 1 }}>
           Find your perfect stay
         </Typography>
 
-        <Section title="Search" sx={{ mb: 5 }}>
-          <HomeSearchBar />
-        </Section>
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          sx={{ mb: 4, maxWidth: 720 }}
+        >
+          Discover hotels, featured deals, and trending destinations for your
+          next trip
+        </Typography>
 
-        {anyError && (
-          <Alert severity="error" sx={{ mb: 4 }}>
-            {anyError}
-          </Alert>
-        )}
+        <HomeSearchBar />
+      </Box>
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <Box>
-            {featured.loading ? (
-              <Skeleton variant="rounded" height={300} />
-            ) : (
-              <FeaturedDeals items={featured.data ?? []} />
-            )}
-          </Box>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 3,
+          flexWrap: "wrap",
+          mb: 4,
+        }}
+      >
+        <Typography
+          component="a"
+          href="#featured-deals"
+          sx={{
+            textDecoration: "none",
+            color: "primary.main",
+            fontWeight: 700,
+          }}
+        >
+          Featured Deals
+        </Typography>
 
-          <Box>
-            {trending.loading ? (
-              <Skeleton variant="rounded" height={300} />
-            ) : (
-              <TrendingDestinations />
-            )}
-          </Box>
+        <Typography
+          component="a"
+          href="#trending-destinations"
+          sx={{
+            textDecoration: "none",
+            color: "primary.main",
+            fontWeight: 700,
+          }}
+        >
+          Trending Destinations
+        </Typography>
 
-          <Box>
-            {recent.loading ? (
-              <Skeleton variant="rounded" height={300} />
-            ) : (
-              <RecentlyVisited />
-            )}
-          </Box>
+        <Typography
+          component="a"
+          href="#recently-visited"
+          sx={{
+            textDecoration: "none",
+            color: "primary.main",
+            fontWeight: 700,
+          }}
+        >
+          Recently Visited
+        </Typography>
+      </Box>
+
+      {anyError && (
+        <Alert severity="error" sx={{ mb: 4 }}>
+          {anyError}
+        </Alert>
+      )}
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <Box id="featured-deals">
+          {featured.loading ? (
+            <Skeleton variant="rounded" height={300} />
+          ) : (
+            <FeaturedDeals items={featured.data ?? []} />
+          )}
+        </Box>
+
+        <Box id="trending-destinations">
+          {trending.loading ? (
+            <Skeleton variant="rounded" height={360} />
+          ) : (
+            <TrendingDestinations items={trending.data ?? []} />
+          )}
+        </Box>
+
+        <Box id="recently-visited">
+          {recent.loading ? (
+            <Skeleton variant="rounded" height={260} />
+          ) : (
+            <RecentlyVisited items={recent.data ?? []} />
+          )}
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 }

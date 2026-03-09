@@ -1,12 +1,11 @@
 import { Box, Typography, Card, CardContent, CardMedia } from "@mui/material";
-import type { FC } from "react";
 import type { FeaturedDeal } from "../types/home.types";
 
-interface Props {
+type Props = {
   items: FeaturedDeal[];
-}
+};
 
-const FeaturedDeals: FC<Props> = ({ items }) => {
+export default function FeaturedDeals({ items }: Props) {
   if (items.length === 0) {
     return (
       <Typography color="text.secondary">
@@ -16,8 +15,8 @@ const FeaturedDeals: FC<Props> = ({ items }) => {
   }
 
   return (
-    <Box>
-      <Typography variant="h5" gutterBottom sx={{ fontWeight: 700 }}>
+    <Box component="section">
+      <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, m: "5" }}>
         Featured Deals
       </Typography>
 
@@ -32,11 +31,11 @@ const FeaturedDeals: FC<Props> = ({ items }) => {
           gap: 3,
         }}
       >
-        {items.slice(0, 6).map((deal) => (
+        {items.map((deal) => (
           <Card
             key={deal.hotelId}
             sx={{
-              borderRadius: "12px",
+              borderRadius: 3,
               overflow: "hidden",
               boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
               transition: "transform 0.2s, box-shadow 0.2s",
@@ -53,9 +52,7 @@ const FeaturedDeals: FC<Props> = ({ items }) => {
                   height="180"
                   image={deal.roomPhotoUrl}
                   alt={deal.hotelName}
-                  sx={{
-                    objectFit: "cover",
-                  }}
+                  sx={{ objectFit: "cover" }}
                 />
               )}
             </Box>
@@ -81,6 +78,7 @@ const FeaturedDeals: FC<Props> = ({ items }) => {
               >
                 {deal.cityName}
               </Typography>
+
               <Box sx={{ mt: 1 }}>
                 {typeof deal.finalPrice === "number" && (
                   <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
@@ -102,7 +100,7 @@ const FeaturedDeals: FC<Props> = ({ items }) => {
                       variant="h6"
                       component="span"
                       fontWeight={700}
-                      color="#003580"
+                      color="primary.main"
                       sx={{ fontSize: "1.4rem", lineHeight: 1 }}
                     >
                       US${deal.finalPrice}
@@ -130,6 +128,4 @@ const FeaturedDeals: FC<Props> = ({ items }) => {
       </Box>
     </Box>
   );
-};
-
-export default FeaturedDeals;
+}

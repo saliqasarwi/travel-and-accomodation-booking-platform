@@ -1,42 +1,22 @@
-import { useEffect, useState } from "react";
-import { getRecentHotels } from "../api/home.api";
-import type { RecentHotel } from "../types/home.types";
-import { parseApiError } from "@shared/api";
 import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
-export default function RecentlyVisited() {
-  const [data, setData] = useState<RecentHotel[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+import type { RecentHotel } from "../types/home.types";
 
-  useEffect(() => {
-    let cancelled = false;
+type Props = {
+  items: RecentHotel[];
+};
 
-    (async () => {
-      try {
-        setError(null);
-        setLoading(true);
+export default function RecentlyVisited({ items }: Props) {
+  if (items.length === 0) {
+    return (
+      <Typography color="text.secondary">
+        No recently visited hotels available.
+      </Typography>
+    );
+  }
 
-        // backend demo uses userId=2
-        const res = await getRecentHotels(2);
-
-        if (!cancelled) setData(res);
-      } catch (e) {
-        if (!cancelled) setError(parseApiError(e).message);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  if (loading) return <div>Loading recently visited hotels…</div>;
-  if (error) return <div style={{ color: "crimson" }}>{error}</div>;
   return (
-    <section>
-      <Typography variant="h6" sx={{ mb: 1 }}>
+    <Box component="section">
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
         Recently Visited
       </Typography>
 
@@ -55,25 +35,25 @@ export default function RecentlyVisited() {
           gap: 2,
         }}
       >
-        {data.map((x) => (
-          <Box component="li">
-            <Card>
+        {items.map((item) => (
+          <Box component="li" key={item.hotelId}>
+            <Card sx={{ borderRadius: 3, overflow: "hidden" }}>
               <CardMedia
                 component="img"
-                height="140"
-                image={x.thumbnailUrl}
-                alt={x.cityName}
+                height="160"
+                image={item.thumbnailUrl}
+                alt={item.cityName}
               />
               <CardContent>
-                <Typography fontWeight={700}>{x.cityName}</Typography>
+                <Typography fontWeight={700}>{item.cityName}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Visit Date: {x.visitDate}
+                  Visit Date: {item.visitDate}
                 </Typography>
               </CardContent>
             </Card>
           </Box>
         ))}
       </Box>
-    </section>
+    </Box>
   );
 }

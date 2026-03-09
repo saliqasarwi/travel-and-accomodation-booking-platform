@@ -15,7 +15,7 @@ export async function searchHome(params: HomeSearchParams) {
 }
 
 export async function getFeaturedDeals() {
-  const res = await httpClient.get<FeaturedDeal[]>("/home/featured-deals");
+  const res = await httpClient.get<FeaturedDeal[]>(`/home/featured-deals`);
   return res.data;
 }
 

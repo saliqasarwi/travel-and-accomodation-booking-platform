@@ -2,6 +2,14 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addDays, toIsoDate } from "@shared/utils/date";
+import {
+  Paper,
+  Typography,
+  Box,
+  TextField,
+  MenuItem,
+  Button,
+} from "@mui/material";
 
 type Values = {
   city: string;
@@ -11,9 +19,9 @@ type Values = {
   children: number;
   numberOfRooms: number;
 };
+
 const schema: Yup.ObjectSchema<Values> = Yup.object({
   city: Yup.string().trim().required("City is required"),
-
   checkInDate: Yup.string().required("Check-in date is required"),
   checkOutDate: Yup.string()
     .required("Check-out date is required")
@@ -26,7 +34,6 @@ const schema: Yup.ObjectSchema<Values> = Yup.object({
         return checkOut > checkInDate;
       }
     ),
-
   adults: Yup.number().min(1, "At least 1 adult").required(),
   children: Yup.number().min(0, "Children cannot be negative").required(),
   numberOfRooms: Yup.number().min(1, "At least 1 room").required(),
@@ -36,6 +43,7 @@ export default function HomeSearchBar() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
+
   const today = new Date();
   const defaultCheckIn = toIsoDate(today);
   const defaultCheckOut = toIsoDate(addDays(today, 1));
@@ -50,10 +58,19 @@ export default function HomeSearchBar() {
   };
 
   return (
-    <section
-      style={{ border: "1px solid #ddd", borderRadius: 10, padding: "1rem" }}
+    <Paper
+      elevation={0}
+      sx={{
+        p: { xs: 2, md: 3 },
+        borderRadius: 4,
+        border: "1px solid",
+        borderColor: "divider",
+        bgcolor: "background.paper",
+      }}
     >
-      <h2 style={{ marginTop: 0 }}>Search</h2>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>
+        Search stays
+      </Typography>
 
       <Formik<Values>
         initialValues={initialValues}
@@ -84,142 +101,131 @@ export default function HomeSearchBar() {
           handleSubmit,
           isSubmitting,
         }) => (
-          <form
+          <Box
+            component="form"
             onSubmit={handleSubmit}
-            style={{
+            sx={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: "0.75rem",
-              alignItems: "end",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(3, 1fr)",
+              },
+              gap: 2,
+              alignItems: "start",
             }}
           >
-            <div style={{ gridColumn: "1 / -1" }}>
-              <label htmlFor="city">City</label>
-              <input
-                id="city"
-                name="city"
-                placeholder="Where are you going?"
-                value={values.city}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                style={{ width: "100%", padding: "0.6rem" }}
-              />
-              {touched.city && errors.city ? (
-                <small style={{ color: "crimson" }}>{errors.city}</small>
-              ) : null}
-            </div>
+            <TextField
+              fullWidth
+              id="city"
+              name="city"
+              label="City"
+              placeholder="Where are you going?"
+              value={values.city}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.city && Boolean(errors.city)}
+              helperText={touched.city && errors.city}
+              sx={{ gridColumn: { xs: "span 1", md: "1 / -1" } }}
+            />
 
-            <div>
-              <label htmlFor="checkInDate">Check-in</label>
-              <input
-                id="checkInDate"
-                name="checkInDate"
-                type="date"
-                value={values.checkInDate}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                style={{ width: "100%", padding: "0.6rem" }}
-              />
-              {touched.checkInDate && errors.checkInDate ? (
-                <small style={{ color: "crimson" }}>{errors.checkInDate}</small>
-              ) : null}
-            </div>
+            <TextField
+              fullWidth
+              id="checkInDate"
+              name="checkInDate"
+              label="Check-in"
+              type="date"
+              value={values.checkInDate}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.checkInDate && Boolean(errors.checkInDate)}
+              helperText={touched.checkInDate && errors.checkInDate}
+              InputLabelProps={{ shrink: true }}
+            />
 
-            <div>
-              <label htmlFor="checkOutDate">Check-out</label>
-              <input
-                id="checkOutDate"
-                name="checkOutDate"
-                type="date"
-                value={values.checkOutDate}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                style={{ width: "100%", padding: "0.6rem" }}
-              />
-              {touched.checkOutDate && errors.checkOutDate ? (
-                <small style={{ color: "crimson" }}>
-                  {errors.checkOutDate}
-                </small>
-              ) : null}
-            </div>
+            <TextField
+              fullWidth
+              id="checkOutDate"
+              name="checkOutDate"
+              label="Check-out"
+              type="date"
+              value={values.checkOutDate}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.checkOutDate && Boolean(errors.checkOutDate)}
+              helperText={touched.checkOutDate && errors.checkOutDate}
+              InputLabelProps={{ shrink: true }}
+            />
 
-            <div>
-              <label htmlFor="adults">Adults</label>
-              <select
-                id="adults"
-                name="adults"
-                value={values.adults}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                style={{ width: "100%", padding: "0.6rem" }}
-              >
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-              {touched.adults && errors.adults ? (
-                <small style={{ color: "crimson" }}>{errors.adults}</small>
-              ) : null}
-            </div>
+            <TextField
+              select
+              fullWidth
+              id="adults"
+              name="adults"
+              label="Adults"
+              value={values.adults}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.adults && Boolean(errors.adults)}
+              helperText={touched.adults && errors.adults}
+            >
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                <MenuItem key={n} value={n}>
+                  {n}
+                </MenuItem>
+              ))}
+            </TextField>
 
-            <div>
-              <label htmlFor="children">Children</label>
-              <select
-                id="children"
-                name="children"
-                value={values.children}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                style={{ width: "100%", padding: "0.6rem" }}
-              >
-                {Array.from({ length: 11 }, (_, i) => i).map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-              {touched.children && errors.children ? (
-                <small style={{ color: "crimson" }}>{errors.children}</small>
-              ) : null}
-            </div>
+            <TextField
+              select
+              fullWidth
+              id="children"
+              name="children"
+              label="Children"
+              value={values.children}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.children && Boolean(errors.children)}
+              helperText={touched.children && errors.children}
+            >
+              {Array.from({ length: 11 }, (_, i) => i).map((n) => (
+                <MenuItem key={n} value={n}>
+                  {n}
+                </MenuItem>
+              ))}
+            </TextField>
 
-            <div>
-              <label htmlFor="numberOfRooms">Rooms</label>
-              <select
-                id="numberOfRooms"
-                name="numberOfRooms"
-                value={values.numberOfRooms}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                style={{ width: "100%", padding: "0.6rem" }}
-              >
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-              {touched.numberOfRooms && errors.numberOfRooms ? (
-                <small style={{ color: "crimson" }}>
-                  {errors.numberOfRooms}
-                </small>
-              ) : null}
-            </div>
+            <TextField
+              select
+              fullWidth
+              id="numberOfRooms"
+              name="numberOfRooms"
+              label="Rooms"
+              value={values.numberOfRooms}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.numberOfRooms && Boolean(errors.numberOfRooms)}
+              helperText={touched.numberOfRooms && errors.numberOfRooms}
+            >
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                <MenuItem key={n} value={n}>
+                  {n}
+                </MenuItem>
+              ))}
+            </TextField>
 
-            <div style={{ gridColumn: "1 / -1" }}>
-              <button
+            <Box sx={{ gridColumn: { xs: "span 1", md: "1 / -1" } }}>
+              <Button
                 type="submit"
+                variant="contained"
+                size="large"
                 disabled={isSubmitting}
-                style={{ padding: "0.7rem 1rem" }}
               >
                 Search
-              </button>
-            </div>
-          </form>
+              </Button>
+            </Box>
+          </Box>
         )}
       </Formik>
-    </section>
+    </Paper>
   );
 }
