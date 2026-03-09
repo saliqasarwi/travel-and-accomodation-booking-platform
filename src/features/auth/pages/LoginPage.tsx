@@ -97,7 +97,7 @@ export default function LoginPage() {
               fontSize: "0.95rem",
             }}
           >
-            Travel
+            Travelio
           </Typography>
 
           <Typography
@@ -123,7 +123,7 @@ export default function LoginPage() {
               fontSize: { xs: "1rem", md: "1.15rem" },
             }}
           >
-            Sign in to manage your bookings and enjoy a smoother travel
+            Sign in to manage your bookings and enjoy a smoother travelio
             experience.
           </Typography>
         </Stack>
@@ -151,7 +151,7 @@ export default function LoginPage() {
                 fontSize: "1.5rem",
               }}
             >
-              Travel
+              Travelio
             </Typography>
 
             <Typography

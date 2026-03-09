@@ -122,7 +122,7 @@ const TravelSplash = () => {
               textShadow: "0 4px 10px rgba(236, 219, 219, 0.86)",
             }}
           >
-            Travel
+            Travelio
           </Typography>
         </Container>
       </Box>
