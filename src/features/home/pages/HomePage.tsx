@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, Box, Container, Skeleton, Typography } from "@mui/material";
 
-import HomeSearchBar from "../../../shared/components/HomeSearchBar";
+import HomeSearchBar from "../../../shared/components/HomeSearchBar/HomeSearchBar";
 import FeaturedDeals from "../components/FeaturedDeals";
 import TrendingDestinations from "../components/TrendingDestinations";
 import RecentlyVisited from "../components/RecentlyVisited";

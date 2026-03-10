@@ -1,13 +1,11 @@
 import { Formik } from "formik";
-import * as Yup from "yup";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { addDays, toIsoDate } from "@shared/utils/date";
 
 import {
   Box,
   Button,
-  IconButton,
   Paper,
   Popover,
   Stack,
@@ -19,181 +17,20 @@ import {
   SearchRounded,
   CalendarMonthRounded,
   PersonOutlineRounded,
-  AddRounded,
-  RemoveRounded,
   ChevronRightRounded,
 } from "@mui/icons-material";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 
 import dayjs, { Dayjs } from "dayjs";
 
-type Values = {
-  city: string;
-  checkInDate: string;
-  checkOutDate: string;
-  adults: number;
-  children: number;
-  numberOfRooms: number;
-};
-
-const schema: Yup.ObjectSchema<Values> = Yup.object({
-  city: Yup.string().trim().required("City is required"),
-  checkInDate: Yup.string().required("Check-in date is required"),
-  checkOutDate: Yup.string()
-    .required("Check-out date is required")
-    .test(
-      "after-checkin",
-      "Check-out must be after check-in",
-      function (checkOut) {
-        const { checkInDate } = this.parent as Values;
-        if (!checkInDate || !checkOut) return true;
-        return checkOut > checkInDate;
-      }
-    ),
-  adults: Yup.number().min(1, "At least 1 adult").required(),
-  children: Yup.number().min(0, "Children cannot be negative").required(),
-  numberOfRooms: Yup.number().min(1, "At least 1 room").required(),
-});
-
-function formatGuests(adults: number, children: number, rooms: number) {
-  return `${adults} adult${adults > 1 ? "s" : ""} · ${children} child${
-    children > 1 ? "ren" : ""
-  } · ${rooms} room${rooms > 1 ? "s" : ""}`;
-}
-
-function formatDate(date: string) {
-  if (!date) return "";
-  return dayjs(date).format("ddd D MMM");
-}
-
-function formatDateRange(checkInDate: string, checkOutDate: string) {
-  if (!checkInDate || !checkOutDate) return "Select dates";
-  return `${formatDate(checkInDate)} — ${formatDate(checkOutDate)}`;
-}
-
-type GuestRowProps = {
-  label: string;
-  value: number;
-  min: number;
-  onDecrease: () => void;
-  onIncrease: () => void;
-};
-
-function GuestRow({
-  label,
-  value,
-  min,
-  onDecrease,
-  onIncrease,
-}: GuestRowProps) {
-  return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ py: 1.25 }}
-    >
-      <Typography sx={{ fontWeight: 600 }}>{label}</Typography>
-
-      <Stack direction="row" spacing={1} alignItems="center">
-        <IconButton
-          onClick={onDecrease}
-          disabled={value <= min}
-          sx={{
-            width: 36,
-            height: 36,
-            border: "1px solid",
-            borderColor: "divider",
-          }}
-        >
-          <RemoveRounded fontSize="small" />
-        </IconButton>
-
-        <Box sx={{ minWidth: 28, textAlign: "center", fontWeight: 700 }}>
-          {value}
-        </Box>
-
-        <IconButton
-          onClick={onIncrease}
-          sx={{
-            width: 36,
-            height: 36,
-            border: "1px solid",
-            borderColor: "divider",
-          }}
-        >
-          <AddRounded fontSize="small" />
-        </IconButton>
-      </Stack>
-    </Stack>
-  );
-}
-
-type SearchBlockProps = {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
-  children?: React.ReactNode;
-};
-
-function SearchBlock({
-  icon,
-  label,
-  value,
-  onClick,
-  children,
-}: SearchBlockProps) {
-  return (
-    <Box
-      onClick={onClick}
-      sx={{
-        bgcolor: "background.paper",
-        minHeight: 58,
-        px: 2,
-        py: 1,
-        display: "flex",
-        alignItems: "center",
-        gap: 1.25,
-        cursor: onClick ? "pointer" : "default",
-      }}
-    >
-      <Box
-        sx={{ color: "text.secondary", display: "flex", alignItems: "center" }}
-      >
-        {icon}
-      </Box>
-
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", lineHeight: 1.1, mb: 0.25 }}
-        >
-          {label}
-        </Typography>
-
-        {children ? (
-          children
-        ) : (
-          <Typography
-            sx={{
-              fontWeight: 700,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontSize: 15,
-            }}
-          >
-            {value}
-          </Typography>
-        )}
-      </Box>
-    </Box>
-  );
-}
+import type { HomeSearchBarValues } from "./homeSearchBar.types";
+import { homeSearchBarSchema } from "./homeSearchBar.schema";
+import { formatDateRange, formatGuests } from "./homeSearchBar.utils";
+import SearchBlock from "./SearchBlock";
+import GuestRow from "./GuestRow";
 
 export default function HomeSearchBar() {
   const location = useLocation();
@@ -204,7 +41,7 @@ export default function HomeSearchBar() {
   const defaultCheckIn = toIsoDate(today);
   const defaultCheckOut = toIsoDate(addDays(today, 1));
 
-  const initialValues: Values = useMemo(
+  const initialValues: HomeSearchBarValues = useMemo(
     () => ({
       city: searchParams.get("city") ?? "",
       checkInDate: searchParams.get("checkInDate") ?? defaultCheckIn,
@@ -224,9 +61,9 @@ export default function HomeSearchBar() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Formik<Values>
+      <Formik<HomeSearchBarValues>
         initialValues={initialValues}
-        validationSchema={schema}
+        validationSchema={homeSearchBarSchema}
         enableReinitialize
         onSubmit={(values, actions) => {
           try {

@@ -4,7 +4,7 @@ import { Stack, Typography } from "@mui/material";
 
 import Container from "@shared/ui/Container/PageContainer";
 import Section from "@shared/ui/Section/Section";
-import HomeSearchBar from "@shared/components/HomeSearchBar";
+import HomeSearchBar from "@shared/components/HomeSearchBar/HomeSearchBar";
 
 import SearchFilters from "../components/SearchFilters.tsx";
 import HotelResults from "../components/HotelResults.tsx";
