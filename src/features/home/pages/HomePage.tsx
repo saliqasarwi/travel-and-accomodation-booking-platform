@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Box, Skeleton, Typography } from "@mui/material";
+import { Alert, Box, Container, Skeleton, Typography } from "@mui/material";
 
 import HomeSearchBar from "../../../shared/components/HomeSearchBar";
 import FeaturedDeals from "../components/FeaturedDeals";
@@ -44,7 +44,7 @@ export default function HomePage() {
     const loadData = async () => {
       try {
         const [featuredRes, trendingRes, recentRes] = await Promise.all([
-          getFeaturedDeals(2),
+          getFeaturedDeals(),
           getTrendingDestinations(),
           getRecentHotels(2),
         ]);
@@ -93,87 +93,76 @@ export default function HomePage() {
   const anyError = featured.error || trending.error || recent.error;
 
   return (
-    <Box sx={{ py: 4 }}>
+    <Box>
+      {/*hero*/}
       <Box
         sx={{
-          mb: 6,
-          p: { xs: 3, md: 5 },
-          borderRadius: 4,
-          background:
-            "linear-gradient(135deg, rgba(25,118,210,0.10) 0%, rgba(25,118,210,0.04) 100%)",
-          border: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <Typography variant="h3" component="h1" sx={{ fontWeight: 800, mb: 1 }}>
-          Find your perfect stay
-        </Typography>
-
-        <Typography
-          variant="h6"
-          color="text.secondary"
-          sx={{ mb: 4, maxWidth: 720 }}
-        >
-          Discover hotels, featured deals, and trending destinations for your
-          next trip
-        </Typography>
-
-        <HomeSearchBar />
-      </Box>
-
-      <Box
-        sx={{
+          position: "relative",
+          width: "100vw",
+          ml: "calc(50% - 50vw)",
+          mr: "calc(50% - 50vw)",
+          minHeight: { xs: 500, md: 600 },
           display: "flex",
-          gap: 3,
-          flexWrap: "wrap",
-          mb: 4,
+          alignItems: "center",
+          overflow: "hidden",
+          backgroundImage:
+            "linear-gradient(rgba(8, 35, 84, 0.50), rgba(8, 35, 84, 0.45)), url('https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <Typography
-          component="a"
-          href="#featured-deals"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-            fontWeight: 700,
-          }}
-        >
-          Featured Deals
-        </Typography>
+        <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
+          <Box
+            sx={{
+              maxWidth: 1080,
+              py: { xs: 7, md: 10 },
+              ml: 2,
+            }}
+          >
+            <Typography
+              variant="h1"
+              component="h1"
+              sx={{
+                color: "common.white",
+                fontWeight: 800,
+                lineHeight: 1.05,
+                mb: 2,
+                fontSize: { xs: "2.4rem", sm: "3rem", md: "4.25rem" },
+                maxWidth: 780,
+                textShadow: "0 4px 18px rgba(31, 2, 2, 0.93)",
+              }}
+            >
+              Find your perfect stay
+            </Typography>
 
-        <Typography
-          component="a"
-          href="#trending-destinations"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-            fontWeight: 700,
-          }}
-        >
-          Trending Destinations
-        </Typography>
+            <Typography
+              sx={{
+                color: "common.white",
+                mb: 4,
+                maxWidth: 760,
+                fontSize: { xs: "1rem", md: "1.45rem" },
+                fontWeight: 500,
+                textShadow: "0 2px 10px rgba(0,0,0,0.20)",
+              }}
+            >
+              Discover hotels, featured deals, and trending destinations for
+              your next trip
+            </Typography>
 
-        <Typography
-          component="a"
-          href="#recently-visited"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-            fontWeight: 700,
-          }}
-        >
-          Recently Visited
-        </Typography>
+            <Box sx={{ minWidth: "1120" }}>
+              <HomeSearchBar />
+            </Box>
+          </Box>
+        </Container>
       </Box>
-
       {anyError && (
         <Alert severity="error" sx={{ mb: 4 }}>
           {anyError}
         </Alert>
       )}
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <Box id="featured-deals">
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 15, mt: 10 }}>
+        <Box>
           {featured.loading ? (
             <Skeleton variant="rounded" height={300} />
           ) : (
@@ -181,7 +170,7 @@ export default function HomePage() {
           )}
         </Box>
 
-        <Box id="trending-destinations">
+        <Box>
           {trending.loading ? (
             <Skeleton variant="rounded" height={360} />
           ) : (
@@ -189,7 +178,7 @@ export default function HomePage() {
           )}
         </Box>
 
-        <Box id="recently-visited">
+        <Box>
           {recent.loading ? (
             <Skeleton variant="rounded" height={260} />
           ) : (

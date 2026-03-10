@@ -209,7 +209,7 @@ export default function UserLayout() {
         </Container>
       </AppBar>
 
-      <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Container component="main">
         <Outlet />
       </Container>
     </Box>
