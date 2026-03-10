@@ -101,12 +101,12 @@ export default function HomePage() {
           width: "99.4vw",
           ml: "calc(50% - 50vw)",
           mr: "calc(50% - 50vw)",
-          minHeight: { xs: 450, md: 550 },
+          minHeight: { xs: 420, md: 560 },
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
           backgroundImage:
-            "linear-gradient(rgba(8, 35, 84, 0.50), rgba(8, 35, 84, 0.45)), url('https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D')",
+            "linear-gradient(rgba(8,35,84,0.65), rgba(8,35,84,0.55)), url('https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -123,13 +123,12 @@ export default function HomePage() {
               variant="h1"
               component="h1"
               sx={{
-                mt: 1,
                 color: "common.white",
                 fontWeight: 800,
                 lineHeight: 1.05,
                 mb: 2,
                 fontSize: { xs: "2.4rem", sm: "3rem", md: "4.25rem" },
-                maxWidth: 780,
+                maxWidth: 820,
                 textShadow: "0 4px 18px rgba(31, 2, 2, 0.93)",
               }}
             >
@@ -139,7 +138,7 @@ export default function HomePage() {
             <Typography
               sx={{
                 color: "common.white",
-                mb: 4,
+                mb: 5,
                 maxWidth: 760,
                 fontSize: { xs: "1rem", md: "1.45rem" },
                 fontWeight: 500,
@@ -164,7 +163,7 @@ export default function HomePage() {
             cursor: "pointer",
             opacity: 0.9,
             color: "common.white",
-            fontSize: 32,
+            fontSize: 36,
             zIndex: 2,
             animation: "bounce 1.6s infinite",
             "@keyframes bounce": {
