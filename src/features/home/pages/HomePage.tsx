@@ -5,7 +5,7 @@ import HomeSearchBar from "../../../shared/components/HomeSearchBar/HomeSearchBa
 import FeaturedDeals from "../components/FeaturedDeals";
 import TrendingDestinations from "../components/TrendingDestinations";
 import RecentlyVisited from "../components/RecentlyVisited";
-
+import { BsMouse } from "react-icons/bs";
 import {
   getFeaturedDeals,
   getTrendingDestinations,
@@ -98,10 +98,10 @@ export default function HomePage() {
       <Box
         sx={{
           position: "relative",
-          width: "100vw",
+          width: "99.4vw",
           ml: "calc(50% - 50vw)",
           mr: "calc(50% - 50vw)",
-          minHeight: { xs: 500, md: 600 },
+          minHeight: { xs: 450, md: 550 },
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
@@ -123,6 +123,7 @@ export default function HomePage() {
               variant="h1"
               component="h1"
               sx={{
+                mt: 1,
                 color: "common.white",
                 fontWeight: 800,
                 lineHeight: 1.05,
@@ -154,14 +155,51 @@ export default function HomePage() {
             </Box>
           </Box>
         </Container>
+        <Box
+          sx={{
+            display: { xs: "none", md: "block" },
+            position: "absolute",
+            bottom: 20,
+            left: "50%",
+            cursor: "pointer",
+            opacity: 0.9,
+            color: "common.white",
+            fontSize: 32,
+            zIndex: 2,
+            animation: "bounce 1.6s infinite",
+            "@keyframes bounce": {
+              "0%, 100%": {
+                transform: "translate(-50%, 0)",
+              },
+              "50%": {
+                transform: "translate(-50%, 8px)",
+              },
+            },
+          }}
+          onClick={() =>
+            document.getElementById("featured-deals")?.scrollIntoView({
+              behavior: "smooth",
+            })
+          }
+        >
+          <BsMouse />
+        </Box>
       </Box>
       {anyError && (
         <Alert severity="error" sx={{ mb: 4 }}>
           {anyError}
         </Alert>
       )}
-
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 15, mt: 10 }}>
+      <Box
+        id="featured-deals"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 15,
+          mt: 10,
+          scrollMarginTop: 90,
+        }}
+      >
         <Box>
           {featured.loading ? (
             <Skeleton variant="rounded" height={300} />
