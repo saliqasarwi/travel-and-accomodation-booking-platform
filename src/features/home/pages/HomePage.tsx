@@ -190,16 +190,14 @@ export default function HomePage() {
         </Alert>
       )}
       <Box
-        id="featured-deals"
         sx={{
           display: "flex",
           flexDirection: "column",
           gap: 15,
           mt: 10,
-          scrollMarginTop: 90,
         }}
       >
-        <Box>
+        <Box id="featured-deals" sx={{ scrollMarginTop: 90 }}>
           {featured.loading ? (
             <Skeleton variant="rounded" height={300} />
           ) : (
