@@ -33,14 +33,24 @@ export default function TrendingDestinations({ items }: Props) {
   }
 
   return (
-    <Box component="section" sx={{ py: 2 }}>
-      <Stack spacing={1} sx={{ mb: 3 }}>
+    <Box
+      component="section"
+      sx={{
+        py: { xs: 1, sm: 2, md: 3 },
+      }}
+    >
+      <Stack spacing={1} sx={{ mb: { xs: 2, sm: 3 } }}>
         <Typography
           variant="h4"
           sx={{
             fontWeight: 800,
             color: "text.primary",
             lineHeight: 1.2,
+            fontSize: {
+              xs: "1.6rem",
+              sm: "2rem",
+              md: "2.25rem",
+            },
           }}
         >
           Trending Destinations
@@ -49,14 +59,17 @@ export default function TrendingDestinations({ items }: Props) {
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ maxWidth: 520 }}
+          sx={{
+            maxWidth: 520,
+            fontSize: { xs: "0.9rem", sm: "0.95rem" },
+          }}
         >
           Explore the most popular places travelers are loving right now.
         </Typography>
 
         <Box
           sx={{
-            width: 84,
+            width: { xs: 64, sm: 84 },
             height: 4,
             borderRadius: 999,
             background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
@@ -69,7 +82,7 @@ export default function TrendingDestinations({ items }: Props) {
           onClick={() => scroll("left")}
           sx={{
             position: "absolute",
-            left: -18,
+            left: { md: -18, lg: -24 },
             top: "50%",
             transform: "translateY(-50%)",
             bgcolor: "background.paper",
@@ -93,12 +106,16 @@ export default function TrendingDestinations({ items }: Props) {
         <Box
           ref={scrollContainerRef}
           sx={{
-            display: "flex",
-            gap: 3,
-            overflowX: "auto",
-            pb: 4,
-            scrollSnapType: "x mandatory",
-            "&::-webkit-scrollbar": { display: "none" },
+            display: { xs: "grid", sm: "flex" },
+            gridTemplateColumns: { xs: "1fr", sm: "none" },
+            gap: { xs: 2, sm: 2.5, md: 3 },
+            overflowX: { xs: "visible", sm: "auto" },
+            pb: { xs: 0, sm: 3, md: 4 },
+            scrollSnapType: { xs: "none", sm: "x mandatory" },
+            WebkitOverflowScrolling: "touch",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
             msOverflowStyle: "none",
             scrollbarWidth: "none",
           }}
@@ -107,16 +124,27 @@ export default function TrendingDestinations({ items }: Props) {
             <Box
               key={item.cityId}
               sx={{
-                flex: "0 0 300px",
-                height: 420,
+                flex: {
+                  xs: "0 0 100%",
+                  sm: "0 0 320px",
+                  md: "0 0 340px",
+                  lg: "0 0 360px",
+                },
+                height: {
+                  xs: 260,
+                  sm: 360,
+                  md: 400,
+                  lg: 420,
+                },
                 perspective: "1500px",
                 scrollSnapAlign: "start",
                 cursor: "pointer",
+                minWidth: 0,
                 "&:hover .flip-card-inner": {
-                  transform: "rotateY(180deg)",
+                  transform: { md: "rotateY(180deg)" },
                 },
                 "&:hover .front-image": {
-                  transform: "scale(1.08)",
+                  transform: { md: "scale(1.08)" },
                 },
               }}
             >
@@ -135,7 +163,7 @@ export default function TrendingDestinations({ items }: Props) {
                   sx={{
                     position: "absolute",
                     inset: 0,
-                    borderRadius: 4,
+                    borderRadius: { xs: 3, sm: 4 },
                     overflow: "hidden",
                     backfaceVisibility: "hidden",
                     boxShadow: "0 20px 40px rgba(15, 23, 42, 0.12)",
@@ -162,7 +190,7 @@ export default function TrendingDestinations({ items }: Props) {
                   sx={{
                     position: "absolute",
                     inset: 0,
-                    borderRadius: 4,
+                    borderRadius: { xs: 3, sm: 4 },
                     overflow: "hidden",
                     backfaceVisibility: "hidden",
                     transform: "rotateY(180deg)",
@@ -173,7 +201,7 @@ export default function TrendingDestinations({ items }: Props) {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    p: 3,
+                    p: { xs: 2, sm: 2.5, md: 3 },
                     color: "white",
                   }}
                 >
@@ -187,26 +215,23 @@ export default function TrendingDestinations({ items }: Props) {
                     }}
                   >
                     <Box sx={{ mb: 2 }}>
-                      <Box
+                      <Typography
+                        variant="h5"
                         sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "flex-start",
+                          fontWeight: 800,
+                          lineHeight: 1.1,
+                          mb: 1,
+                          color: "#FFFFFF",
+                          textShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                          fontSize: {
+                            xs: "1.25rem",
+                            sm: "1.5rem",
+                            md: "1.75rem",
+                          },
                         }}
                       >
-                        <Typography
-                          variant="h5"
-                          sx={{
-                            fontWeight: 800,
-                            lineHeight: 1.1,
-                            mb: 1,
-                            color: "#FFFFFF",
-                            textShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                          }}
-                        >
-                          {item.cityName}
-                        </Typography>
-                      </Box>
+                        {item.cityName}
+                      </Typography>
 
                       <Chip
                         icon={
@@ -222,8 +247,12 @@ export default function TrendingDestinations({ items }: Props) {
                           border: "1px solid rgba(255,255,255,0.3)",
                           fontWeight: 600,
                           backdropFilter: "blur(4px)",
+                          maxWidth: "100%",
                           "& .MuiChip-icon": {
                             color: "#FFFFFF !important",
+                          },
+                          "& .MuiChip-label": {
+                            px: 1,
                           },
                         }}
                       />
@@ -234,13 +263,17 @@ export default function TrendingDestinations({ items }: Props) {
                       sx={{
                         color: "rgba(255,255,255,0.95)",
                         lineHeight: 1.6,
-                        mb: 3,
+                        mb: 2,
                         display: "-webkit-box",
-                        WebkitLineClamp: 4,
+                        WebkitLineClamp: { xs: 3, sm: 4 },
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                         flexGrow: 1,
                         textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                        fontSize: {
+                          xs: "0.88rem",
+                          sm: "0.95rem",
+                        },
                       }}
                     >
                       {item.description}
@@ -256,7 +289,7 @@ export default function TrendingDestinations({ items }: Props) {
           onClick={() => scroll("right")}
           sx={{
             position: "absolute",
-            right: -18,
+            right: { md: -18, lg: -24 },
             top: "50%",
             transform: "translateY(-50%)",
             bgcolor: "background.paper",
