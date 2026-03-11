@@ -32,8 +32,12 @@ export default function FeaturedDeals({ items }: Props) {
           sx={{
             fontWeight: 800,
             color: "text.primary",
-            position: "relative",
-            width: "fit-content",
+            lineHeight: 1.2,
+            fontSize: {
+              xs: "1.6rem",
+              sm: "2rem",
+              md: "2.25rem",
+            },
           }}
         >
           Featured Deals

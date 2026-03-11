@@ -134,7 +134,7 @@ export default function TrendingDestinations({ items }: Props) {
                   xs: 260,
                   sm: 360,
                   md: 400,
-                  lg: 420,
+                  lg: 500,
                 },
                 perspective: "1500px",
                 scrollSnapAlign: "start",
