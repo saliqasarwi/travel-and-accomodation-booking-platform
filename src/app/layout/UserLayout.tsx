@@ -23,6 +23,7 @@ import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 
 import { useCart } from "@features/cart/useCart";
 import { useAuth } from "@app/providers/AuthContext";
+import Footer from "@shared/components/Footer.tsx";
 
 export default function UserLayout() {
   const { totalItems } = useCart();
@@ -211,6 +212,7 @@ export default function UserLayout() {
 
       <Container component="main">
         <Outlet />
+        <Footer />
       </Container>
     </Box>
   );
