@@ -199,14 +199,42 @@ export default function SearchFilters() {
   };
 
   return (
-    <Box sx={{ width: { xs: "100%", md: 320 }, flexShrink: 0 }}>
+    <Box
+      sx={{
+        width: { xs: "100%", lg: 320 },
+        flexShrink: 0,
+        position: { xs: "static", lg: "sticky" },
+        top: { lg: 96 },
+        alignSelf: "flex-start",
+      }}
+    >
       <Stack
         spacing={3}
         sx={{
-          p: 2,
-          borderRadius: 3,
+          p: 3,
+          borderRadius: 1,
           border: "1px solid",
           borderColor: "divider",
+          bgcolor: "background.paper",
+          boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
+          maxHeight: { lg: "calc(100vh - 100px)" },
+          overflowY: { lg: "auto" },
+          pr: { lg: 1.5 },
+          scrollbarWidth: "thin",
+          scrollbarColor: "#cbd5e1 transparent",
+          "&::-webkit-scrollbar": {
+            width: 8,
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "transparent",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#cbd5e1",
+            borderRadius: 999,
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            backgroundColor: "#94a3b8",
+          },
         }}
       >
         <Typography variant="h6" fontWeight={700}>
@@ -214,6 +242,7 @@ export default function SearchFilters() {
         </Typography>
 
         <Divider />
+
         <Box>
           <Typography fontWeight={700} sx={{ mb: 2 }}>
             Your budget (per night)
@@ -298,7 +327,7 @@ export default function SearchFilters() {
                     onChange={() => toggleStar(star)}
                   />
                 }
-                label={<Rating value={star} readOnly size="small" />}
+                label={<Rating value={star} readOnly size="medium" />}
               />
             ))}
           </FormGroup>

@@ -57,16 +57,7 @@ export default function SearchResultsPage() {
         spacing={4}
         alignItems="flex-start"
       >
-        <Box
-          sx={{
-            width: { xs: "100%", lg: 300 },
-            position: { xs: "static", lg: "sticky" },
-            top: { xs: 0, lg: 100 },
-          }}
-          alignSelf="flex-start"
-        >
-          <SearchFilters />
-        </Box>
+        <SearchFilters />
         <HotelResults />
       </Stack>
     </Stack>
