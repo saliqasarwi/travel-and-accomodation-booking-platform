@@ -16,22 +16,10 @@ export default function SearchResultsPage() {
   }, [searchParams]);
 
   return (
-    <Stack spacing={4} sx={{ my: 6 }}>
+    <Stack spacing={1} sx={{ my: 0.8 }}>
       <HomeSearchBar />
 
-      <Box>
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 800,
-            color: "text.primary",
-            mb: 1,
-            lineHeight: 1.2,
-          }}
-        >
-          Search Results
-        </Typography>
-
+      <Box sx={{ py: 0.5 }}>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
           Explore available stays in{" "}
           <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>

@@ -73,7 +73,7 @@ export default function HotelCard({ hotel }: Props) {
             sx={{
               width: { xs: "100%", md: "49%" },
               minWidth: { md: "49%" },
-              height: { xs: 220, md: 300 },
+              height: { xs: 220, md: 260 },
               overflow: "hidden",
               position: "relative",
             }}

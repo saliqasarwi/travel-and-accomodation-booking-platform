@@ -191,7 +191,7 @@ export default function SearchFilters() {
   return (
     <Box
       sx={{
-        width: { xs: "100%", lg: 320 },
+        width: { xs: "100%", lg: 365 },
         flexShrink: 0,
         position: { xs: "static", lg: "sticky" },
         top: { lg: 96 },
