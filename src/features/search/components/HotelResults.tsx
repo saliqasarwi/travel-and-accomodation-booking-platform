@@ -9,7 +9,8 @@ import { fetchSearchResults } from "../api/search.api";
 import { parseSearchParams } from "../utils/searchParams";
 import { applyFilters } from "../utils/applyFilters";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
-
+import { sortResults } from "../utils/sortResults";
+import SearchSortBar from "./SearchSortBar";
 const PAGE_SIZE = 6;
 
 export default function HotelResults() {
@@ -37,7 +38,8 @@ export default function HotelResults() {
 
         const query = parseSearchParams(searchParams);
         const filtered = applyFilters(results, query);
-        setData(filtered);
+        const sorted = sortResults(filtered, query.sort ?? "recommended");
+        setData(sorted);
         resetPage();
       } catch (err) {
         if (!axios.isCancel(err)) {
@@ -102,26 +104,9 @@ export default function HotelResults() {
 
   return (
     <Box sx={{ flex: 1, minWidth: 0 }}>
-      <Box
-        sx={{
-          mb: 3,
-          p: 2.5,
-          borderRadius: 2,
-          border: "1px solid",
-          borderColor: "divider",
-          bgcolor: "background.paper",
-          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.04)",
-        }}
-      >
-        <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
-          {data.length} stay{data.length !== 1 ? "s" : ""} found
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Browse available stays and choose the stay that suits you best.
-        </Typography>
-      </Box>
+      <SearchSortBar resultsCount={data.length} />
 
-      <Stack spacing={5}>
+      <Stack spacing={3}>
         {visibleHotels.map((hotel) => (
           <HotelCard key={hotel.hotelId} hotel={hotel} />
         ))}

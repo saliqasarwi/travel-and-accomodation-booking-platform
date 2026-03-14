@@ -3,6 +3,7 @@ export type Amenity = {
   name: string;
   description: string;
 };
+
 export interface HotelSearchItem {
   hotelId: number;
   hotelName: string;

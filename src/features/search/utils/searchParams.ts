@@ -1,18 +1,24 @@
 import type { URLSearchParamsInit } from "react-router-dom";
 
-export type SearchQuery = {
-  city: string;
-  checkInDate: string;
-  checkOutDate: string;
-  adults: number;
-  children: number;
-  numberOfRooms: number;
+export type SearchSort =
+  | "price_asc"
+  | "price_desc"
+  | "rating_desc"
+  | "recommended";
 
+export type SearchQuery = {
+  city?: string;
+  checkInDate?: string;
+  checkOutDate?: string;
+  adults?: number;
+  children?: number;
+  numberOfRooms?: number;
   minPrice?: number;
   maxPrice?: number;
   stars?: number[];
-  roomType?: string;
   amenities?: number[];
+  roomType?: string;
+  sort?: SearchSort;
 };
 
 export function parseSearchParams(searchParams: URLSearchParams): SearchQuery {
@@ -47,8 +53,11 @@ export function parseSearchParams(searchParams: URLSearchParams): SearchQuery {
           .split(",")
           .map((a) => Number(a))
       : undefined,
+
+    sort: (searchParams.get("sort") as SearchSort | null) ?? undefined,
   };
 }
+
 export function setSearchParamsFromPatch(
   current: URLSearchParams,
   patch: Partial<SearchQuery>
