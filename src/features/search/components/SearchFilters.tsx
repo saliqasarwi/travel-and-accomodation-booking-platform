@@ -39,13 +39,14 @@ const sectionTitleSx = {
 };
 const filterContainerSx = {
   p: 3,
-  borderRadius: 5,
   border: "1px solid",
+  borderRadius: 1,
   borderColor: "divider",
   bgcolor: "background.paper",
   boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
   maxHeight: { lg: "calc(100vh - 100px)" },
   overflowY: { lg: "auto" },
+  overflowX: { lg: "hidden" },
   pr: { lg: 1.5 },
   scrollbarWidth: "thin",
   scrollbarColor: "#cbd5e1 transparent",

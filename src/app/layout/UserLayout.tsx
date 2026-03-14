@@ -24,6 +24,7 @@ import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import { useCart } from "@features/cart/useCart";
 import { useAuth } from "@app/providers/AuthContext";
 import Footer from "@shared/components/Footer.tsx";
+import { GridSearchIcon } from "@mui/x-data-grid";
 
 export default function UserLayout() {
   const { totalItems } = useCart();
@@ -103,6 +104,11 @@ export default function UserLayout() {
               <Tooltip title="Home">
                 <IconButton component={RouterLink} to="/" color="inherit">
                   <HomeRoundedIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Search">
+                <IconButton component={RouterLink} to="/search" color="inherit">
+                  <GridSearchIcon />
                 </IconButton>
               </Tooltip>
             </Stack>

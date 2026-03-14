@@ -40,6 +40,7 @@ export default function HotelCard({ hotel }: Props) {
       sx={{
         overflow: "hidden",
         border: "1px solid",
+        borderRadius: 5,
         borderColor: "divider",
         backgroundColor: "background.paper",
         boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
@@ -53,6 +54,9 @@ export default function HotelCard({ hotel }: Props) {
         "&:hover .hotel-image": {
           transform: "scale(1.05)",
         },
+        bgcolor: "background.default",
+        background: (theme) =>
+          `linear-gradient(180deg, ${theme.palette.primary.light}10 0%, ${theme.palette.background.default} 40%)`,
       }}
     >
       <CardActionArea
@@ -61,12 +65,15 @@ export default function HotelCard({ hotel }: Props) {
           display: "block",
         }}
       >
-        <Stack direction={{ xs: "column", md: "row" }}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={{ xs: 0, md: 13 }}
+        >
           <Box
             sx={{
-              width: { xs: "100%", md: 300 },
-              minWidth: { md: 300 },
-              height: { xs: 220, md: 260 },
+              width: { xs: "100%", md: "49%" },
+              minWidth: { md: "49%" },
+              height: { xs: 220, md: 300 },
               overflow: "hidden",
               position: "relative",
             }}
@@ -91,9 +98,11 @@ export default function HotelCard({ hotel }: Props) {
                 size="small"
                 sx={{
                   position: "absolute",
-                  left: 16,
-                  bottom: 16,
+                  left: 20,
+                  top: 20,
                   fontWeight: 700,
+                  borderRadius: 999,
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.18)",
                 }}
               />
             )}
@@ -102,22 +111,23 @@ export default function HotelCard({ hotel }: Props) {
           <CardContent
             sx={{
               flex: 1,
-              p: 3,
+              p: 2.5,
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
               minHeight: { md: 260 },
             }}
           >
-            <Stack spacing={1.5}>
+            <Stack spacing={{ xs: 1, md: 2 }} mt={{ xs: 0, md: 3 }}>
               <Box>
                 <Typography
-                  variant="h5"
+                  variant="h6"
                   sx={{
                     fontWeight: 800,
                     color: "text.primary",
                     mb: 0.75,
                     lineHeight: 1.2,
+                    fontSize: { xs: "1.2rem", md: "1.5rem" },
                   }}
                 >
                   {hotel.hotelName}
@@ -130,7 +140,11 @@ export default function HotelCard({ hotel }: Props) {
                     size="medium"
                     precision={0.5}
                   />
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontSize: "0.85rem" }}
+                  >
                     {hotel.starRating} star hotel
                   </Typography>
                 </Stack>
