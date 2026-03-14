@@ -17,6 +17,7 @@ import {
   MenuItem,
   CircularProgress,
   Alert,
+  Button,
 } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
@@ -187,7 +188,23 @@ export default function SearchFilters() {
 
     updateParams({ amenities: next });
   };
+  const hasActiveFilters =
+    !!searchParams.get("minPrice") ||
+    !!searchParams.get("maxPrice") ||
+    selectedStars.length > 0 ||
+    selectedAmenities.length > 0 ||
+    !!selectedRoomType;
+  const handleClearFilters = () => {
+    const next = setSearchParamsFromPatch(searchParams, {
+      minPrice: undefined,
+      maxPrice: undefined,
+      stars: [],
+      amenities: [],
+      roomType: undefined,
+    });
 
+    setSearchParams(next);
+  };
   return (
     <Box
       sx={{
@@ -199,9 +216,31 @@ export default function SearchFilters() {
       }}
     >
       <Stack spacing={3} sx={filterContainerSx}>
-        <Typography variant="h6" fontWeight={800}>
-          Filters
-        </Typography>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={2}
+        >
+          <Typography variant="h6" fontWeight={800}>
+            Filters
+          </Typography>
+
+          <Button
+            variant="text"
+            size="small"
+            onClick={handleClearFilters}
+            disabled={!hasActiveFilters}
+            sx={{
+              fontWeight: 700,
+              color: "primary.main",
+              minWidth: "auto",
+              px: 0,
+            }}
+          >
+            Clear all
+          </Button>
+        </Stack>
 
         <Divider />
 
