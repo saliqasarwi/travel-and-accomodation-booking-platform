@@ -104,11 +104,28 @@ export default function HotelResults() {
 
   return (
     <Box sx={{ flex: 1, minWidth: 0 }}>
-      <SearchSortBar resultsCount={data.length} />
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: { xs: 760, md: "100%" },
+          mx: "auto",
+        }}
+      >
+        <SearchSortBar resultsCount={data.length} />
+      </Box>
 
       <Stack spacing={3}>
         {visibleHotels.map((hotel) => (
-          <HotelCard key={hotel.hotelId} hotel={hotel} />
+          <Box
+            key={hotel.hotelId}
+            sx={{
+              width: "100%",
+              maxWidth: { xs: 760, md: "100%" },
+              mx: "auto",
+            }}
+          >
+            <HotelCard hotel={hotel} />
+          </Box>
         ))}
 
         {hasMore && (
