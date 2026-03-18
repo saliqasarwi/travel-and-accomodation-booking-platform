@@ -5,7 +5,6 @@ import {
   Box,
   CircularProgress,
   Container,
-  Divider,
   Grid,
   Stack,
 } from "@mui/material";
@@ -94,16 +93,26 @@ export default function HotelPage() {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-      <HotelInformation hotel={hotel} />
+    <Container disableGutters maxWidth={false}>
+      <Grid
+        container
+        spacing={2.5}
+        alignItems="flex-start"
+        sx={{
+          pl: { xs: 0.5, md: 1 },
+          py: { xs: 0.5, md: 1 },
+        }}
+      >
+        <Grid size={{ xs: 12, lg: 3.2 }}>
+          <Stack spacing={2}>
+            <HotelInformation hotel={hotel} />
+            <HotelReviews reviews={reviews} />
+          </Stack>
+        </Grid>
 
-      <Divider sx={{ my: 3 }} />
-
-      <Grid container spacing={5}>
-        <Grid size={{ xs: 12, lg: 8 }}>
-          <Stack spacing={6}>
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Stack spacing={2}>
             <HotelGallery items={gallery} />
-
             <HotelRooms
               rooms={rooms}
               onAddToCart={(room) => {
@@ -124,21 +133,20 @@ export default function HotelPage() {
                 });
               }}
             />
-
-            <HotelReviews reviews={reviews} />
           </Stack>
         </Grid>
 
-        <Grid size={{ xs: 12, lg: 4 }}>
-          <Box
-            sx={{
-              position: { lg: "sticky" },
-              top: { lg: 24 },
-              pb: { lg: 4 },
-            }}
-          >
-            <HotelLocationMap hotel={hotel} />
-          </Box>
+        <Grid
+          size={{ xs: 12, lg: 2.8 }}
+          sx={{
+            alignSelf: { lg: "flex-start" },
+            position: { xs: "static", lg: "sticky" },
+            top: { lg: 88 },
+            px: { xs: 0.5, md: 0.5 },
+            py: { xs: 0.3, md: 0.5 },
+          }}
+        >
+          <HotelLocationMap hotel={hotel} />
         </Grid>
       </Grid>
     </Container>
