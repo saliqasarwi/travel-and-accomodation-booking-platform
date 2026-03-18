@@ -9,20 +9,26 @@ export default function HotelLocationMap({ hotel }: Props) {
   const lat = hotel.latitude;
   const lng = hotel.longitude;
 
-  const canShowMap = typeof lat === "number" && typeof lng === "number";
+  const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
 
-  const googleMapsUrl = canShowMap
-    ? `https://www.google.com/maps?q=${lat},${lng}`
-    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotel.location)}`;
-
-  const embedUrl = canShowMap
-    ? `https://maps.google.com/maps?q=${lat},${lng}&z=14&output=embed`
-    : `https://maps.google.com/maps?q=${encodeURIComponent(hotel.location)}&z=14&output=embed`;
+  const embedUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=14&output=embed`;
 
   return (
     <Stack spacing={1}>
-      <Typography variant="h6" fontWeight={800}>
-        Location on map
+      <Typography
+        variant="h6"
+        fontWeight={800}
+        sx={{
+          fontWeight: 800,
+          fontSize: { xs: "1.75rem", md: "2rem" },
+          lineHeight: 1.05,
+          background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          mb: 1,
+        }}
+      >
+        Location
       </Typography>
 
       <Box
@@ -46,31 +52,22 @@ export default function HotelLocationMap({ hotel }: Props) {
         />
       </Box>
 
-      <Stack direction="row" spacing={1} flexWrap="wrap">
+      <Stack
+        direction="row"
+        spacing={1}
+        flexWrap="wrap"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Button
           variant="outlined"
           component="a"
           href={googleMapsUrl}
           target="_blank"
-          rel="noreferrer"
         >
           Open in Google Maps
         </Button>
       </Stack>
-
-      <Box
-        sx={{
-          p: 1.5,
-          borderRadius: 2,
-          border: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <Typography fontWeight={800}>Nearby attractions</Typography>
-        <Typography color="text.secondary" variant="body2">
-          Nearby attractions
-        </Typography>
-      </Box>
     </Stack>
   );
 }
