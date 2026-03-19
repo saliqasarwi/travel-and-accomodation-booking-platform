@@ -16,11 +16,29 @@ export default function SearchResultsPage() {
   }, [searchParams]);
 
   return (
-    <Stack spacing={1} sx={{ my: 0.8 }}>
-      <HomeSearchBar />
+    <Stack spacing={1} sx={{ mx: { xs: 0, md: 10 } }}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: {
+              xs: "100%",
+              md: 1000,
+            },
+          }}
+        >
+          <HomeSearchBar />
+        </Box>
+      </Box>
 
-      <Box sx={{ py: 0.5 }}>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+      <Box sx={{ py: 0.5, mb: 2 }}>
+        <Typography variant="body1" color="text.secondary">
           Explore available stays in{" "}
           <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>
             {query.city || "your destination"}
@@ -46,6 +64,7 @@ export default function SearchResultsPage() {
         alignItems="flex-start"
       >
         <SearchFilters />
+
         <HotelResults />
       </Stack>
     </Stack>

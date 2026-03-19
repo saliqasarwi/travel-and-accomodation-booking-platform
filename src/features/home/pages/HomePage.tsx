@@ -93,7 +93,7 @@ export default function HomePage() {
   const anyError = featured.error || trending.error || recent.error;
 
   return (
-    <Box>
+    <Box sx={{ mx: 5 }}>
       {/*hero*/}
       <Box
         sx={{

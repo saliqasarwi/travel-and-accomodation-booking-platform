@@ -150,23 +150,25 @@ export default function UserLayout() {
                     onClose={handleCloseProfileMenu}
                     transformOrigin={{ horizontal: "right", vertical: "top" }}
                     anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                    PaperProps={{
-                      sx: {
-                        mt: 1,
-                        minWidth: 190,
-                        borderRadius: 3,
-                        overflow: "visible",
-                        boxShadow: 6,
-                        "&:before": {
-                          content: '""',
-                          position: "absolute",
-                          top: -8,
-                          right: 16,
-                          width: 16,
-                          height: 16,
-                          bgcolor: "background.paper",
-                          transform: "rotate(45deg)",
-                          zIndex: 0,
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          mt: 1,
+                          minWidth: 190,
+                          borderRadius: 3,
+                          boxShadow: 6,
+                          overflow: "visible",
+                          "&:before": {
+                            content: '""',
+                            position: "absolute",
+                            top: -8,
+                            right: 16,
+                            width: 16,
+                            height: 16,
+                            bgcolor: "background.paper",
+                            transform: "rotate(45deg)",
+                            zIndex: 0,
+                          },
                         },
                       },
                     }}
@@ -216,10 +218,10 @@ export default function UserLayout() {
         </Container>
       </AppBar>
 
-      <Container component="main">
+      <Box component="main" sx={{ py: 2 }}>
         <Outlet />
-        <Footer />
-      </Container>
+      </Box>
+      <Footer />
     </Box>
   );
 }
