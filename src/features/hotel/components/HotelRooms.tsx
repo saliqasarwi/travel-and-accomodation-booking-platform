@@ -5,6 +5,8 @@ import {
   Button,
   Stack,
   Typography,
+  Box,
+  Grid,
 } from "@mui/material";
 import type { AvailableRoom } from "../types/room.types";
 
@@ -16,65 +18,108 @@ type Props = {
 export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
   return (
     <Stack spacing={2}>
-      <Typography variant="h6" fontWeight={800}>
+      <Typography
+        variant="h5"
+        fontWeight={800}
+        sx={{
+          fontWeight: 800,
+          fontSize: { xs: "1.75rem", md: "2rem" },
+          lineHeight: 1.05,
+          background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          mb: 1,
+        }}
+      >
         Available Rooms
       </Typography>
-
       {rooms.length === 0 ? (
         <Typography color="text.secondary">No available rooms.</Typography>
       ) : (
-        <Stack spacing={2}>
-          {rooms.map((room) => {
-            return (
-              <Card key={room.roomId} sx={{ borderRadius: 3 }} elevation={2}>
-                <Stack direction={{ xs: "column", md: "row" }}>
-                  <CardMedia
-                    component="img"
-                    image={room.roomPhotoUrl}
-                    alt={room.roomType}
+        <Grid container spacing={2}>
+          {rooms.map((room) => (
+            <Grid key={room.roomId} size={{ xs: 12, sm: 6 }}>
+              <Card
+                sx={{
+                  height: "100%",
+                  borderRadius: 1,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+                  transition: "transform 0.25s ease, box-shadow 0.25s ease",
+                  "&:hover": {
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 16px 32px rgba(15, 23, 42, 0.10)",
+                  },
+                }}
+                elevation={0}
+              >
+                <CardMedia
+                  component="img"
+                  image={room.roomPhotoUrl}
+                  alt={room.roomType}
+                  sx={{
+                    width: "100%",
+                    height: 180,
+                    objectFit: "cover",
+                  }}
+                />
+
+                <CardContent
+                  sx={{
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1.25,
+                  }}
+                >
+                  <Box>
+                    <Typography variant="h6" fontWeight={800} sx={{ mb: 0.5 }}>
+                      {room.roomType}
+                    </Typography>
+                  </Box>
+
+                  <Typography variant="body2" color="text.secondary">
+                    Capacity: {room.capacityOfAdults} adults •{" "}
+                    {room.capacityOfChildren} children
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
                     sx={{
-                      width: { md: 260 },
-                      height: { xs: 180, md: "auto" },
-                      objectFit: "cover",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
                     }}
-                  />
+                  >
+                    Amenities: {room.amenities.map((a) => a.name).join(" • ")}
+                  </Typography>
 
-                  <CardContent sx={{ flex: 1 }}>
-                    <Stack spacing={1}>
-                      <Typography variant="h6" fontWeight={900}>
-                        {room.roomType} (#{room.roomNumber})
-                      </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 900,
+                      color: "primary.main",
+                      mt: 0.5,
+                    }}
+                  >
+                    ${room.price} / night
+                  </Typography>
 
-                      <Typography variant="body2" color="text.secondary">
-                        Capacity: {room.capacityOfAdults} adults •{" "}
-                        {room.capacityOfChildren} children
-                      </Typography>
-
-                      {room.amenities?.length > 0 && (
-                        <Typography variant="body2" color="text.secondary">
-                          Amenities:{" "}
-                          {room.amenities.map((a) => a.name).join(" • ")}
-                        </Typography>
-                      )}
-
-                      <Typography variant="h6" fontWeight={900}>
-                        ${room.price} / night
-                      </Typography>
-
-                      <Button
-                        variant="contained"
-                        disabled={!room.availability}
-                        onClick={() => onAddToCart(room)}
-                      >
-                        {room.availability ? "Add to cart" : "Not available"}
-                      </Button>
-                    </Stack>
-                  </CardContent>
-                </Stack>
+                  <Button
+                    variant="contained"
+                    disabled={!room.availability}
+                    onClick={() => onAddToCart(room)}
+                    fullWidth
+                    sx={{ mt: 0.5 }}
+                  >
+                    {room.availability ? "Add to cart" : "Not available"}
+                  </Button>
+                </CardContent>
               </Card>
-            );
-          })}
-        </Stack>
+            </Grid>
+          ))}
+        </Grid>
       )}
     </Stack>
   );
