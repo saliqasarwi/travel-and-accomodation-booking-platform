@@ -1,4 +1,5 @@
 import {
+  Box,
   Grid,
   Stack,
   Typography,
@@ -7,21 +8,36 @@ import {
   CardMedia,
   Rating,
   IconButton,
+  Button,
 } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import PeopleIcon from "@mui/icons-material/People";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import { useCart } from "../useCart";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 export default function CartItemsList() {
   const { state, removeItem } = useCart();
   const items = state.items;
+  const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   if (items.length === 0) {
-    return <Typography color="text.secondary">Your cart is empty.</Typography>;
+    return (
+      <Box textAlign="center" py={6}>
+        <Typography variant="h6" fontWeight={800}>
+          Your cart is empty
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 2 }}>
+          Add rooms to continue
+        </Typography>
+        <Button variant="contained" onClick={() => navigate("/")}>
+          Explore hotels
+        </Button>
+      </Box>
+    );
   }
 
   const openDeleteDialog = (itemId: string) => {
@@ -41,7 +57,7 @@ export default function CartItemsList() {
   };
   return (
     <>
-      <Grid container spacing={3}>
+      <Grid container spacing={4}>
         {items.map((item) => (
           <Grid key={item.id} size={{ xs: 12, sm: 6, lg: 4 }}>
             <Card
@@ -60,15 +76,34 @@ export default function CartItemsList() {
                 },
               }}
             >
-              <CardMedia
-                component="img"
-                image={item.roomPhotoUrl}
-                alt={item.roomType}
-                sx={{
-                  height: 200,
-                  objectFit: "cover",
-                }}
-              />
+              <Box sx={{ position: "relative" }}>
+                <CardMedia
+                  component="img"
+                  image={item.roomPhotoUrl}
+                  alt={item.roomType}
+                  sx={{
+                    height: 180,
+                    objectFit: "cover",
+                  }}
+                />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: 12,
+                    left: 12,
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: 2,
+                    fontWeight: 700,
+                    fontSize: 14,
+                    color: "white",
+                    background:
+                      "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+                  }}
+                >
+                  ${item.pricePerNight}
+                </Box>
+              </Box>
 
               <CardContent sx={{ p: 2 }}>
                 <Stack spacing={1.2}>
@@ -96,7 +131,7 @@ export default function CartItemsList() {
                     </Stack>
 
                     <Stack direction="row" spacing={1} alignItems="center">
-                      <PeopleIcon sx={{ fontSize: 16 }} />
+                      <PeopleOutlineIcon sx={{ fontSize: 16 }} />
                       <Typography variant="caption">
                         {item.adults} adults • {item.children} children
                       </Typography>
