@@ -1,4 +1,4 @@
-import { Stack, Typography, Divider, Button } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import CartItemsList from "../components/CartItemsList";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../useCart";
@@ -7,31 +7,60 @@ export default function CartPage() {
   const { state } = useCart();
   const items = state.items;
   return (
-    <Stack spacing={3}>
-      <Stack spacing={0.5}>
-        <Typography variant="h4" fontWeight={800}>
+    <Stack sx={{ px: { xs: 2, md: 8 }, gap: 3 }}>
+      <Box>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 800,
+            fontSize: { xs: "2rem", md: "2.5rem" },
+            lineHeight: 1.05,
+            background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            mb: 0.75,
+          }}
+        >
           Cart
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
           Review selected rooms before checkout.
         </Typography>
-      </Stack>
 
-      <Divider />
+        <Box
+          sx={{
+            width: 72,
+            height: 4,
+            borderRadius: 999,
+            background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+          }}
+        />
+      </Box>
 
-      <Stack direction="row" spacing={3}>
-        <Stack flex={1}>
-          <CartItemsList />
-        </Stack>
-      </Stack>
-      <Button
-        variant="contained"
-        size="large"
-        disabled={items.length === 0}
-        onClick={() => navigate("/checkout")}
-      >
-        Proceed to checkout
-      </Button>
+      <CartItemsList />
+      {items.length > 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => navigate("/checkout")}
+            sx={{
+              minWidth: 220,
+              borderRadius: 2,
+              px: 4,
+              fontWeight: 700,
+              mt: 0,
+            }}
+          >
+            Proceed to checkout
+          </Button>
+        </Box>
+      )}
     </Stack>
   );
 }
