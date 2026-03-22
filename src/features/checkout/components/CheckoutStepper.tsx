@@ -11,11 +11,11 @@ import PersonIcon from "@mui/icons-material/Person";
 import PaymentIcon from "@mui/icons-material/Payment";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import type { StepIconProps } from "@mui/material/StepIcon";
-import { Stack } from "@mui/material";
+import { Box } from "@mui/material";
 
 const CustomConnector = styled(StepConnector)(() => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 22,
+    top: 18,
   },
   [`&.${stepConnectorClasses.active} .${stepConnectorClasses.line}`]: {
     backgroundImage:
@@ -28,8 +28,8 @@ const CustomConnector = styled(StepConnector)(() => ({
   [`& .${stepConnectorClasses.line}`]: {
     height: 3,
     border: 0,
-    backgroundColor: "#eaeaf0",
-    borderRadius: 1,
+    backgroundColor: "#e5e7eb",
+    borderRadius: 999,
   },
 }));
 
@@ -38,23 +38,24 @@ const CustomConnector = styled(StepConnector)(() => ({
 const CustomStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
 }>(({ ownerState }) => ({
-  backgroundColor: "#ccc",
+  backgroundColor: "#d1d5db",
   zIndex: 1,
   color: "#fff",
-  width: 44,
-  height: 44,
+  width: 40,
+  height: 40,
   display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
   alignItems: "center",
+  transition: "all 0.2s ease",
   ...(ownerState.active && {
     backgroundImage:
-      "linear-gradient(136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
-    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+      "linear-gradient(95deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+    boxShadow: "0 6px 16px rgba(21, 101, 192, 0.24)",
   }),
   ...(ownerState.completed && {
     backgroundImage:
-      "linear-gradient(136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+      "linear-gradient(95deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
   }),
 }));
 
@@ -62,9 +63,9 @@ function CustomStepIcon(props: StepIconProps) {
   const { active, completed, className, icon } = props;
 
   const icons: Record<string, React.ReactElement> = {
-    1: <PersonIcon />,
-    2: <PaymentIcon />,
-    3: <AssignmentIcon />,
+    1: <PersonIcon sx={{ fontSize: 20 }} />,
+    2: <PaymentIcon sx={{ fontSize: 20 }} />,
+    3: <AssignmentIcon sx={{ fontSize: 20 }} />,
   };
 
   return (
@@ -72,7 +73,7 @@ function CustomStepIcon(props: StepIconProps) {
       ownerState={{ active, completed }}
       className={className}
     >
-      {completed ? <Check /> : icons[String(icon)]}
+      {completed ? <Check sx={{ fontSize: 20 }} /> : icons[String(icon)]}
     </CustomStepIconRoot>
   );
 }
@@ -85,18 +86,22 @@ type Props = {
 
 export default function CheckoutStepper({ activeStep }: Props) {
   return (
-    <Stack sx={{ width: "100%" }}>
-      <Stepper
-        alternativeLabel
-        activeStep={activeStep}
-        connector={<CustomConnector />}
-      >
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel StepIconComponent={CustomStepIcon}>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-    </Stack>
+    <Box sx={{ width: "100%", pb: 3 }}>
+      <Box sx={{ minWidth: { xs: 520, md: "auto" } }}>
+        <Stepper
+          alternativeLabel
+          activeStep={activeStep}
+          connector={<CustomConnector />}
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel slots={{ stepIcon: CustomStepIcon }}>
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+    </Box>
   );
 }
