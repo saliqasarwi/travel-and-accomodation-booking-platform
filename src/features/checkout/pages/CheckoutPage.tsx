@@ -163,6 +163,9 @@ export default function CheckoutPage() {
               flex: 1,
               minWidth: 0,
               width: { xs: "100%", lg: "auto" },
+              position: { xs: "static", lg: "sticky" },
+              top: { lg: 96 },
+              alignSelf: { xs: "stretch", lg: "flex-start" },
             }}
           >
             <Stack spacing={2.5}>
