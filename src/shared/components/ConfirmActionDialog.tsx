@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Stack,
 } from "@mui/material";
 
 type Props = {
@@ -45,18 +46,25 @@ export default function ConfirmActionDialog({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} disabled={loading}>
-          {cancelText}
-        </Button>
-
-        <Button
-          variant="contained"
-          color={confirmColor}
-          onClick={onConfirm}
-          disabled={loading}
+        <Stack
+          direction="row"
+          display={"flex"}
+          justifyContent={"space-between"}
+          width={"100%"}
         >
-          {confirmText}
-        </Button>
+          <Button onClick={onClose} disabled={loading}>
+            {cancelText}
+          </Button>
+
+          <Button
+            variant="contained"
+            color={confirmColor}
+            onClick={onConfirm}
+            disabled={loading}
+          >
+            {confirmText}
+          </Button>
+        </Stack>
       </DialogActions>
     </Dialog>
   );
