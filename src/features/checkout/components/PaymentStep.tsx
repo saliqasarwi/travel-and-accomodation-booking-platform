@@ -47,10 +47,15 @@ export default function PaymentStep({
   return (
     <Card
       elevation={0}
-      sx={{ borderRadius: 3, border: 1, borderColor: "divider" }}
+      sx={{
+        borderRadius: 2,
+        border: "1px solid",
+        borderColor: "divider",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+      }}
     >
-      <CardContent>
-        <Stack spacing={2.5}>
+      <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
+        <Stack spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h6" fontWeight={800}>
               Payment method
@@ -80,14 +85,12 @@ export default function PaymentStep({
             />
           </RadioGroup>
 
-          {isCard && (
+          {isCard ? (
             <Box
               sx={{
                 display: "grid",
                 gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                columnGap: 2,
-                rowGap: 2,
-                alignItems: "start",
+                gap: 2,
               }}
             >
               <TextField
@@ -117,7 +120,6 @@ export default function PaymentStep({
               <TextField
                 name="paymentInfo.cvv"
                 size="small"
-                fullWidth
                 label="CVV"
                 placeholder="123"
                 value={value.cvv}
@@ -140,8 +142,7 @@ export default function PaymentStep({
                 helperText={fieldError("cardholderName")}
               />
             </Box>
-          )}
-          {!isCard && (
+          ) : (
             <Typography variant="body2" color="text.secondary">
               You'll pay during check-in. No card details needed now.
             </Typography>

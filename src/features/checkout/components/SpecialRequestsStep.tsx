@@ -24,12 +24,13 @@ export default function SpecialRequestsStep({
     <Card
       elevation={0}
       sx={{
-        borderRadius: 3,
-        border: 1,
+        borderRadius: 2,
+        border: "1px solid",
         borderColor: "divider",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
       }}
     >
-      <CardContent>
+      <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
         <Stack spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h6" fontWeight={800}>
@@ -44,7 +45,7 @@ export default function SpecialRequestsStep({
             name="specialRequests.notes"
             fullWidth
             multiline
-            minRows={4}
+            minRows={3}
             placeholder="Add your special requests..."
             value={value.notes}
             onChange={(e) => onChange({ ...value, notes: e.target.value })}

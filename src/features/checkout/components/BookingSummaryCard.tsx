@@ -1,4 +1,11 @@
-import { Card, CardContent, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PeopleIcon from "@mui/icons-material/People";
 import HotelIcon from "@mui/icons-material/Hotel";
@@ -30,10 +37,19 @@ export default function BookingSummaryCard() {
   const total = Math.max(0, subtotal - discounts);
 
   return (
-    <Card sx={{ borderRadius: 3, position: "sticky", top: 88 }}>
-      <CardContent>
+    <Card
+      elevation={0}
+      sx={{
+        borderRadius: 2,
+        border: "1px solid",
+        borderColor: "divider",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+        bgcolor: "background.paper",
+      }}
+    >
+      <CardContent sx={{ p: 2.25 }}>
         <Stack spacing={2}>
-          <Stack spacing={0.5}>
+          <Stack spacing={0.25}>
             <Typography variant="h6" fontWeight={800}>
               Booking summary
             </Typography>
@@ -44,72 +60,84 @@ export default function BookingSummaryCard() {
 
           <Divider />
 
-          <Stack spacing={1.5}>
-            {items.slice(0, 3).map((item) => (
-              <Stack key={item.id} spacing={0.5}>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  spacing={2}
-                >
-                  <Stack sx={{ minWidth: 0 }}>
-                    <Typography variant="body2" fontWeight={700} noWrap>
-                      {item.hotelName}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" noWrap>
-                      {item.roomType} • {item.numberOfRooms} room
-                      {item.numberOfRooms === 1 ? "" : "s"}
-                    </Typography>
-                  </Stack>
-
-                  <Typography
-                    variant="body2"
-                    fontWeight={700}
-                    whiteSpace="nowrap"
+          <Stack spacing={1.25}>
+            {items.map((item) => (
+              <Box
+                key={item.id}
+                sx={{
+                  p: 1.25,
+                  borderRadius: 1.5,
+                  bgcolor: "action.hover",
+                }}
+              >
+                <Stack spacing={0.75}>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    spacing={1}
                   >
-                    {formatMoney(
-                      item.pricePerNight * (item.numberOfRooms || 1)
-                    )}
-                  </Typography>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="body2" fontWeight={700} noWrap>
+                        {item.hotelName}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        noWrap
+                      >
+                        {item.roomType} • {item.numberOfRooms} room
+                        {item.numberOfRooms === 1 ? "" : "s"}
+                      </Typography>
+                    </Box>
+
+                    <Typography
+                      variant="body2"
+                      fontWeight={700}
+                      whiteSpace="nowrap"
+                    >
+                      {formatMoney(
+                        item.pricePerNight * (item.numberOfRooms || 1)
+                      )}
+                    </Typography>
+                  </Stack>
+
+                  <Stack spacing={0.35}>
+                    <Stack direction="row" alignItems="center" spacing={0.5}>
+                      <CalendarMonthIcon
+                        sx={{ fontSize: 14, color: "text.secondary" }}
+                      />
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        noWrap
+                      >
+                        {item.checkInDate} → {item.checkOutDate}
+                      </Typography>
+                    </Stack>
+
+                    <Stack direction="row" alignItems="center" spacing={0.5}>
+                      <PeopleIcon
+                        sx={{ fontSize: 14, color: "text.secondary" }}
+                      />
+                      <Typography variant="caption" color="text.secondary">
+                        {item.adults} adult{item.adults !== 1 ? "s" : ""} •{" "}
+                        {item.children} child{item.children !== 1 ? "ren" : ""}
+                      </Typography>
+                    </Stack>
+
+                    <Stack direction="row" alignItems="center" spacing={0.5}>
+                      <HotelIcon
+                        sx={{ fontSize: 14, color: "text.secondary" }}
+                      />
+                      <Typography variant="caption" color="text.secondary">
+                        {item.numberOfRooms} room
+                        {item.numberOfRooms !== 1 ? "s" : ""}
+                      </Typography>
+                    </Stack>
+                  </Stack>
                 </Stack>
-
-                <Stack spacing={0.25} sx={{ pl: 0.5 }}>
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <CalendarMonthIcon
-                      sx={{ fontSize: 14, color: "text.secondary" }}
-                    />
-                    <Typography variant="caption" color="text.secondary">
-                      {item.checkInDate} → {item.checkOutDate}
-                    </Typography>
-                  </Stack>
-
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <PeopleIcon
-                      sx={{ fontSize: 14, color: "text.secondary" }}
-                    />
-                    <Typography variant="caption" color="text.secondary">
-                      {item.adults} adult{item.adults !== 1 ? "s" : ""} •{" "}
-                      {item.children} child
-                      {item.children !== 1 ? "ren" : ""}
-                    </Typography>
-                  </Stack>
-
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <HotelIcon sx={{ fontSize: 14, color: "text.secondary" }} />
-                    <Typography variant="caption" color="text.secondary">
-                      {item.numberOfRooms} room
-                      {item.numberOfRooms !== 1 ? "s" : ""}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </Stack>
+              </Box>
             ))}
-
-            {items.length > 3 && (
-              <Typography variant="caption" color="text.secondary">
-                +{items.length - 3} more…
-              </Typography>
-            )}
           </Stack>
 
           <Divider />
