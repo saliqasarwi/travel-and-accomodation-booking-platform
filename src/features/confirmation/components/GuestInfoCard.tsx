@@ -6,7 +6,15 @@ type Props = { guest?: GuestInfo };
 
 export default function GuestInfoCard({ guest }: Props) {
   return (
-    <Card sx={{ borderRadius: 3 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        border: "1px solid",
+        borderColor: "divider",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+        height: "100%",
+      }}
+    >
       <CardContent sx={{ p: { xs: 2, md: 3 } }}>
         <Stack direction="row" spacing={1} alignItems="center" mb={1.5}>
           <PersonRounded />
@@ -15,7 +23,7 @@ export default function GuestInfoCard({ guest }: Props) {
           </Typography>
         </Stack>
 
-        <Stack spacing={0.75}>
+        <Stack spacing={1}>
           <Typography>
             <b>Name:</b> {guest?.firstName} {guest?.lastName}
           </Typography>

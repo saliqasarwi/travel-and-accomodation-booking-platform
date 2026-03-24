@@ -1,12 +1,19 @@
 import { Card, CardContent, Divider, Stack, Typography } from "@mui/material";
 import { PaidRounded } from "@mui/icons-material";
-import { money } from "../utils/formatters";
+import { money } from "@shared/utils/formatters";
 
 type Props = { subtotal: number; discounts: number; total: number };
 
 export default function TotalsCard({ subtotal, discounts, total }: Props) {
   return (
-    <Card sx={{ borderRadius: 3 }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        border: "1px solid",
+        borderColor: "divider",
+        boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
+      }}
+    >
       <CardContent sx={{ p: { xs: 2, md: 3 } }}>
         <Stack direction="row" spacing={1} alignItems="center" mb={1.5}>
           <PaidRounded />
