@@ -20,7 +20,7 @@ import { useCart } from "../useCart";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { nightsBetween } from "@shared/utils/booking";
 import { money } from "@shared/utils/formatters.ts";
-
+import emptyCart from "@assets/empty-cart.webp";
 export default function CartItemsList() {
   const { state, removeItem } = useCart();
   const items = state.items;
@@ -31,20 +31,59 @@ export default function CartItemsList() {
 
   if (items.length === 0) {
     return (
-      <Box textAlign="center" py={6}>
-        <Typography variant="h6" fontWeight={800}>
-          Your cart is empty
-        </Typography>
-        <Typography color="text.secondary" sx={{ mb: 2 }}>
-          Add rooms to continue
-        </Typography>
-        <Button variant="contained" onClick={() => navigate("/")}>
-          Explore hotels
-        </Button>
+      <Box
+        sx={{
+          minHeight: "45vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          px: 2,
+        }}
+      >
+        <Stack
+          spacing={1.5}
+          alignItems="center"
+          textAlign="center"
+          sx={{ maxWidth: 360 }}
+        >
+          <Box
+            component="img"
+            src={emptyCart}
+            alt="Empty cart"
+            sx={{
+              width: 200,
+              maxWidth: "100%",
+              height: "auto",
+              mx: "auto",
+              mb: 0.5,
+            }}
+          />
+
+          <Typography variant="h5" fontWeight={900}>
+            Your cart is empty
+          </Typography>
+
+          <Typography color="text.secondary" sx={{ mb: 1.5 }}>
+            Start exploring stays and add your favorite rooms here.
+          </Typography>
+
+          <Button
+            variant="contained"
+            onClick={() => navigate("/")}
+            sx={{
+              minWidth: 180,
+              borderRadius: 2,
+              px: 3,
+              py: 1.1,
+              fontWeight: 700,
+            }}
+          >
+            Explore hotels
+          </Button>
+        </Stack>
       </Box>
     );
   }
-
   const openDeleteDialog = (itemId: string) => {
     setSelectedItemId(itemId);
     setConfirmOpen(true);
