@@ -18,7 +18,8 @@ import AdminRoomsPage from "@features/admin/pages/AdminRoomsPage";
 import RequireAuth from "@features/auth/guards/RequireAuth";
 import RequireAdmin from "@features/auth/guards/RequireAdmin";
 import NotFoundPage from "@shared/components/NotFoundPage";
-
+import ProfilePage from "@features/profile/pages/ProfilePage";
+import MyBookingsPage from "@features/bookings/pages/MyBookingsPage";
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -73,6 +74,22 @@ export const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <CartPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <RequireAuth>
+            <ProfilePage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "bookings",
+        element: (
+          <RequireAuth>
+            <MyBookingsPage />
           </RequireAuth>
         ),
       },
