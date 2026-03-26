@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getBookings, type BookingItem } from "../api/bookings.api";
 import { money } from "@shared/utils/formatters";
 import { nightsBetween } from "@shared/utils/booking";
+import EmptyBookingsState from "../components/EmptyBookingsState";
 
 export default function BookingsPage() {
   const navigate = useNavigate();
@@ -92,27 +93,7 @@ export default function BookingsPage() {
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
       {bookings.length === 0 ? (
-        <Box
-          sx={{
-            p: 4,
-            borderRadius: 3,
-            bgcolor: "background.paper",
-            border: "1px solid",
-            borderColor: "divider",
-            boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="h6" fontWeight={800} sx={{ mb: 1 }}>
-            No bookings yet
-          </Typography>
-          <Typography color="text.secondary" sx={{ mb: 2 }}>
-            When you make a booking, it will appear here.
-          </Typography>
-          <Button variant="contained" onClick={() => navigate("/")}>
-            Explore hotels
-          </Button>
-        </Box>
+        <EmptyBookingsState />
       ) : (
         <Grid container spacing={3}>
           {bookings.map((booking) => {
