@@ -1,6 +1,6 @@
 import type { BookingApiResponse } from "../types/confirmation.types";
-import { calculateBookingTotals } from "../utils/booking.utils";
-import { money, formatDate, nightsBetween } from "../utils/formatters";
+import { calculateBookingTotals, nightsBetween } from "@shared/utils/booking";
+import { money, formatDate } from "@shared/utils/formatters";
 
 export function printBookingDocument(booking: BookingApiResponse) {
   const {
@@ -15,18 +15,19 @@ export function printBookingDocument(booking: BookingApiResponse) {
     .map((item) => {
       const nights = nightsBetween(item.checkInDate, item.checkOutDate);
       const lineTotal = item.pricePerNight * (item.numberOfRooms || 1) * nights;
+
       return `
-          <tr>
-            <td>${item.hotelName}<br><small style="color:#666">${item.cityName}</small></td>
-            <td>${item.roomType}</td>
-            <td style="text-align:center">${item.checkInDate}</td>
-            <td style="text-align:center">${item.checkOutDate}</td>
-            <td style="text-align:center">${nights}</td>
-            <td style="text-align:center">${item.numberOfRooms}</td>
-            <td style="text-align:center">${item.adults} / ${item.children}</td>
-            <td style="text-align:right">${money(item.pricePerNight)}</td>
-            <td style="text-align:right">${money(lineTotal)}</td>
-          </tr>`;
+        <tr>
+          <td>${item.hotelName}<br><small style="color:#666">${item.cityName}</small></td>
+          <td>${item.roomType}</td>
+          <td style="text-align:center">${item.checkInDate}</td>
+          <td style="text-align:center">${item.checkOutDate}</td>
+          <td style="text-align:center">${nights}</td>
+          <td style="text-align:center">${item.numberOfRooms}</td>
+          <td style="text-align:center">${item.adults} / ${item.children}</td>
+          <td style="text-align:right">${money(item.pricePerNight)}</td>
+          <td style="text-align:right">${money(lineTotal)}</td>
+        </tr>`;
     })
     .join("");
 
@@ -143,7 +144,6 @@ export function printBookingDocument(booking: BookingApiResponse) {
   </style>
 </head>
 <body>
-
   <div class="header">
     <div>
       <h1>Booking Confirmation</h1>
@@ -217,9 +217,9 @@ export function printBookingDocument(booking: BookingApiResponse) {
   <div class="footer">
     Thank you for your booking &bull; ${booking.confirmationNumber}
   </div>
-
 </body>
 </html>`);
+
   printWindow.document.close();
   printWindow.onload = () => {
     printWindow.focus();

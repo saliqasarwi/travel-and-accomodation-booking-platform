@@ -1,4 +1,6 @@
 import {
+  Box,
+  Grid,
   Stack,
   Typography,
   Card,
@@ -6,24 +8,82 @@ import {
   CardMedia,
   Rating,
   IconButton,
+  Button,
 } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import PeopleIcon from "@mui/icons-material/People";
-import HotelIcon from "@mui/icons-material/Hotel";
-import { useCart } from "../useCart";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useCart } from "../useCart";
+import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
+import { nightsBetween } from "@shared/utils/booking";
+import { money } from "@shared/utils/formatters.ts";
+import emptyCart from "@assets/empty-cart.webp";
 export default function CartItemsList() {
   const { state, removeItem } = useCart();
   const items = state.items;
+  const navigate = useNavigate();
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   if (items.length === 0) {
-    return <Typography color="text.secondary">Your cart is empty.</Typography>;
-  }
+    return (
+      <Box
+        sx={{
+          minHeight: "45vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          px: 2,
+        }}
+      >
+        <Stack
+          spacing={1.5}
+          alignItems="center"
+          textAlign="center"
+          sx={{ maxWidth: 360 }}
+        >
+          <Box
+            component="img"
+            src={emptyCart}
+            alt="Empty cart"
+            sx={{
+              width: 200,
+              maxWidth: "100%",
+              height: "auto",
+              mx: "auto",
+              mb: 0.5,
+            }}
+          />
 
+          <Typography variant="h5" fontWeight={900}>
+            Your cart is empty
+          </Typography>
+
+          <Typography color="text.secondary" sx={{ mb: 1.5 }}>
+            Start exploring stays and add your favorite rooms here.
+          </Typography>
+
+          <Button
+            variant="contained"
+            onClick={() => navigate("/")}
+            sx={{
+              minWidth: 180,
+              borderRadius: 2,
+              px: 3,
+              py: 1.1,
+              fontWeight: 700,
+            }}
+          >
+            Explore hotels
+          </Button>
+        </Stack>
+      </Box>
+    );
+  }
   const openDeleteDialog = (itemId: string) => {
     setSelectedItemId(itemId);
     setConfirmOpen(true);
@@ -39,112 +99,130 @@ export default function CartItemsList() {
     removeItem(selectedItemId);
     handleCloseDialog();
   };
+
   return (
     <>
-      <Stack spacing={2}>
-        {items.map((item) => (
-          <Card key={item.id} sx={{ borderRadius: 3, overflow: "hidden" }}>
-            <Stack direction={{ xs: "column", md: "row" }}>
-              <CardMedia
-                component="img"
-                image={item.roomPhotoUrl}
-                alt={item.roomType}
-                sx={{
-                  width: { md: 260 },
-                  height: 200,
-                  objectFit: "cover",
-                }}
-              />
+      <Grid container spacing={4}>
+        {items.map((item) => {
+          const roomsCount = item.numberOfRooms || 1;
+          const nights = nightsBetween(item.checkInDate, item.checkOutDate);
+          const itemTotal = item.pricePerNight * roomsCount * nights;
 
-              <CardContent
+          return (
+            <Grid key={item.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+              <Card
+                elevation={0}
                 sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  height: "100%",
+                  borderRadius: 3,
+                  overflow: "hidden",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  boxShadow: "0 8px 24px rgba(15,23,42,0.06)",
+                  transition: "all 0.25s ease",
+                  "&:hover": {
+                    transform: "translateY(-4px)",
+                    boxShadow: "0 16px 32px rgba(15,23,42,0.10)",
+                  },
                 }}
               >
-                <Stack spacing={1}>
-                  <Typography
-                    variant="h6"
-                    fontWeight={900}
-                    sx={{ display: "flex" }}
+                <Box sx={{ position: "relative" }}>
+                  <CardMedia
+                    component="img"
+                    image={item.roomPhotoUrl}
+                    alt={item.roomType}
+                    sx={{
+                      height: 180,
+                      objectFit: "cover",
+                    }}
+                  />
+
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: 12,
+                      left: 12,
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 2,
+                      fontWeight: 700,
+                      fontSize: 14,
+                      color: "white",
+                      background:
+                        "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+                    }}
                   >
-                    {item.hotelName}
+                    {money(item.pricePerNight)} / night
+                  </Box>
+                </Box>
+
+                <CardContent sx={{ p: 2 }}>
+                  <Stack spacing={1.2}>
+                    <Typography variant="h6" fontWeight={800}>
+                      {item.hotelName}
+                    </Typography>
+
                     <Rating
                       value={item.starRating}
                       precision={0.1}
                       readOnly
-                      size="medium"
-                      sx={{ color: "gold" }}
+                      size="small"
                     />
-                  </Typography>
 
-                  <Typography variant="body2" color="text.secondary">
-                    {item.roomType} • {item.cityName}
-                  </Typography>
-
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <CalendarMonthIcon
-                      sx={{ fontSize: 16, color: "text.secondary" }}
-                    />
                     <Typography variant="body2" color="text.secondary">
-                      {item.checkInDate} → {item.checkOutDate}
+                      {item.roomType} • {item.cityName}
                     </Typography>
-                  </Stack>
 
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <PeopleIcon
-                      sx={{ fontSize: 16, color: "text.secondary" }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {item.adults} adult{item.adults !== 1 ? "s" : ""} •{" "}
-                      {item.children} child
-                      {item.children !== 1 ? "ren" : ""}
-                    </Typography>
-                  </Stack>
+                    <Stack spacing={0.5}>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <CalendarMonthIcon sx={{ fontSize: 16 }} />
+                        <Typography variant="caption">
+                          {item.checkInDate} → {item.checkOutDate}
+                        </Typography>
+                      </Stack>
 
-                  <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <HotelIcon sx={{ fontSize: 16, color: "text.secondary" }} />
-                    <Typography variant="body2" color="text.secondary">
-                      {item.numberOfRooms} room
-                      {item.numberOfRooms !== 1 ? "s" : ""}
-                    </Typography>
-                  </Stack>
-                </Stack>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <PeopleOutlineIcon sx={{ fontSize: 16 }} />
+                        <Typography variant="caption">
+                          {item.adults} adults • {item.children} children
+                        </Typography>
+                      </Stack>
 
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography variant="h6" fontWeight={900}>
-                    ${item.pricePerNight * (item.numberOfRooms || 1)} / night
-                    {item.numberOfRooms > 1 && (
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ ml: 0.5 }}
-                      >
-                        ({item.numberOfRooms} × ${item.pricePerNight})
+                      <Typography variant="caption" color="text.secondary">
+                        {roomsCount} room{roomsCount !== 1 ? "s" : ""} •{" "}
+                        {nights} night{nights !== 1 ? "s" : ""}
                       </Typography>
-                    )}
-                  </Typography>
+                    </Stack>
 
-                  <IconButton
-                    size="large"
-                    color="error"
-                    onClick={() => openDeleteDialog(item.id)}
-                  >
-                    <DeleteIcon sx={{ fontSize: 32 }} />
-                  </IconButton>
-                </Stack>
-              </CardContent>
-            </Stack>
-          </Card>
-        ))}
-      </Stack>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{ mt: 1 }}
+                    >
+                      <Typography
+                        variant="body2"
+                        fontWeight={700}
+                        color="primary.main"
+                      >
+                        {money(itemTotal)} total
+                      </Typography>
+
+                      <IconButton
+                        color="error"
+                        onClick={() => openDeleteDialog(item.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+          );
+        })}
+      </Grid>
+
       <ConfirmActionDialog
         open={confirmOpen}
         title="Remove item"

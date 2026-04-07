@@ -1,19 +1,23 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+
 type Values = {
   userName: string;
   password: string;
 };
+
 type Props = {
   onSubmit: (values: Values) => Promise<void> | void;
   isLoading?: boolean;
   error?: string | null;
 };
+
 const schema = Yup.object({
   userName: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required"),
 });
+
 export default function LoginForm({
   onSubmit,
   isLoading = false,
@@ -39,8 +43,9 @@ export default function LoginForm({
         isSubmitting,
       }) => (
         <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Stack spacing={2}>
+          <Stack spacing={2.5}>
             {error ? <Alert severity="error">{error}</Alert> : null}
+
             <TextField
               id="userName"
               name="userName"
@@ -52,7 +57,13 @@ export default function LoginForm({
               error={Boolean(touched.userName && errors.userName)}
               helperText={touched.userName ? errors.userName : ""}
               fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255,255,255,0.9)",
+                },
+              }}
             />
+
             <TextField
               id="password"
               name="password"
@@ -65,6 +76,11 @@ export default function LoginForm({
               error={Boolean(touched.password && errors.password)}
               helperText={touched.password ? errors.password : ""}
               fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "rgba(255,255,255,0.9)",
+                },
+              }}
             />
 
             <Button
@@ -72,8 +88,13 @@ export default function LoginForm({
               variant="contained"
               disabled={isLoading || isSubmitting}
               fullWidth
+              sx={{
+                height: 52,
+                fontWeight: 700,
+                fontSize: "1rem",
+              }}
             >
-              {isLoading || isSubmitting ? "Signing in…" : "Login"}
+              {isLoading || isSubmitting ? "Signing in..." : "Login"}
             </Button>
           </Stack>
         </Box>

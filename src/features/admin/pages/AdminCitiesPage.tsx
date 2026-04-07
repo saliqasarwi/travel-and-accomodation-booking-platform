@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Box, IconButton, useMediaQuery, useTheme } from "@mui/material";
-import {
-  DataGrid,
-  type GridColDef,
-  type GridColumnVisibilityModel,
-} from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, IconButton } from "@mui/material";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 import AdminToolbar from "../components/AdminToolbar";
 import AdminEntityDrawer from "../components/AdminEntityDrawer";
-
 import {
   getCities,
   deleteCity,
@@ -17,17 +12,7 @@ import {
   updateCity,
 } from "../api/admin.api";
 import type { CityFormValues, CityRow } from "../types/admin.types";
-import { useSearchParams } from "react-router-dom";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
-const ALL_VISIBLE: GridColumnVisibilityModel = {
-  name: true,
-  country: true,
-  postOffice: true,
-  numberOfHotels: true,
-  createdAt: true,
-  modifiedAt: true,
-  actions: true,
-};
 
 const EMPTY_CITY: CityFormValues = {
   name: "",
@@ -39,9 +24,10 @@ const EMPTY_CITY: CityFormValues = {
 export default function AdminCitiesPage() {
   const [rows, setRows] = useState<CityRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchValue = searchParams.get("name") ?? "";
-  //  drawer state
+
+  const [inputValue, setInputValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -49,56 +35,25 @@ export default function AdminCitiesPage() {
     useState<CityFormValues>(EMPTY_CITY);
   const [saving, setSaving] = useState(false);
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
-
-  const [colVisibility, setColVisibility] =
-    useState<GridColumnVisibilityModel>(ALL_VISIBLE);
-  //dialog state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
+
   const fetchCities = useCallback(async () => {
     try {
       setLoading(true);
-      const cityName = searchParams.get("name") ?? undefined;
-      const data = await getCities(cityName ? { name: cityName } : undefined);
+      const data = await getCities(
+        searchValue ? { name: searchValue } : undefined
+      );
       setRows(data);
     } finally {
       setLoading(false);
     }
-  }, [searchParams]);
+  }, [searchValue]);
 
   useEffect(() => {
     fetchCities();
   }, [fetchCities]);
-
-  useEffect(() => {
-    if (isMobile) {
-      setColVisibility({
-        ...ALL_VISIBLE,
-        country: false,
-        postOffice: false,
-        numberOfHotels: false,
-        createdAt: false,
-        modifiedAt: false,
-      });
-      return;
-    }
-
-    if (isTablet) {
-      setColVisibility({
-        ...ALL_VISIBLE,
-        postOffice: false,
-        createdAt: false,
-        modifiedAt: false,
-      });
-      return;
-    }
-
-    setColVisibility(ALL_VISIBLE);
-  }, [isMobile, isTablet]);
 
   const openCreate = () => {
     setDrawerMode("create");
@@ -137,6 +92,25 @@ export default function AdminCitiesPage() {
     }
   };
 
+  const openDeleteDialog = (id: number) => {
+    setSelectedDeleteId(id);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedDeleteId == null) return;
+
+    try {
+      setDeleting(true);
+      await deleteCity(selectedDeleteId);
+      setConfirmOpen(false);
+      setSelectedDeleteId(null);
+      await fetchCities();
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const columns: GridColDef[] = useMemo(
     () => [
       { field: "name", headerName: "Name", flex: 1, minWidth: 160 },
@@ -160,11 +134,11 @@ export default function AdminCitiesPage() {
           <IconButton
             color="error"
             onClick={(e) => {
-              e.stopPropagation(); // prevent row click opening edit
+              e.stopPropagation();
               openDeleteDialog(params.row.id);
             }}
           >
-            <DeleteIcon />
+            <DeleteRoundedIcon />
           </IconButton>
         ),
       },
@@ -172,50 +146,34 @@ export default function AdminCitiesPage() {
     []
   );
 
-  const openDeleteDialog = (id: number) => {
-    setSelectedDeleteId(id);
-    setConfirmOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (selectedDeleteId == null) return;
-
-    try {
-      setDeleting(true);
-      await deleteCity(selectedDeleteId);
-      setConfirmOpen(false);
-      setSelectedDeleteId(null);
-      await fetchCities();
-    } finally {
-      setDeleting(false);
-    }
-  };
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <AdminToolbar
           title="Cities"
-          searchValue={searchValue}
-          onSearchChange={(value) => {
-            setSearchParams((prev) => {
-              const next = new URLSearchParams(prev);
-              if (value) next.set("name", value);
-              else next.delete("name");
-              return next;
-            });
+          searchValue={inputValue}
+          onSearchChange={setInputValue}
+          onSearchSubmit={() => setSearchValue(inputValue.trim())}
+          onClearSearch={() => {
+            setInputValue("");
+            setSearchValue("");
           }}
-          onSearchSubmit={() => {}}
           onCreateClick={openCreate}
         />
 
         <Box
           sx={{
             mt: 3,
-            width: "100%",
-            minWidth: 0,
+            p: { xs: 1.5, md: 2 },
+            borderRadius: 3,
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
+            boxShadow: "0 8px 24px rgba(15, 23, 42, 0.05)",
           }}
         >
           <DataGrid
+            autoHeight
             rows={rows}
             columns={columns}
             loading={loading}
@@ -223,14 +181,36 @@ export default function AdminCitiesPage() {
             initialState={{
               pagination: { paginationModel: { pageSize: 5, page: 0 } },
             }}
-            columnVisibilityModel={colVisibility}
-            onColumnVisibilityModelChange={setColVisibility}
-            density={isMobile ? "compact" : "standard"}
-            rowHeight={isMobile ? 36 : 52}
-            columnHeaderHeight={isMobile ? 40 : 56}
-            onRowClick={(params) => openEdit(params.row as CityRow)} //  edit on row click
+            density="standard"
+            rowHeight={52}
+            columnHeaderHeight={52}
+            onRowClick={(params) => openEdit(params.row as CityRow)}
             sx={{
-              "& .MuiDataGrid-cell": { py: isMobile ? 0.5 : 1 },
+              border: "none",
+              bgcolor: "transparent",
+              "& .MuiDataGrid-columnHeaders": {
+                bgcolor: "transparent",
+                borderBottom: "1px solid",
+                borderColor: "divider",
+              },
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: 800,
+                color: "text.primary",
+              },
+              "& .MuiDataGrid-row": {
+                cursor: "pointer",
+                transition: "background-color 0.2s ease",
+              },
+              "& .MuiDataGrid-row:hover": {
+                bgcolor: "rgba(21,101,192,0.04)",
+              },
+              "& .MuiDataGrid-cell": {
+                borderColor: "rgba(224,224,224,0.45)",
+              },
+              "& .MuiDataGrid-footerContainer": {
+                borderTop: "1px solid",
+                borderColor: "divider",
+              },
             }}
           />
         </Box>

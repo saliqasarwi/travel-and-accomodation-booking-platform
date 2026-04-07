@@ -21,9 +21,17 @@ export default function GuestInfoStep({
     touched[field] ? errors[field] : undefined;
 
   return (
-    <Card sx={{ borderRadius: 3 }}>
-      <CardContent>
-        <Stack spacing={3}>
+    <Card
+      elevation={0}
+      sx={{
+        borderRadius: 2,
+        border: "1px solid",
+        borderColor: "divider",
+        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+      }}
+    >
+      <CardContent sx={{ p: { xs: 2, md: 2.5 } }}>
+        <Stack spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h6" fontWeight={800}>
               Guest information
@@ -37,6 +45,7 @@ export default function GuestInfoStep({
             <TextField
               name="guestInfo.firstName"
               label="First name"
+              size="small"
               value={value.firstName}
               onChange={(e) =>
                 onChange({ ...value, firstName: e.target.value })
@@ -51,6 +60,7 @@ export default function GuestInfoStep({
             <TextField
               name="guestInfo.lastName"
               label="Last name"
+              size="small"
               value={value.lastName}
               onChange={(e) => onChange({ ...value, lastName: e.target.value })}
               onBlur={onBlur}
@@ -65,6 +75,7 @@ export default function GuestInfoStep({
             <TextField
               name="guestInfo.email"
               label="Email"
+              size="small"
               value={value.email}
               onChange={(e) => onChange({ ...value, email: e.target.value })}
               onBlur={onBlur}
@@ -77,6 +88,7 @@ export default function GuestInfoStep({
             <TextField
               name="guestInfo.phone"
               label="Phone number"
+              size="small"
               value={value.phone}
               onChange={(e) => onChange({ ...value, phone: e.target.value })}
               onBlur={onBlur}

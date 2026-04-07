@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  Box,
   Alert,
   Button,
   CircularProgress,
   Grid,
   Stack,
   Typography,
+  Card,
+  CardContent,
 } from "@mui/material";
 import HomeRounded from "@mui/icons-material/HomeRounded";
 import PrintRounded from "@mui/icons-material/PrintRounded";
@@ -16,10 +19,9 @@ import ConfirmationHeaderCard from "../components/ConfirmationHeaderCard";
 import HotelRoomsCard from "../components/HotelRoomsCard";
 import GuestInfoCard from "../components/GuestInfoCard";
 import SpecialRequestsCard from "../components/SpecialRequestCard";
-import { calculateBookingTotals } from "../utils/booking.utils";
+import { calculateBookingTotals } from "@shared/utils/booking";
 import TotalsCard from "../components/TotalsCard";
 import { printBookingDocument } from "../components/printBookingDocument";
-import HomeIcon from "@mui/icons-material/Home";
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
@@ -60,7 +62,7 @@ export default function ConfirmationPage() {
 
   if (loading) {
     return (
-      <Stack alignItems="center" mt={6} spacing={2}>
+      <Stack alignItems="center" mt={8} spacing={2}>
         <CircularProgress />
         <Typography color="text.secondary">Loading confirmation…</Typography>
       </Stack>
@@ -88,40 +90,117 @@ export default function ConfirmationPage() {
   );
 
   return (
-    <Stack spacing={3} sx={{ width: "100%" }}>
-      <Stack direction="row" spacing={2} justifyContent="flex-end">
-        <Button
-          variant="outlined"
-          startIcon={<PrintRounded />}
-          onClick={() => printBookingDocument(booking)}
-        >
-          Print Booking
-        </Button>
-        <Button
-          variant="outlined"
-          startIcon={<HomeIcon />}
-          onClick={() => navigate("/")}
-        >
-          Back to Home
-        </Button>
-      </Stack>
+    <Box
+      sx={{
+        px: { xs: 2, md: 4, lg: 6 },
+        py: { xs: 2.5, md: 4 },
+      }}
+    >
+      <Stack spacing={3}>
+        <Box>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              fontSize: { xs: "2rem", md: "2.5rem" },
+              lineHeight: 1.05,
+              background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              mb: 0.75,
+            }}
+          >
+            Confirmation
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+            Your booking has been confirmed successfully.
+          </Typography>
+          <Box
+            sx={{
+              width: 72,
+              height: 4,
+              borderRadius: 999,
+              background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+            }}
+          />
+        </Box>
+        <Grid container spacing={3} alignItems="stretch">
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <ConfirmationHeaderCard
+              confirmationNumber={booking.confirmationNumber}
+              status={booking.bookingStatus}
+              createdAt={booking.createdAt}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <Card
+              sx={{
+                borderRadius: 3,
+                height: "100%",
+                border: "1px solid",
+                borderColor: "divider",
+                boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+              }}
+            >
+              <CardContent
+                sx={{
+                  p: { xs: 2, md: 3 },
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <Stack spacing={1.5}>
+                  <Button
+                    variant="contained"
+                    startIcon={<PrintRounded />}
+                    onClick={() => printBookingDocument(booking)}
+                    fullWidth
+                    sx={{ fontWeight: 700, borderRadius: 2 }}
+                  >
+                    Print Booking
+                  </Button>
 
-      <Grid
-        container
-        display="grid"
-        gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
-        gap={4}
-      >
-        <ConfirmationHeaderCard
-          confirmationNumber={booking.confirmationNumber}
-          status={booking.bookingStatus}
-          createdAt={booking.createdAt}
-        />
-        <HotelRoomsCard items={booking.request.items} />
-        <GuestInfoCard guest={booking.request.guestInfo} />
-        <SpecialRequestsCard notes={booking.request.specialRequests} />
-        <TotalsCard subtotal={subtotal} discounts={discounts} total={total} />
-      </Grid>
-    </Stack>
+                  <Button
+                    variant="outlined"
+                    startIcon={<HomeRounded />}
+                    onClick={() => navigate("/")}
+                    fullWidth
+                    sx={{ fontWeight: 700, borderRadius: 2 }}
+                  >
+                    Back to Home
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, lg: 8 }}>
+            <HotelRoomsCard items={booking.request.items} />
+          </Grid>
+          <Grid size={{ xs: 12, lg: 4 }}>
+            <Box
+              sx={{
+                position: { lg: "sticky" },
+                top: { lg: 96 },
+              }}
+            >
+              <TotalsCard
+                subtotal={subtotal}
+                discounts={discounts}
+                total={total}
+              />
+            </Box>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <GuestInfoCard guest={booking.request.guestInfo} />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+            <SpecialRequestsCard notes={booking.request.specialRequests} />
+          </Grid>
+        </Grid>
+      </Stack>
+    </Box>
   );
 }

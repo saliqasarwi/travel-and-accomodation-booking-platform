@@ -1,5 +1,11 @@
 import type { CartItem } from "@features/cart/types/cart.types";
-import { nightsBetween } from "./formatters";
+export function nightsBetween(checkIn: string, checkOut: string) {
+  const a = new Date(checkIn);
+  const b = new Date(checkOut);
+  const ms = b.getTime() - a.getTime();
+  const nights = Math.max(1, Math.round(ms / (1000 * 60 * 60 * 24)));
+  return isNaN(nights) ? 1 : nights;
+}
 
 export function calculateBookingTotals(items: CartItem[]) {
   const calculations = items.map((item) => {

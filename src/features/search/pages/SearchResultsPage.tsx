@@ -1,14 +1,11 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 
-import Container from "@shared/ui/Container/PageContainer";
-import Section from "@shared/ui/Section/Section";
-import HomeSearchBar from "@shared/components/HomeSearchBar";
+import HomeSearchBar from "@shared/components/HomeSearchBar/HomeSearchBar";
 
-import SearchFilters from "../components/SearchFilters.tsx";
-import HotelResults from "../components/HotelResults.tsx";
-
+import SearchFilters from "../components/SearchFilters";
+import HotelResults from "../components/HotelResults";
 import { parseSearchParams } from "../utils/searchParams";
 
 export default function SearchResultsPage() {
@@ -19,24 +16,57 @@ export default function SearchResultsPage() {
   }, [searchParams]);
 
   return (
-    <Container>
-      <HomeSearchBar />
+    <Stack spacing={1} sx={{ mx: { xs: 0, md: 10 } }}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: {
+              xs: "100%",
+              md: 1000,
+            },
+          }}
+        >
+          <HomeSearchBar />
+        </Box>
+      </Box>
 
-      <Section title="Search Results">
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          {query.city} | {query.checkInDate} → {query.checkOutDate}
+      <Box sx={{ py: 0.5, mb: 2 }}>
+        <Typography variant="body1" color="text.secondary">
+          Explore available stays in{" "}
+          <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>
+            {query.city || "your destination"}
+          </Box>{" "}
+          {query.checkInDate &&
+            query.checkOutDate &&
+            `from ${query.checkInDate} to ${query.checkOutDate}.`}
         </Typography>
 
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={4}
-          alignItems="flex-start"
-        >
-          <SearchFilters />
+        <Box
+          sx={{
+            width: 72,
+            height: 4,
+            borderRadius: 999,
+            background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+          }}
+        />
+      </Box>
 
-          <HotelResults />
-        </Stack>
-      </Section>
-    </Container>
+      <Stack
+        direction={{ xs: "column", lg: "row" }}
+        spacing={4}
+        alignItems="flex-start"
+      >
+        <SearchFilters />
+
+        <HotelResults />
+      </Stack>
+    </Stack>
   );
 }

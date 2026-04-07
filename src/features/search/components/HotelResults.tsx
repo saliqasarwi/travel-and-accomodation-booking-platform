@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stack, CircularProgress, Typography, Alert } from "@mui/material";
+import { Stack, CircularProgress, Typography, Alert, Box } from "@mui/material";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 
@@ -9,8 +9,10 @@ import { fetchSearchResults } from "../api/search.api";
 import { parseSearchParams } from "../utils/searchParams";
 import { applyFilters } from "../utils/applyFilters";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
-
+import { sortResults } from "../utils/sortResults";
+import SearchSortBar from "./SearchSortBar";
 const PAGE_SIZE = 6;
+
 export default function HotelResults() {
   const [searchParams] = useSearchParams();
   const { sentinelRef, page, resetPage } = useInfiniteScroll();
@@ -36,7 +38,8 @@ export default function HotelResults() {
 
         const query = parseSearchParams(searchParams);
         const filtered = applyFilters(results, query);
-        setData(filtered);
+        const sorted = sortResults(filtered, query.sort ?? "recommended");
+        setData(sorted);
         resetPage();
       } catch (err) {
         if (!axios.isCancel(err)) {
@@ -51,25 +54,88 @@ export default function HotelResults() {
     return () => controller.abort();
   }, [searchParams, resetPage]);
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Alert severity="error">{error}</Alert>;
-  if (!data.length) return <Typography>No results found.</Typography>;
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          flex: 1,
+          minHeight: 240,
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ flex: 1 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <Box
+        sx={{
+          flex: 1,
+          p: 4,
+          border: "1px solid",
+          borderColor: "divider",
+          bgcolor: "background.paper",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h6" fontWeight={700} sx={{ mb: 1 }}>
+          No results found
+        </Typography>
+        <Typography color="text.secondary">
+          Try changing your destination, dates, or filters.
+        </Typography>
+      </Box>
+    );
+  }
 
   const visibleHotels = data.slice(0, page * PAGE_SIZE);
   const hasMore = visibleHotels.length < data.length;
 
   return (
-    <Stack spacing={3} sx={{ flex: 1 }}>
-      {visibleHotels.map((hotel) => (
-        <HotelCard key={hotel.hotelId} hotel={hotel} />
-      ))}
-      {hasMore && (
-        <div
-          ref={sentinelRef}
-          data-testid="infinite-scroll-sentinel"
-          style={{ height: 1 }}
-        />
-      )}
-    </Stack>
+    <Box sx={{ flex: 1, minWidth: 0 }}>
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: { xs: 760, md: "100%" },
+          mx: "auto",
+        }}
+      >
+        <SearchSortBar resultsCount={data.length} />
+      </Box>
+
+      <Stack spacing={3}>
+        {visibleHotels.map((hotel) => (
+          <Box
+            key={hotel.hotelId}
+            sx={{
+              width: "100%",
+              maxWidth: { xs: 760, md: "100%" },
+              mx: "auto",
+            }}
+          >
+            <HotelCard hotel={hotel} />
+          </Box>
+        ))}
+
+        {hasMore && (
+          <Box
+            ref={sentinelRef}
+            data-testid="infinite-scroll-sentinel"
+            sx={{ height: 1 }}
+          />
+        )}
+      </Stack>
+    </Box>
   );
 }

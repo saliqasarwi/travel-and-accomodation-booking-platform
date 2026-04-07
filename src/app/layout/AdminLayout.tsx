@@ -5,63 +5,116 @@ import {
   Drawer,
   List,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
   Box,
   Typography,
-  Button,
   IconButton,
   Stack,
+  Avatar,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@mui/material";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import HotelIcon from "@mui/icons-material/Hotel";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+
 import { useState } from "react";
 import { useAuth } from "@app/providers/AuthContext";
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 const collapsedWidth = 72;
+
 export default function AdminLayout() {
   const { userType, logout } = useAuth();
   const [open, setOpen] = useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => setAnchorEl(null);
+
+  const handleLogout = () => {
+    handleMenuClose();
+    logout();
+  };
+
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", width: "100%" }}>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      {/* Top AppBar - Cleaner & Modern */}
       <AppBar
         position="fixed"
+        elevation={1}
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
+          bgcolor: "background.paper",
+          color: "text.primary",
+          borderBottom: "1px solid",
+          borderColor: "divider",
         }}
       >
-        <Toolbar sx={{ gap: 2 }}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            sx={{ width: "100%" }}
-          >
+        <Toolbar sx={{ justifyContent: "space-between", px: { xs: 2, sm: 3 } }}>
+          <Stack direction="row" alignItems="center" spacing={2}>
             <IconButton
               color="inherit"
               edge="start"
-              onClick={() => setOpen((v) => !v)}
-              aria-label={open ? "Collapse navigation" : "Expand navigation"}
+              onClick={() => setOpen((prev) => !prev)}
             >
               {open ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
 
-            <Typography variant="h6" noWrap>
-              Admin Panel
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              sx={{ letterSpacing: "-0.02em" }}
+            >
+              Admin
             </Typography>
+          </Stack>
 
-            <Box sx={{ flexGrow: 1 }} />
+          {/* Account / Logout */}
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <IconButton onClick={handleMenuOpen} sx={{ p: 0.5 }}>
+              <Avatar
+                sx={{
+                  width: 38,
+                  height: 38,
+                  bgcolor: "primary.main",
+                  fontWeight: 600,
+                }}
+              >
+                {userType?.charAt(0) || "A"}
+              </Avatar>
+            </IconButton>
 
-            <Typography variant="body2">
-              Role: <b>{userType}</b>
-            </Typography>
-
-            <Button color="inherit" onClick={logout}>
-              Logout
-            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              <MenuItem disabled sx={{ opacity: 0.8 }}>
+                Signed in as <strong>{userType || "Admin"}</strong>
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
+                <LogoutIcon sx={{ mr: 1.5 }} fontSize="small" />
+                Logout
+              </MenuItem>
+            </Menu>
           </Stack>
         </Toolbar>
       </AppBar>
+
+      {/* Sidebar - Much Better Looking */}
       <Drawer
         variant="permanent"
         open={open}
@@ -75,30 +128,80 @@ export default function AdminLayout() {
             transition: (theme) =>
               theme.transitions.create("width", {
                 easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.shortest,
+                duration: 220,
               }),
             boxSizing: "border-box",
+            borderRight: "1px solid",
+            borderColor: "divider",
+            bgcolor: "background.paper",
           },
         }}
       >
-        <Toolbar />
-        <List sx={{ px: 1 }}>
-          <ListItemButton component={RouterLink} to="/admin/cities">
-            <ListItemText primary="Cities" sx={{ opacity: open ? 1 : 0 }} />
+        <Toolbar /> {/* Spacer under AppBar */}
+        <List sx={{ pt: 2, px: open ? 2 : 1 }}>
+          <ListItemButton
+            component={RouterLink}
+            to="/admin/cities"
+            sx={{
+              borderRadius: 2,
+              mb: 0.5,
+              "&.Mui-selected": {
+                bgcolor: "primary.light",
+                color: "primary.main",
+                "&:hover": { bgcolor: "primary.light" },
+              },
+            }}
+          >
+            <ListItemIcon>
+              <LocationCityIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Cities"
+              sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
+            />
           </ListItemButton>
 
-          <ListItemButton component={RouterLink} to="/admin/hotels">
-            <ListItemText primary="Hotels" sx={{ opacity: open ? 1 : 0 }} />
+          <ListItemButton
+            component={RouterLink}
+            to="/admin/hotels"
+            sx={{ borderRadius: 2, mb: 0.5 }}
+          >
+            <ListItemIcon>
+              <HotelIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Hotels"
+              sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
+            />
           </ListItemButton>
 
-          <ListItemButton component={RouterLink} to="/admin/rooms">
-            <ListItemText primary="Rooms" sx={{ opacity: open ? 1 : 0 }} />
+          <ListItemButton
+            component={RouterLink}
+            to="/admin/rooms"
+            sx={{ borderRadius: 2 }}
+          >
+            <ListItemIcon>
+              <MeetingRoomIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Rooms"
+              sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
+            />
           </ListItemButton>
         </List>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3, minWidth: 0 }}>
-        <Toolbar />
+      {/* Main Content Area */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: { xs: 2, md: 3 },
+          mt: 8,
+          bgcolor: "background.default",
+          minWidth: 0,
+        }}
+      >
         <Outlet />
       </Box>
     </Box>

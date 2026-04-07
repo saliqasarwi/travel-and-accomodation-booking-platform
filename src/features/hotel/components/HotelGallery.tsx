@@ -1,15 +1,5 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
-import {
-  Box,
-  Dialog,
-  IconButton,
-  ImageList,
-  ImageListItem,
-  Typography,
-  Fade,
-  useTheme,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Dialog, IconButton, Fade, Stack } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -23,14 +13,7 @@ export default function HotelGallery({ items }: Props) {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const theme = useTheme();
-  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
-  const isMd = useMediaQuery(theme.breakpoints.up("md"));
-
-  const cols = isMd ? 4 : isSm ? 3 : 2;
-
   const urls = useMemo(() => items.map((x) => x.url).filter(Boolean), [items]);
-  const hasImages = urls.length > 0;
 
   const handleOpen = (index: number) => {
     setActiveIndex(index);
@@ -65,64 +48,80 @@ export default function HotelGallery({ items }: Props) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, goToPrevious, goToNext]);
-
-  if (!hasImages) {
-    return null;
-  }
-
+  const mainImage = urls[activeIndex] ?? urls[0];
   return (
-    <Box>
-      <ImageList
-        cols={cols}
-        gap={12}
+    <>
+      <Box
         sx={{
-          mb: 0,
-          "& .MuiImageListItem-root": {
-            overflow: "hidden",
-            borderRadius: 3,
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.04)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-            },
-          },
+          position: "relative",
+          borderRadius: 1,
+          overflow: "hidden",
+          mb: 1.5,
+          cursor: "pointer",
         }}
+        onClick={() => handleOpen(activeIndex)}
       >
+        <Box
+          component="img"
+          src={mainImage}
+          alt="Hotel main"
+          sx={{
+            width: "100%",
+            height: { xs: 240, md: 360 },
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            bgcolor: "rgba(15,23,42,0.16)",
+            opacity: 0,
+            transition: "opacity 0.25s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            "&:hover": { opacity: 1 },
+          }}
+        >
+          <ZoomInIcon sx={{ color: "white", fontSize: 36 }} />
+        </Box>
+      </Box>
+      <Stack direction="row" spacing={1.25} sx={{ overflowX: "auto", pb: 0.5 }}>
         {urls.map((url, index) => (
-          <ImageListItem key={url} onClick={() => handleOpen(index)}>
-            <img
+          <Box
+            key={index}
+            onClick={() => setActiveIndex(index)}
+            sx={{
+              flex: "0 0 auto",
+              width: 96,
+              height: 72,
+              borderRadius: 1,
+              overflow: "hidden",
+              cursor: "pointer",
+              border: "2px solid",
+              borderColor:
+                index === activeIndex ? "primary.main" : "transparent",
+              opacity: index === activeIndex ? 1 : 0.75,
+              transition: "all 0.2s ease",
+            }}
+          >
+            <Box
+              component="img"
               src={url}
-              alt={`Hotel image ${index + 1}`}
-              loading="lazy"
-              style={{
-                borderRadius: 12,
-                objectFit: "cover",
-                aspectRatio: "4/3",
+              alt={`Thumbnail ${index + 1}`}
+              sx={{
                 width: "100%",
                 height: "100%",
+                objectFit: "cover",
+                display: "block",
               }}
             />
-            <Box
-              sx={{
-                position: "absolute",
-                inset: 0,
-                bgcolor: "rgba(0,0,0,0.25)",
-                opacity: 0,
-                transition: "opacity 0.3s",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                "&:hover": { opacity: 1 },
-              }}
-            >
-              <ZoomInIcon sx={{ color: "white", fontSize: 40 }} />
-            </Box>
-          </ImageListItem>
+          </Box>
         ))}
-      </ImageList>
-
-      {/* Full-screen  */}
+      </Stack>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -133,10 +132,10 @@ export default function HotelGallery({ items }: Props) {
             m: 0,
             width: "100vw",
             maxWidth: "96vw",
-            height: "94vh",
-            maxHeight: "94vh",
-            backgroundColor: "#000",
-            borderRadius: { xs: 0, sm: 4 },
+            height: "90vh",
+            maxHeight: "90vh",
+            backgroundColor: "background.paper",
+            borderRadius: { xs: 0, sm: 1 },
             overflow: "hidden",
             boxShadow: "none",
           },
@@ -145,13 +144,12 @@ export default function HotelGallery({ items }: Props) {
         <Box
           sx={{
             position: "relative",
-            height: "100vh",
+            height: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          {/* Close button */}
           <IconButton
             onClick={handleClose}
             sx={{
@@ -161,24 +159,21 @@ export default function HotelGallery({ items }: Props) {
               color: "white",
               bgcolor: "rgba(0,0,0,0.5)",
               zIndex: 10,
-              "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
             }}
           >
             <CloseIcon />
           </IconButton>
 
-          {/* Navigation arrows */}
           {urls.length > 1 && (
             <>
               <IconButton
                 onClick={goToPrevious}
                 sx={{
                   position: "absolute",
-                  left: { xs: 8, sm: 24 },
+                  left: 16,
                   color: "white",
                   bgcolor: "rgba(0,0,0,0.4)",
                   zIndex: 10,
-                  "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
                 }}
               >
                 <ArrowBackIosNewIcon />
@@ -188,51 +183,32 @@ export default function HotelGallery({ items }: Props) {
                 onClick={goToNext}
                 sx={{
                   position: "absolute",
-                  right: { xs: 8, sm: 24 },
+                  right: 16,
                   color: "white",
                   bgcolor: "rgba(0,0,0,0.4)",
                   zIndex: 10,
-                  "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
                 }}
               >
                 <ArrowForwardIosIcon />
               </IconButton>
             </>
           )}
-          <Fade in={open} timeout={400} key={activeIndex}>
+
+          <Fade in={open} timeout={300} key={activeIndex}>
             <Box
               component="img"
-              src={urls[activeIndex]}
+              src={mainImage}
               alt={`Hotel image ${activeIndex + 1}`}
               sx={{
                 maxWidth: "100%",
-                maxHeight: "90vh",
+                maxHeight: "85vh",
                 objectFit: "contain",
-                borderRadius: 2,
-                boxShadow: "0 0 40px rgba(0,0,0,0.6)",
+                borderRadius: 1,
               }}
             />
           </Fade>
-
-          {/* Counter */}
-          {urls.length > 1 && (
-            <Typography
-              sx={{
-                position: "absolute",
-                bottom: 24,
-                color: "white",
-                bgcolor: "rgba(0,0,0,0.6)",
-                px: 2.5,
-                py: 1,
-                borderRadius: 20,
-                fontWeight: 600,
-              }}
-            >
-              {activeIndex + 1} / {urls.length}
-            </Typography>
-          )}
         </Box>
       </Dialog>
-    </Box>
+    </>
   );
 }

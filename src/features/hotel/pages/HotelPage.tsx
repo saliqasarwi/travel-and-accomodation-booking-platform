@@ -5,11 +5,8 @@ import {
   Box,
   CircularProgress,
   Container,
-  Divider,
   Grid,
-  Rating,
   Stack,
-  Typography,
 } from "@mui/material";
 
 import { useCart } from "@features/cart/useCart";
@@ -96,92 +93,62 @@ export default function HotelPage() {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-      <Stack spacing={6}>
-        <Stack spacing={1.5} alignItems={{ xs: "center", md: "flex-start" }}>
-          <Typography
-            variant="h3"
-            component="h1"
-            fontWeight={800}
-            sx={{
-              fontSize: { xs: "2.5rem", md: "3.8rem" },
-              background: "linear-gradient(90deg, #1976d2, #42a5f5)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: "-0.5px",
-            }}
-          >
-            {hotel.hotelName}
-          </Typography>
-
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            flexWrap="wrap"
-            justifyContent={{ xs: "center", md: "flex-start" }}
-          >
-            <Typography variant="h6" color="text.secondary" fontWeight={500}>
-              {hotel.location}
-            </Typography>
-            <Typography variant="h6" fontWeight={600}>
-              <Rating
-                value={hotel.starRating}
-                precision={0.1}
-                readOnly
-                size="medium"
-              />
-            </Typography>
+    <Container disableGutters maxWidth={false}>
+      <Grid
+        container
+        spacing={2.5}
+        alignItems="flex-start"
+        sx={{
+          pl: { xs: 0.5, md: 1 },
+          py: { xs: 0.5, md: 1 },
+        }}
+      >
+        <Grid size={{ xs: 12, lg: 3.2 }}>
+          <Stack spacing={2}>
+            <HotelInformation hotel={hotel} />
+            <HotelReviews reviews={reviews} />
           </Stack>
-        </Stack>
-
-        <HotelInformation hotel={hotel} reviews={reviews} />
-
-        <Divider sx={{ my: 3 }} />
-
-        <Grid container spacing={5}>
-          <Grid size={{ xs: 12, lg: 8 }}>
-            <Stack spacing={6}>
-              <HotelGallery items={gallery} />
-
-              <HotelRooms
-                rooms={rooms}
-                onAddToCart={(room) => {
-                  addItem({
-                    hotelId: numericHotelId,
-                    hotelName: hotel.hotelName,
-                    cityName: hotel.location,
-                    starRating: hotel.starRating,
-                    roomType: room.roomType,
-                    roomPhotoUrl: room.roomPhotoUrl,
-                    checkInDate,
-                    checkOutDate,
-                    adults,
-                    children,
-                    numberOfRooms,
-                    pricePerNight: room.price,
-                    discount: 0,
-                  });
-                }}
-              />
-
-              <HotelReviews reviews={reviews} />
-            </Stack>
-          </Grid>
-
-          <Grid size={{ xs: 12, lg: 4 }}>
-            <Box
-              sx={{
-                position: { lg: "sticky" },
-                top: { lg: 24 },
-                pb: { lg: 4 },
-              }}
-            >
-              <HotelLocationMap hotel={hotel} />
-            </Box>
-          </Grid>
         </Grid>
-      </Stack>
+
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Stack spacing={2}>
+            <HotelGallery items={gallery} />
+            <HotelRooms
+              rooms={rooms}
+              onAddToCart={(room) => {
+                addItem({
+                  hotelId: numericHotelId,
+                  hotelName: hotel.hotelName,
+                  cityName: hotel.location,
+                  starRating: hotel.starRating,
+                  roomType: room.roomType,
+                  roomPhotoUrl: room.roomPhotoUrl,
+                  checkInDate,
+                  checkOutDate,
+                  adults,
+                  children,
+                  numberOfRooms,
+                  pricePerNight: room.price,
+                  discount: 0,
+                });
+              }}
+            />
+          </Stack>
+        </Grid>
+
+        <Grid
+          size={{ xs: 12, lg: 2.8 }}
+          sx={{
+            alignSelf: { lg: "flex-start" },
+            position: { xs: "static", lg: "sticky" },
+            top: { lg: 88 },
+            px: { xs: 0.5, md: 0.5 },
+            py: { xs: 0.3, md: 0.5 },
+          }}
+        >
+          <HotelLocationMap hotel={hotel} />
+        </Grid>
+      </Grid>
     </Container>
   );
 }

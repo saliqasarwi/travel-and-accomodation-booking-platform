@@ -3,7 +3,8 @@ export type Amenity = {
   name: string;
   description: string;
 };
-export type HotelSearchItem = {
+
+export interface HotelSearchItem {
   hotelId: number;
   hotelName: string;
   starRating: number;
@@ -14,10 +15,11 @@ export type HotelSearchItem = {
   cityName: string;
   roomPhotoUrl: string;
   discount: number;
-  amenities: Amenity[];
+  amenityIds?: number[];
+  amenities?: Amenity[];
   numberOfChildren: number;
   numberOfAdults: number;
   numberOfRooms: number;
   checkInDate: string;
   checkOutDate: string;
-};
+}

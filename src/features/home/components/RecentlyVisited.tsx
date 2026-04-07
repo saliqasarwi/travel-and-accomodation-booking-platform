@@ -1,44 +1,66 @@
-import { useEffect, useState } from "react";
-import { getRecentHotels } from "../api/home.api";
+import { Box, Typography, Card, CardMedia, Stack, Rating } from "@mui/material";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import type { RecentHotel } from "../types/home.types";
-import { parseApiError } from "@shared/api";
-import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
-export default function RecentlyVisited() {
-  const [data, setData] = useState<RecentHotel[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+type Props = {
+  items: RecentHotel[];
+};
 
-    (async () => {
-      try {
-        setError(null);
-        setLoading(true);
+function formatVisitDate(date?: string) {
+  if (!date) return "Recently visited";
 
-        // backend demo uses userId=2
-        const res = await getRecentHotels(2);
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return date;
 
-        if (!cancelled) setData(res);
-      } catch (e) {
-        if (!cancelled) setError(parseApiError(e).message);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
+  return parsed.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
 
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  if (loading) return <div>Loading recently visited hotels…</div>;
-  if (error) return <div style={{ color: "crimson" }}>{error}</div>;
-  return (
-    <section>
-      <Typography variant="h6" sx={{ mb: 1 }}>
-        Recently Visited
+export default function RecentlyVisited({ items }: Props) {
+  if (items.length === 0) {
+    return (
+      <Typography color="text.secondary">
+        No recently visited hotels available.
       </Typography>
+    );
+  }
+
+  return (
+    <Box component="section" sx={{ mt: 1 }}>
+      <Stack spacing={1} sx={{ mb: 3 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 800,
+            color: "text.primary",
+            lineHeight: 1.2,
+            fontSize: {
+              xs: "1.6rem",
+              sm: "2rem",
+              md: "2.25rem",
+            },
+          }}
+        >
+          Recently Visited
+        </Typography>
+
+        <Typography variant="body2" color="text.secondary">
+          Pick up where you left off and revisit hotels you explored before.
+        </Typography>
+
+        <Box
+          sx={{
+            width: 72,
+            height: 4,
+            borderRadius: 999,
+            background: "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
+          }}
+        />
+      </Stack>
 
       <Box
         component="ul"
@@ -50,30 +72,119 @@ export default function RecentlyVisited() {
           gridTemplateColumns: {
             xs: "1fr",
             sm: "repeat(2, 1fr)",
-            md: "repeat(3, 1fr)",
+            lg: "repeat(3, 1fr)",
           },
-          gap: 2,
+          gap: 3,
         }}
       >
-        {data.map((x) => (
-          <Box component="li">
-            <Card>
+        {items.map((item) => (
+          <Box component="li" key={item.hotelId}>
+            <Card
+              sx={{
+                position: "relative",
+                borderRadius: 5,
+                overflow: "hidden",
+                height: 340,
+                boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
+                border: "1px solid",
+                borderColor: "divider",
+                transition:
+                  "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
+                "&:hover": {
+                  transform: "translateY(-8px)",
+                  boxShadow: "0 20px 40px rgba(15, 23, 42, 0.14)",
+                  borderColor: "primary.light",
+                },
+                "&:hover .recent-image": {
+                  transform: "scale(1.06)",
+                },
+              }}
+            >
               <CardMedia
                 component="img"
-                height="140"
-                image={x.thumbnailUrl}
-                alt={x.cityName}
+                image={item.thumbnailUrl}
+                alt={item.hotelName}
+                className="recent-image"
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transition: "transform 0.5s ease",
+                }}
               />
-              <CardContent>
-                <Typography fontWeight={700}>{x.cityName}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Visit Date: {x.visitDate}
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "linear-gradient(to top, rgba(15,23,42,0.82) 0%, rgba(15,23,42,0.28) 45%, rgba(15,23,42,0.04) 100%)",
+                }}
+              />
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: 20,
+                  right: 20,
+                  bottom: 18,
+                  color: "#fff",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 800,
+                    lineHeight: 1.2,
+                    mb: 0.75,
+                  }}
+                >
+                  {item.hotelName}
                 </Typography>
-              </CardContent>
+
+                <Stack
+                  direction="row"
+                  spacing={0.75}
+                  alignItems="center"
+                  sx={{ mb: 1 }}
+                >
+                  <LocationOnOutlinedIcon sx={{ fontSize: 17 }} />
+                  <Typography variant="body2">{item.cityName}</Typography>
+                </Stack>
+
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  flexWrap="wrap"
+                  gap={1}
+                >
+                  <Stack direction="row" spacing={0.75} alignItems="center">
+                    <AccessTimeOutlinedIcon sx={{ fontSize: 17 }} />
+                    <Typography variant="body2">
+                      {formatVisitDate(item.visitDate)}
+                    </Typography>
+                  </Stack>
+                  <Rating
+                    value={item.starRating}
+                    precision={0.5}
+                    readOnly
+                    size="small"
+                    sx={{
+                      "& .MuiRating-iconFilled": {
+                        color: "#F59E0B",
+                      },
+                      "& .MuiRating-iconEmpty": {
+                        color: "rgba(255,255,255,0.35)",
+                      },
+                    }}
+                  />
+                </Stack>
+              </Box>
             </Card>
           </Box>
         ))}
       </Box>
-    </section>
+    </Box>
   );
 }
