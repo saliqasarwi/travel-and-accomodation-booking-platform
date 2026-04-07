@@ -1,16 +1,13 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Stack, TextField, Button } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import type { CityFormValues } from "../../types/admin.types";
 import type { FormikProps } from "formik";
 
 type Props = {
   initialValues: CityFormValues;
   onSubmit: (values: CityFormValues) => void | Promise<void>;
-  submitLabel?: string;
-
-  // allow drawer to submit from outside
   innerRef?: React.Ref<FormikProps<CityFormValues>>;
 };
 
@@ -24,13 +21,13 @@ const citySchema = Yup.object({
     .transform((val, originalVal) => (originalVal === "" ? undefined : val))
     .optional(),
 });
-
-export default function CityForm({
-  initialValues,
-  onSubmit,
-  submitLabel = "Save",
-  innerRef,
-}: Props) {
+const fieldSx = {
+  "& .MuiOutlinedInput-root": {
+    borderRadius: 2,
+    bgcolor: "background.paper",
+  },
+};
+export default function CityForm({ initialValues, onSubmit, innerRef }: Props) {
   return (
     <Formik<CityFormValues>
       innerRef={innerRef}
@@ -46,7 +43,6 @@ export default function CityForm({
         handleChange,
         handleBlur,
         setFieldValue,
-        isSubmitting,
       }) => (
         <Form>
           <Stack spacing={2}>
@@ -60,6 +56,7 @@ export default function CityForm({
               helperText={touched.name && errors.name}
               fullWidth
               required
+              sx={fieldSx}
             />
 
             <TextField
@@ -71,6 +68,7 @@ export default function CityForm({
               error={touched.country && Boolean(errors.country)}
               helperText={touched.country && (errors.country as string)}
               fullWidth
+              sx={fieldSx}
             />
 
             <TextField
@@ -82,6 +80,7 @@ export default function CityForm({
               error={touched.postOffice && Boolean(errors.postOffice)}
               helperText={touched.postOffice && (errors.postOffice as string)}
               fullWidth
+              sx={fieldSx}
             />
 
             <TextField
@@ -102,10 +101,8 @@ export default function CityForm({
                 touched.numberOfHotels && (errors.numberOfHotels as string)
               }
               fullWidth
+              sx={fieldSx}
             />
-            <Button type="submit" variant="contained" disabled={isSubmitting}>
-              {submitLabel}
-            </Button>
           </Stack>
         </Form>
       )}

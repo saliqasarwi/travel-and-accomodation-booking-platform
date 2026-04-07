@@ -1,22 +1,13 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import {
-  Stack,
-  TextField,
-  Button,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import { Stack, TextField, Checkbox, FormControlLabel } from "@mui/material";
 import type { RoomFormValues } from "../../types/admin.types";
 import type { FormikProps } from "formik";
 
 type Props = {
   initialValues: RoomFormValues;
   onSubmit: (values: RoomFormValues) => void | Promise<void>;
-  submitLabel?: string;
-
-  // ✅ allow drawer to submit from outside
   innerRef?: React.Ref<FormikProps<RoomFormValues>>;
 };
 
@@ -38,13 +29,14 @@ const roomSchema = Yup.object({
     .optional(),
   availability: Yup.boolean().optional(),
 });
+const fieldSx = {
+  "& .MuiOutlinedInput-root": {
+    borderRadius: 2,
+    bgcolor: "background.paper",
+  },
+};
 
-export default function RoomForm({
-  initialValues,
-  onSubmit,
-  submitLabel = "Save",
-  innerRef,
-}: Props) {
+export default function RoomForm({ initialValues, onSubmit, innerRef }: Props) {
   return (
     <Formik<RoomFormValues>
       innerRef={innerRef}
@@ -53,14 +45,7 @@ export default function RoomForm({
       onSubmit={onSubmit}
       enableReinitialize
     >
-      {({
-        values,
-        errors,
-        touched,
-        handleBlur,
-        setFieldValue,
-        isSubmitting,
-      }) => (
+      {({ values, errors, touched, handleBlur, setFieldValue }) => (
         <Form>
           <Stack spacing={2}>
             <TextField
@@ -78,6 +63,7 @@ export default function RoomForm({
               error={touched.roomNumber && Boolean(errors.roomNumber)}
               helperText={touched.roomNumber && (errors.roomNumber as string)}
               fullWidth
+              sx={fieldSx}
             />
 
             <TextField
@@ -98,6 +84,7 @@ export default function RoomForm({
                 touched.adultCapacity && (errors.adultCapacity as string)
               }
               fullWidth
+              sx={fieldSx}
             />
 
             <TextField
@@ -120,6 +107,7 @@ export default function RoomForm({
                 touched.childrenCapacity && (errors.childrenCapacity as string)
               }
               fullWidth
+              sx={fieldSx}
             />
 
             <FormControlLabel
@@ -134,11 +122,6 @@ export default function RoomForm({
               }
               label="Available"
             />
-
-            {/* optional in-form submit */}
-            <Button type="submit" variant="contained" disabled={isSubmitting}>
-              {submitLabel}
-            </Button>
           </Stack>
         </Form>
       )}

@@ -1,16 +1,13 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Stack, TextField, Button } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import type { HotelFormValues } from "../../types/admin.types";
 import type { FormikProps } from "formik";
 
 type Props = {
   initialValues: HotelFormValues;
   onSubmit: (values: HotelFormValues) => void | Promise<void>;
-  submitLabel?: string;
-
-  //  allow drawer to submit from outside
   innerRef?: React.Ref<FormikProps<HotelFormValues>>;
 };
 
@@ -29,11 +26,16 @@ const hotelSchema = Yup.object({
     .transform((val, originalVal) => (originalVal === "" ? undefined : val))
     .optional(),
 });
+const fieldSx = {
+  "& .MuiOutlinedInput-root": {
+    borderRadius: 2,
+    bgcolor: "background.paper",
+  },
+};
 
 export default function HotelForm({
   initialValues,
   onSubmit,
-  submitLabel = "Save",
   innerRef,
 }: Props) {
   return (
@@ -51,7 +53,6 @@ export default function HotelForm({
         handleChange,
         handleBlur,
         setFieldValue,
-        isSubmitting,
       }) => (
         <Form>
           <Stack spacing={2}>
@@ -65,6 +66,7 @@ export default function HotelForm({
               helperText={touched.hotelName && errors.hotelName}
               fullWidth
               required
+              sx={fieldSx}
             />
 
             <TextField
@@ -76,6 +78,7 @@ export default function HotelForm({
               error={touched.location && Boolean(errors.location)}
               helperText={touched.location && (errors.location as string)}
               fullWidth
+              sx={fieldSx}
             />
 
             <TextField
@@ -94,6 +97,7 @@ export default function HotelForm({
               error={touched.starRating && Boolean(errors.starRating)}
               helperText={touched.starRating && (errors.starRating as string)}
               fullWidth
+              sx={fieldSx}
             />
 
             <TextField
@@ -114,12 +118,8 @@ export default function HotelForm({
                 touched.availableRooms && (errors.availableRooms as string)
               }
               fullWidth
+              sx={fieldSx}
             />
-
-            {/* optional in-form submit */}
-            <Button type="submit" variant="contained" disabled={isSubmitting}>
-              {submitLabel}
-            </Button>
           </Stack>
         </Form>
       )}
