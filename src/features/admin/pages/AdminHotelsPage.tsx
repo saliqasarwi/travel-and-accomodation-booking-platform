@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Box, IconButton, Rating } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 import AdminToolbar from "../components/AdminToolbar";
 import AdminEntityDrawer from "../components/AdminEntityDrawer";
@@ -13,8 +13,8 @@ import {
   updateHotel,
 } from "../api/admin.api";
 import type { HotelFormValues, HotelRow } from "../types/admin.types";
-import { useSearchParams } from "react-router-dom";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
+
 const EMPTY_HOTEL: HotelFormValues = {
   hotelName: "",
   location: "",
@@ -25,14 +25,17 @@ const EMPTY_HOTEL: HotelFormValues = {
 export default function AdminHotelsPage() {
   const [rows, setRows] = useState<HotelRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchValue = searchParams.get("hotelName") ?? "";
+
+  const [inputValue, setInputValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [drawerInitialValues, setDrawerInitialValues] =
     useState<HotelFormValues>(EMPTY_HOTEL);
   const [saving, setSaving] = useState(false);
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -40,13 +43,15 @@ export default function AdminHotelsPage() {
   const fetchHotels = useCallback(async () => {
     try {
       setLoading(true);
-      const hotelName = searchParams.get("hotelName") ?? undefined;
-      const data = await getHotels(hotelName ? { hotelName } : undefined);
+      const data = await getHotels(
+        searchValue ? { hotelName: searchValue } : undefined
+      );
       setRows(data);
     } finally {
       setLoading(false);
     }
-  }, [searchParams]);
+  }, [searchValue]);
+
   useEffect(() => {
     fetchHotels();
   }, [fetchHotels]);
@@ -87,6 +92,7 @@ export default function AdminHotelsPage() {
       setSaving(false);
     }
   };
+
   const openDeleteDialog = (id: number) => {
     setSelectedDeleteId(id);
     setConfirmOpen(true);
@@ -105,6 +111,7 @@ export default function AdminHotelsPage() {
       setDeleting(false);
     }
   };
+
   const columns: GridColDef[] = [
     { field: "hotelName", headerName: "Name", flex: 1, minWidth: 180 },
     {
@@ -122,7 +129,7 @@ export default function AdminHotelsPage() {
         />
       ),
     },
-    { field: "availableRooms", headerName: "#Rooms", width: 110 },
+    { field: "availableRooms", headerName: "# Rooms", width: 110 },
     { field: "location", headerName: "Location", flex: 1, minWidth: 140 },
     { field: "createdAt", headerName: "Created", flex: 1, minWidth: 170 },
     { field: "modifiedAt", headerName: "Modified", flex: 1, minWidth: 170 },
@@ -140,7 +147,7 @@ export default function AdminHotelsPage() {
             openDeleteDialog(params.row.id);
           }}
         >
-          <DeleteIcon />
+          <DeleteRoundedIcon />
         </IconButton>
       ),
     },
@@ -151,21 +158,29 @@ export default function AdminHotelsPage() {
       <Box sx={{ width: "100%" }}>
         <AdminToolbar
           title="Hotels"
-          searchValue={searchValue}
-          onSearchChange={(value) => {
-            setSearchParams((prev) => {
-              const next = new URLSearchParams(prev);
-              if (value) next.set("hotelName", value);
-              else next.delete("hotelName");
-              return next;
-            });
+          searchValue={inputValue}
+          onSearchChange={setInputValue}
+          onSearchSubmit={() => setSearchValue(inputValue.trim())}
+          onClearSearch={() => {
+            setInputValue("");
+            setSearchValue("");
           }}
-          onSearchSubmit={() => {}}
           onCreateClick={openCreate}
         />
 
-        <Box sx={{ mt: 3, width: "100%" }}>
+        <Box
+          sx={{
+            mt: 3,
+            p: { xs: 1.5, md: 2 },
+            borderRadius: 3,
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
+            boxShadow: "0 8px 24px rgba(15, 23, 42, 0.05)",
+          }}
+        >
           <DataGrid
+            autoHeight
             rows={rows}
             columns={columns}
             loading={loading}
@@ -174,6 +189,33 @@ export default function AdminHotelsPage() {
               pagination: { paginationModel: { pageSize: 5, page: 0 } },
             }}
             onRowClick={(params) => openEdit(params.row as HotelRow)}
+            sx={{
+              border: "none",
+              bgcolor: "transparent",
+              "& .MuiDataGrid-columnHeaders": {
+                bgcolor: "transparent",
+                borderBottom: "1px solid",
+                borderColor: "divider",
+              },
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: 800,
+                color: "text.primary",
+              },
+              "& .MuiDataGrid-row": {
+                cursor: "pointer",
+                transition: "background-color 0.2s ease",
+              },
+              "& .MuiDataGrid-row:hover": {
+                bgcolor: "rgba(21,101,192,0.04)",
+              },
+              "& .MuiDataGrid-cell": {
+                borderColor: "rgba(224,224,224,0.45)",
+              },
+              "& .MuiDataGrid-footerContainer": {
+                borderTop: "1px solid",
+                borderColor: "divider",
+              },
+            }}
           />
         </Box>
 
@@ -188,6 +230,7 @@ export default function AdminHotelsPage() {
           saving={saving}
         />
       </Box>
+
       <ConfirmActionDialog
         open={confirmOpen}
         title="Delete hotel"
