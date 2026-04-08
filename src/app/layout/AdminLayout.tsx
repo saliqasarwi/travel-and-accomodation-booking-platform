@@ -15,6 +15,7 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Tooltip,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
@@ -26,7 +27,9 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 
 import { useState } from "react";
 import { useAuth } from "@app/providers/AuthContext";
-
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import { useColorMode } from "@app/providers/ColorModeProvider";
 const drawerWidth = 260;
 const collapsedWidth = 72;
 
@@ -34,7 +37,7 @@ export default function AdminLayout() {
   const { userType, logout } = useAuth();
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
+  const { mode, toggleColorMode } = useColorMode();
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -81,6 +84,15 @@ export default function AdminLayout() {
 
           {/* Account / Logout */}
           <Stack direction="row" alignItems="center" spacing={2}>
+            <Tooltip title={mode === "light" ? "Dark mode" : "Light mode"}>
+              <IconButton onClick={toggleColorMode} color="inherit">
+                {mode === "light" ? (
+                  <DarkModeRoundedIcon />
+                ) : (
+                  <LightModeRoundedIcon />
+                )}
+              </IconButton>
+            </Tooltip>
             <IconButton onClick={handleMenuOpen} sx={{ p: 0.5 }}>
               <Avatar
                 sx={{
@@ -114,7 +126,7 @@ export default function AdminLayout() {
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar - Much Better Looking */}
+      {/* Sidebar */}
       <Drawer
         variant="permanent"
         open={open}

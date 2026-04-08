@@ -60,6 +60,7 @@ export default function LoginForm({
               sx={{
                 "& .MuiOutlinedInput-root": {
                   backgroundColor: "rgba(255,255,255,0.9)",
+                  color: "primary.dark",
                 },
               }}
             />
@@ -79,6 +80,7 @@ export default function LoginForm({
               sx={{
                 "& .MuiOutlinedInput-root": {
                   backgroundColor: "rgba(255,255,255,0.9)",
+                  color: "primary.dark",
                 },
               }}
             />
