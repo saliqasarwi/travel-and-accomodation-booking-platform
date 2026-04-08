@@ -159,6 +159,7 @@ export default function LoginPage() {
               sx={{
                 fontWeight: 800,
                 fontSize: { xs: "2rem", sm: "2.4rem" },
+                color: "primary.dark",
               }}
             >
               Welcome back

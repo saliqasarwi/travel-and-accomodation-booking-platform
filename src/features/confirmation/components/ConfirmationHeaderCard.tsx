@@ -28,8 +28,6 @@ export default function ConfirmationHeaderCard({
         border: "1px solid",
         borderColor: "divider",
         boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
-        background:
-          "linear-gradient(180deg, rgba(21,101,192,0.04) 0%, rgba(255,255,255,1) 45%)",
       }}
     >
       <CardContent sx={{ p: { xs: 2, md: 3 } }}>
