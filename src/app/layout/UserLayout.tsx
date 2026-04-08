@@ -25,14 +25,16 @@ import { useCart } from "@features/cart/useCart";
 import { useAuth } from "@app/providers/AuthContext";
 import Footer from "@shared/components/Footer.tsx";
 import { GridSearchIcon } from "@mui/x-data-grid";
-
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import { useColorMode } from "@app/providers/ColorModeProvider";
 export default function UserLayout() {
   const { totalItems } = useCart();
   const { isAuthenticated, logout } = useAuth();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const profileMenuOpen = Boolean(anchorEl);
-
+  const { mode, toggleColorMode } = useColorMode();
   const handleOpenProfileMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -202,6 +204,17 @@ export default function UserLayout() {
 
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                   </Menu>
+                  <Tooltip
+                    title={mode === "light" ? "Dark mode" : "Light mode"}
+                  >
+                    <IconButton onClick={toggleColorMode} color="inherit">
+                      {mode === "light" ? (
+                        <DarkModeRoundedIcon />
+                      ) : (
+                        <LightModeRoundedIcon />
+                      )}
+                    </IconButton>
+                  </Tooltip>
                 </>
               ) : (
                 <IconButton
