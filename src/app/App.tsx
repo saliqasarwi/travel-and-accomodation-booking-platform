@@ -1,12 +1,13 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "@app/router/router";
 import { AuthProvider } from "@app/providers/AuthProvider";
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import { theme } from "@shared/theme/theme";
+import { CssBaseline } from "@mui/material";
 import { CartProvider } from "@features/cart/CartProvider";
+import { ColorModeProvider } from "@app/providers/ColorModeProvider";
+
 export default function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ColorModeProvider>
       <CssBaseline />
       {/*resets browser styles*/}
       <AuthProvider>
@@ -14,6 +15,6 @@ export default function App() {
           <RouterProvider router={router} />
         </CartProvider>
       </AuthProvider>
-    </ThemeProvider>
+    </ColorModeProvider>
   );
 }
