@@ -2,6 +2,7 @@ import { Button, Stack, TextField, Typography, Box } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
+import { useTranslation } from "react-i18next";
 type Props = {
   title: string;
   searchValue: string;
@@ -21,6 +22,7 @@ export default function AdminToolbar({
   onCreateClick,
   createLabel = "Create",
 }: Props) {
+  const { t } = useTranslation();
   return (
     <Stack spacing={2.5}>
       <Box>
@@ -34,7 +36,7 @@ export default function AdminToolbar({
             mb: 0.75,
           }}
         >
-          {title}
+          {t(title)}
         </Typography>
 
         <Box
@@ -55,7 +57,9 @@ export default function AdminToolbar({
       >
         <TextField
           fullWidth
-          placeholder={`Search ${title.toLowerCase()}...`}
+          placeholder={t("admin.searchPlaceholder", {
+            entity: title.toLowerCase(),
+          })}
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={(e) => {
@@ -87,7 +91,7 @@ export default function AdminToolbar({
               minWidth: 120,
             }}
           >
-            Search
+            {t("common.search")}
           </Button>
 
           <Button
@@ -101,7 +105,7 @@ export default function AdminToolbar({
               minWidth: 110,
             }}
           >
-            Clear
+            {t("common.clear")}
           </Button>
 
           <Button
@@ -114,7 +118,7 @@ export default function AdminToolbar({
               minWidth: 120,
             }}
           >
-            {createLabel}
+            {createLabel ?? t("common.create")}
           </Button>
         </Stack>
       </Stack>
