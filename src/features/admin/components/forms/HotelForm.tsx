@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Stack, TextField } from "@mui/material";
 import type { HotelFormValues } from "../../types/admin.types";
 import type { FormikProps } from "formik";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   initialValues: HotelFormValues;
@@ -26,6 +27,7 @@ const hotelSchema = Yup.object({
     .transform((val, originalVal) => (originalVal === "" ? undefined : val))
     .optional(),
 });
+
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: 2,
@@ -38,6 +40,8 @@ export default function HotelForm({
   onSubmit,
   innerRef,
 }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Formik<HotelFormValues>
       innerRef={innerRef}
@@ -58,7 +62,7 @@ export default function HotelForm({
           <Stack spacing={2}>
             <TextField
               name="hotelName"
-              label="Hotel Name"
+              label={t("admin.hotelName")}
               value={values.hotelName}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -71,7 +75,7 @@ export default function HotelForm({
 
             <TextField
               name="location"
-              label="Location"
+              label={t("admin.location")}
               value={values.location ?? ""}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -83,7 +87,7 @@ export default function HotelForm({
 
             <TextField
               name="starRating"
-              label="Star Rating"
+              label={t("admin.starRating")}
               type="number"
               slotProps={{ htmlInput: { min: 1, max: 5 } }}
               value={values.starRating ?? ""}
@@ -102,7 +106,7 @@ export default function HotelForm({
 
             <TextField
               name="availableRooms"
-              label="Available Rooms"
+              label={t("admin.availableRooms")}
               type="number"
               slotProps={{ htmlInput: { min: 0 } }}
               value={values.availableRooms ?? ""}

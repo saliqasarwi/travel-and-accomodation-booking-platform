@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Stack, TextField } from "@mui/material";
 import type { CityFormValues } from "../../types/admin.types";
 import type { FormikProps } from "formik";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   initialValues: CityFormValues;
@@ -21,13 +22,17 @@ const citySchema = Yup.object({
     .transform((val, originalVal) => (originalVal === "" ? undefined : val))
     .optional(),
 });
+
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: 2,
     bgcolor: "background.paper",
   },
 };
+
 export default function CityForm({ initialValues, onSubmit, innerRef }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Formik<CityFormValues>
       innerRef={innerRef}
@@ -48,7 +53,7 @@ export default function CityForm({ initialValues, onSubmit, innerRef }: Props) {
           <Stack spacing={2}>
             <TextField
               name="name"
-              label="Name"
+              label={t("admin.name")}
               value={values.name}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -61,7 +66,7 @@ export default function CityForm({ initialValues, onSubmit, innerRef }: Props) {
 
             <TextField
               name="country"
-              label="Country"
+              label={t("admin.country")}
               value={values.country ?? ""}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -73,7 +78,7 @@ export default function CityForm({ initialValues, onSubmit, innerRef }: Props) {
 
             <TextField
               name="postOffice"
-              label="Post Office"
+              label={t("admin.postOffice")}
               value={values.postOffice ?? ""}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -85,7 +90,7 @@ export default function CityForm({ initialValues, onSubmit, innerRef }: Props) {
 
             <TextField
               name="numberOfHotels"
-              label="Number of Hotels"
+              label={t("admin.numberOfHotels")}
               type="number"
               slotProps={{ htmlInput: { min: 0 } }}
               value={values.numberOfHotels ?? ""}
