@@ -20,21 +20,26 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import FlightTakeoffRoundedIcon from "@mui/icons-material/FlightTakeoffRounded";
 import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import { GridSearchIcon } from "@mui/x-data-grid";
+import { useTranslation } from "react-i18next";
 
 import { useCart } from "@features/cart/useCart";
 import { useAuth } from "@app/providers/AuthContext";
-import Footer from "@shared/components/Footer.tsx";
-import { GridSearchIcon } from "@mui/x-data-grid";
-import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
-import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import { useColorMode } from "@app/providers/ColorModeProvider";
+import Footer from "@shared/components/Footer";
+import LanguageSwitcher from "@shared/components/LanguageSwitcher";
+
 export default function UserLayout() {
   const { totalItems } = useCart();
   const { isAuthenticated, logout } = useAuth();
+  const { mode, toggleColorMode } = useColorMode();
+  const { t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const profileMenuOpen = Boolean(anchorEl);
-  const { mode, toggleColorMode } = useColorMode();
+
   const handleOpenProfileMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -103,12 +108,13 @@ export default function UserLayout() {
             </Stack>
 
             <Stack direction="row" spacing={1} alignItems="center">
-              <Tooltip title="Home">
+              <Tooltip title={t("nav.home")}>
                 <IconButton component={RouterLink} to="/" color="inherit">
                   <HomeRoundedIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Search">
+
+              <Tooltip title={t("nav.search")}>
                 <IconButton component={RouterLink} to="/search" color="inherit">
                   <GridSearchIcon />
                 </IconButton>
@@ -118,7 +124,7 @@ export default function UserLayout() {
             <Box sx={{ flexGrow: 1 }} />
 
             {isAuthenticated && (
-              <Tooltip title="Cart">
+              <Tooltip title={t("nav.cart")}>
                 <IconButton component={RouterLink} to="/cart" color="inherit">
                   <Badge badgeContent={totalItems} color="primary">
                     <LocalMallOutlinedIcon />
@@ -127,10 +133,24 @@ export default function UserLayout() {
               </Tooltip>
             )}
 
+            <LanguageSwitcher />
+
+            <Tooltip
+              title={mode === "light" ? t("theme.dark") : t("theme.light")}
+            >
+              <IconButton onClick={toggleColorMode} color="inherit">
+                {mode === "light" ? (
+                  <DarkModeRoundedIcon />
+                ) : (
+                  <LightModeRoundedIcon />
+                )}
+              </IconButton>
+            </Tooltip>
+
             <Box sx={{ ml: 1.5 }}>
               {isAuthenticated ? (
                 <>
-                  <Tooltip title="Profile">
+                  <Tooltip title={t("nav.profile")}>
                     <IconButton onClick={handleOpenProfileMenu} color="inherit">
                       <Avatar
                         sx={{
@@ -180,7 +200,7 @@ export default function UserLayout() {
                         Sali
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        My account
+                        {t("nav.account")}
                       </Typography>
                     </Box>
 
@@ -191,7 +211,7 @@ export default function UserLayout() {
                       to="/profile"
                       onClick={handleCloseProfileMenu}
                     >
-                      Profile
+                      {t("nav.profile")}
                     </MenuItem>
 
                     <MenuItem
@@ -199,29 +219,20 @@ export default function UserLayout() {
                       to="/bookings"
                       onClick={handleCloseProfileMenu}
                     >
-                      My Bookings
+                      {t("nav.bookings")}
                     </MenuItem>
 
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    <MenuItem onClick={handleLogout}>
+                      {t("nav.logout")}
+                    </MenuItem>
                   </Menu>
-                  <Tooltip
-                    title={mode === "light" ? "Dark mode" : "Light mode"}
-                  >
-                    <IconButton onClick={toggleColorMode} color="inherit">
-                      {mode === "light" ? (
-                        <DarkModeRoundedIcon />
-                      ) : (
-                        <LightModeRoundedIcon />
-                      )}
-                    </IconButton>
-                  </Tooltip>
                 </>
               ) : (
                 <IconButton
                   component={RouterLink}
                   to="/login"
                   color="inherit"
-                  aria-label="Login"
+                  aria-label={t("auth.login")}
                 >
                   <PersonOutlineRoundedIcon />
                 </IconButton>
@@ -234,6 +245,7 @@ export default function UserLayout() {
       <Box component="main" sx={{ py: 2 }}>
         <Outlet />
       </Box>
+
       <Footer />
     </Box>
   );
