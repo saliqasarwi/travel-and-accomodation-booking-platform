@@ -17,6 +17,9 @@ const resources = {
         backToHome: "Back to Home",
         printBooking: "Print Booking",
         viewDetails: "View details",
+        darkMode: "Dark mode",
+        lightMode: "Light mode",
+        myAccount: "My account",
       },
       nav: {
         home: "Home",
@@ -28,32 +31,47 @@ const resources = {
         login: "Login",
       },
       admin: {
+        panel: "Admin Panel",
         cities: "Cities",
         hotels: "Hotels",
         rooms: "Rooms",
+
         createCity: "Create City",
         editCity: "Edit City",
+        deleteCity: "Delete city",
+        deleteCityMessage: "Are you sure you want to delete this city?",
+
         createHotel: "Create Hotel",
         editHotel: "Edit Hotel",
+        deleteHotel: "Delete hotel",
+        deleteHotelMessage: "Are you sure you want to delete this hotel?",
+
         createRoom: "Create Room",
         editRoom: "Edit Room",
+        deleteRoom: "Delete room",
+        deleteRoomMessage: "Are you sure you want to delete this room?",
+
         name: "Name",
         country: "Country",
         postOffice: "Post Office",
         numberOfHotels: "Number of Hotels",
+
         hotelName: "Hotel Name",
         location: "Location",
         starRating: "Star Rating",
         availableRooms: "Available Rooms",
+
         roomNumber: "Room Number",
         adults: "Adults",
         children: "Children",
         availability: "Availability",
         available: "Available",
         notAvailable: "Not available",
+
         created: "Created",
         modified: "Modified",
         actions: "Actions",
+
         searchPlaceholder: "Search {{entity}}...",
       },
       profile: {
@@ -120,6 +138,9 @@ const resources = {
         backToHome: "العودة للرئيسية",
         printBooking: "طباعة الحجز",
         viewDetails: "عرض التفاصيل",
+        darkMode: "الوضع الداكن",
+        lightMode: "الوضع الفاتح",
+        myAccount: "حسابي",
       },
       nav: {
         home: "الرئيسية",
@@ -131,32 +152,47 @@ const resources = {
         login: "تسجيل الدخول",
       },
       admin: {
+        panel: "لوحة التحكم",
         cities: "المدن",
         hotels: "الفنادق",
         rooms: "الغرف",
+
         createCity: "إنشاء مدينة",
         editCity: "تعديل مدينة",
+        deleteCity: "حذف المدينة",
+        deleteCityMessage: "هل أنت متأكد أنك تريد حذف هذه المدينة؟",
+
         createHotel: "إنشاء فندق",
         editHotel: "تعديل فندق",
+        deleteHotel: "حذف الفندق",
+        deleteHotelMessage: "هل أنت متأكد أنك تريد حذف هذا الفندق؟",
+
         createRoom: "إنشاء غرفة",
         editRoom: "تعديل غرفة",
+        deleteRoom: "حذف الغرفة",
+        deleteRoomMessage: "هل أنت متأكد أنك تريد حذف هذه الغرفة؟",
+
         name: "الاسم",
         country: "الدولة",
         postOffice: "مكتب البريد",
         numberOfHotels: "عدد الفنادق",
+
         hotelName: "اسم الفندق",
         location: "الموقع",
         starRating: "التقييم النجمي",
         availableRooms: "الغرف المتاحة",
+
         roomNumber: "رقم الغرفة",
         adults: "البالغون",
         children: "الأطفال",
         availability: "التوفر",
         available: "متاح",
         notAvailable: "غير متاح",
+
         created: "تاريخ الإنشاء",
         modified: "آخر تعديل",
         actions: "الإجراءات",
+
         searchPlaceholder: "ابحث في {{entity}}...",
       },
       profile: {
@@ -184,7 +220,7 @@ const resources = {
         title: "تأكيد الحجز",
         subtitle: "تم تأكيد حجزك بنجاح.",
         bookingConfirmed: "تم تأكيد الحجز",
-        keepForRecords: "احتفظ بهذا التأكيد لسجلاتك.",
+        keepForRecords: "احتفظ بهذا التأكيد في سجلاتك.",
         confirmationNumber: "رقم التأكيد",
         created: "تاريخ الإنشاء",
         hotelAndRooms: "الفندق والغرف",

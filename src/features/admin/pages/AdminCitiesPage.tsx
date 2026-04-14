@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import { useTranslation } from "react-i18next";
 
 import AdminToolbar from "../components/AdminToolbar";
 import AdminEntityDrawer from "../components/AdminEntityDrawer";
@@ -22,6 +23,8 @@ const EMPTY_CITY: CityFormValues = {
 };
 
 export default function AdminCitiesPage() {
+  const { t } = useTranslation();
+
   const [rows, setRows] = useState<CityRow[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -113,20 +116,39 @@ export default function AdminCitiesPage() {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "name", headerName: "Name", flex: 1, minWidth: 160 },
-      { field: "country", headerName: "Country", flex: 1, minWidth: 140 },
+      { field: "name", headerName: t("admin.name"), flex: 1, minWidth: 160 },
+      {
+        field: "country",
+        headerName: t("admin.country"),
+        flex: 1,
+        minWidth: 140,
+      },
       {
         field: "postOffice",
-        headerName: "Post Office",
+        headerName: t("admin.postOffice"),
         flex: 1,
         minWidth: 160,
       },
-      { field: "numberOfHotels", headerName: "# Hotels", width: 110 },
-      { field: "createdAt", headerName: "Created", flex: 1, minWidth: 170 },
-      { field: "modifiedAt", headerName: "Modified", flex: 1, minWidth: 170 },
+      {
+        field: "numberOfHotels",
+        headerName: t("admin.numberOfHotels"),
+        width: 140,
+      },
+      {
+        field: "createdAt",
+        headerName: t("admin.created"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "modifiedAt",
+        headerName: t("admin.modified"),
+        flex: 1,
+        minWidth: 170,
+      },
       {
         field: "actions",
-        headerName: "Actions",
+        headerName: t("admin.actions"),
         width: 90,
         sortable: false,
         filterable: false,
@@ -143,14 +165,14 @@ export default function AdminCitiesPage() {
         ),
       },
     ],
-    []
+    [t]
   );
 
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <AdminToolbar
-          title="Cities"
+          title={t("admin.cities")}
           searchValue={inputValue}
           onSearchChange={setInputValue}
           onSearchSubmit={() => setSearchValue(inputValue.trim())}
@@ -159,6 +181,7 @@ export default function AdminCitiesPage() {
             setSearchValue("");
           }}
           onCreateClick={openCreate}
+          createLabel={t("common.create")}
         />
 
         <Box
@@ -219,7 +242,11 @@ export default function AdminCitiesPage() {
           open={drawerOpen}
           mode={drawerMode}
           entity="cities"
-          title={drawerMode === "create" ? "Create City" : "Edit City"}
+          title={
+            drawerMode === "create"
+              ? t("admin.createCity")
+              : t("admin.editCity")
+          }
           initialValues={drawerInitialValues}
           onClose={() => setDrawerOpen(false)}
           onSubmit={handleSubmit}
@@ -229,9 +256,9 @@ export default function AdminCitiesPage() {
 
       <ConfirmActionDialog
         open={confirmOpen}
-        title="Delete city"
-        message="Are you sure you want to delete this city?"
-        confirmText="Delete"
+        title={t("admin.deleteCity")}
+        message={t("admin.deleteCityMessage")}
+        confirmText={t("common.delete")}
         confirmColor="error"
         loading={deleting}
         onClose={() => {

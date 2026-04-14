@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Box, IconButton, Rating } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import { useTranslation } from "react-i18next";
 
 import AdminToolbar from "../components/AdminToolbar";
 import AdminEntityDrawer from "../components/AdminEntityDrawer";
@@ -23,6 +24,8 @@ const EMPTY_HOTEL: HotelFormValues = {
 };
 
 export default function AdminHotelsPage() {
+  const { t } = useTranslation();
+
   const [rows, setRows] = useState<HotelRow[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -113,10 +116,15 @@ export default function AdminHotelsPage() {
   };
 
   const columns: GridColDef[] = [
-    { field: "hotelName", headerName: "Name", flex: 1, minWidth: 180 },
+    {
+      field: "hotelName",
+      headerName: t("admin.hotelName"),
+      flex: 1,
+      minWidth: 180,
+    },
     {
       field: "starRating",
-      headerName: "Star Rate",
+      headerName: t("admin.starRating"),
       width: 160,
       align: "center",
       headerAlign: "center",
@@ -129,13 +137,32 @@ export default function AdminHotelsPage() {
         />
       ),
     },
-    { field: "availableRooms", headerName: "# Rooms", width: 110 },
-    { field: "location", headerName: "Location", flex: 1, minWidth: 140 },
-    { field: "createdAt", headerName: "Created", flex: 1, minWidth: 170 },
-    { field: "modifiedAt", headerName: "Modified", flex: 1, minWidth: 170 },
+    {
+      field: "availableRooms",
+      headerName: t("admin.availableRooms"),
+      width: 140,
+    },
+    {
+      field: "location",
+      headerName: t("admin.location"),
+      flex: 1,
+      minWidth: 140,
+    },
+    {
+      field: "createdAt",
+      headerName: t("admin.created"),
+      flex: 1,
+      minWidth: 170,
+    },
+    {
+      field: "modifiedAt",
+      headerName: t("admin.modified"),
+      flex: 1,
+      minWidth: 170,
+    },
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: t("admin.actions"),
       width: 110,
       sortable: false,
       filterable: false,
@@ -157,7 +184,7 @@ export default function AdminHotelsPage() {
     <>
       <Box sx={{ width: "100%" }}>
         <AdminToolbar
-          title="Hotels"
+          title={t("admin.hotels")}
           searchValue={inputValue}
           onSearchChange={setInputValue}
           onSearchSubmit={() => setSearchValue(inputValue.trim())}
@@ -166,6 +193,7 @@ export default function AdminHotelsPage() {
             setSearchValue("");
           }}
           onCreateClick={openCreate}
+          createLabel={t("common.create")}
         />
 
         <Box
@@ -223,7 +251,11 @@ export default function AdminHotelsPage() {
           open={drawerOpen}
           mode={drawerMode}
           entity="hotels"
-          title={drawerMode === "create" ? "Create Hotel" : "Edit Hotel"}
+          title={
+            drawerMode === "create"
+              ? t("admin.createHotel")
+              : t("admin.editHotel")
+          }
           initialValues={drawerInitialValues}
           onClose={() => setDrawerOpen(false)}
           onSubmit={handleSubmit}
@@ -233,9 +265,9 @@ export default function AdminHotelsPage() {
 
       <ConfirmActionDialog
         open={confirmOpen}
-        title="Delete hotel"
-        message="Are you sure you want to delete this hotel?"
-        confirmText="Delete"
+        title={t("admin.deleteHotel")}
+        message={t("admin.deleteHotelMessage")}
+        confirmText={t("common.delete")}
         confirmColor="error"
         loading={deleting}
         onClose={() => {
