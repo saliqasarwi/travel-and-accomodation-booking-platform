@@ -199,9 +199,6 @@ export default function UserLayout() {
                       <Typography variant="subtitle2" fontWeight={700}>
                         Sali
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {t("nav.account")}
-                      </Typography>
                     </Box>
 
                     <Divider />

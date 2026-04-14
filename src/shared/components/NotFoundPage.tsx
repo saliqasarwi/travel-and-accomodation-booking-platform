@@ -3,9 +3,11 @@ import SearchOffRoundedIcon from "@mui/icons-material/SearchOffRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -89,7 +91,7 @@ export default function NotFoundPage() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Page not found
+              {t("notFound.title")}
             </Typography>
 
             <Typography
@@ -100,8 +102,7 @@ export default function NotFoundPage() {
                 lineHeight: 1.8,
               }}
             >
-              The page you are looking for does not exist, was moved, or the
-              link is incorrect.
+              {t("notFound.subtitle")}
             </Typography>
           </Stack>
 
@@ -120,7 +121,7 @@ export default function NotFoundPage() {
                 fontWeight: 700,
               }}
             >
-              Back to home
+              {t("common.backToHome")}
             </Button>
 
             <Button
@@ -133,7 +134,7 @@ export default function NotFoundPage() {
                 fontWeight: 700,
               }}
             >
-              Go back
+              {t("common.back")}
             </Button>
           </Stack>
         </Stack>

@@ -13,12 +13,24 @@ import { getBookings, type BookingItem } from "../api/bookings.api";
 import { money } from "@shared/utils/formatters";
 import { nightsBetween } from "@shared/utils/booking";
 import EmptyBookingsState from "../components/EmptyBookingsState";
+import { useTranslation } from "react-i18next";
 
 export default function BookingsPage() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const localized = (value: unknown) => {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") {
+      const obj = value as Record<string, string | undefined>;
+      return obj[i18n.language] ?? obj.en ?? obj.ar ?? "";
+    }
+    return "";
+  };
 
   useEffect(() => {
     async function loadBookings() {
@@ -35,14 +47,14 @@ export default function BookingsPage() {
         setBookings(sorted);
       } catch (error) {
         console.error(error);
-        setErrorMessage("Failed to load bookings.");
+        setErrorMessage(t("bookings.loadFailed"));
       } finally {
         setLoading(false);
       }
     }
 
     loadBookings();
-  }, []);
+  }, [t]);
 
   if (loading) {
     return (
@@ -73,11 +85,11 @@ export default function BookingsPage() {
             mb: 0.75,
           }}
         >
-          My Bookings
+          {t("bookings.title")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          Review your confirmed bookings.
+          {t("bookings.subtitle")}
         </Typography>
 
         <Box
@@ -129,7 +141,9 @@ export default function BookingsPage() {
                   >
                     <Box>
                       <Typography variant="h6" fontWeight={800}>
-                        {firstItem?.hotelName ?? "Booking"}
+                        {firstItem
+                          ? localized(firstItem.hotelName)
+                          : t("bookings.title")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {booking.confirmationNumber}
@@ -147,18 +161,21 @@ export default function BookingsPage() {
                         fontWeight: 700,
                       }}
                     >
-                      {booking.bookingStatus}
+                      {localized(booking.bookingStatus) ||
+                        t("bookings.statusConfirmed")}
                     </Typography>
                   </Stack>
 
                   <Typography variant="body2" color="text.secondary">
-                    Created: {new Date(booking.createdAt).toLocaleString()}
+                    {t("confirmation.created")}:{" "}
+                    {new Date(booking.createdAt).toLocaleString()}
                   </Typography>
 
                   {firstItem && (
                     <>
                       <Typography variant="body2" color="text.secondary">
-                        {firstItem.roomType} • {firstItem.cityName}
+                        {localized(firstItem.roomType)} •{" "}
+                        {localized(firstItem.cityName)}
                       </Typography>
 
                       <Typography variant="body2" color="text.secondary">
@@ -195,7 +212,7 @@ export default function BookingsPage() {
                       }
                       sx={{ fontWeight: 700 }}
                     >
-                      View details
+                      {t("common.viewDetails")}
                     </Button>
                   </Stack>
                 </Box>

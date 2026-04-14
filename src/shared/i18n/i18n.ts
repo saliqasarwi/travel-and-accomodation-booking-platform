@@ -20,6 +20,7 @@ const resources = {
         darkMode: "Dark mode",
         lightMode: "Light mode",
         myAccount: "My account",
+        back: "Back",
       },
       nav: {
         home: "Home",
@@ -142,6 +143,7 @@ const resources = {
         darkMode: "الوضع الداكن",
         lightMode: "الوضع الفاتح",
         myAccount: "حسابي",
+        back: " العودة للخلف",
       },
       nav: {
         home: "الرئيسية",

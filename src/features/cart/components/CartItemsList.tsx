@@ -21,13 +21,25 @@ import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { nightsBetween } from "@shared/utils/booking";
 import { money } from "@shared/utils/formatters.ts";
 import emptyCart from "@assets/empty-cart.webp";
+import { useTranslation } from "react-i18next";
+
 export default function CartItemsList() {
   const { state, removeItem } = useCart();
   const items = state.items;
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+  const localized = (value: unknown) => {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") {
+      const obj = value as Record<string, string | undefined>;
+      return obj[i18n.language] ?? obj.en ?? obj.ar ?? "";
+    }
+    return "";
+  };
 
   if (items.length === 0) {
     return (
@@ -60,11 +72,11 @@ export default function CartItemsList() {
           />
 
           <Typography variant="h5" fontWeight={900}>
-            Your cart is empty
+            {t("cart.emptyTitle")}
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 1.5 }}>
-            Start exploring stays and add your favorite rooms here.
+            {t("cart.emptyHint")}
           </Typography>
 
           <Button
@@ -78,12 +90,13 @@ export default function CartItemsList() {
               fontWeight: 700,
             }}
           >
-            Explore hotels
+            {t("cart.exploreHotels")}
           </Button>
         </Stack>
       </Box>
     );
   }
+
   const openDeleteDialog = (itemId: string) => {
     setSelectedItemId(itemId);
     setConfirmOpen(true);
@@ -130,7 +143,7 @@ export default function CartItemsList() {
                   <CardMedia
                     component="img"
                     image={item.roomPhotoUrl}
-                    alt={item.roomType}
+                    alt={localized(item.roomType)}
                     sx={{
                       height: 180,
                       objectFit: "cover",
@@ -159,7 +172,7 @@ export default function CartItemsList() {
                 <CardContent sx={{ p: 2 }}>
                   <Stack spacing={1.2}>
                     <Typography variant="h6" fontWeight={800}>
-                      {item.hotelName}
+                      {localized(item.hotelName)}
                     </Typography>
 
                     <Rating
@@ -170,7 +183,7 @@ export default function CartItemsList() {
                     />
 
                     <Typography variant="body2" color="text.secondary">
-                      {item.roomType} • {item.cityName}
+                      {localized(item.roomType)} • {localized(item.cityName)}
                     </Typography>
 
                     <Stack spacing={0.5}>
