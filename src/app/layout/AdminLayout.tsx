@@ -119,7 +119,7 @@ export default function AdminLayout() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <MenuItem disabled sx={{ opacity: 0.8 }}>
-                {t("admin.signedInAs")} <strong>{userType || "Admin"}</strong>
+                {t("admin.signedInAsAdmin")}
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>

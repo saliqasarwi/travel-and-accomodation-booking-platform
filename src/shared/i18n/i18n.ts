@@ -32,6 +32,7 @@ const resources = {
       },
       admin: {
         panel: "Admin Panel",
+        signedInAsAdmin: "Signed in as admin",
         cities: "Cities",
         hotels: "Hotels",
         rooms: "Rooms",
@@ -153,6 +154,7 @@ const resources = {
       },
       admin: {
         panel: "لوحة التحكم",
+        signedInAsAdmin: "تم تسجيل الدخول كمسؤول",
         cities: "المدن",
         hotels: "الفنادق",
         rooms: "الغرف",
@@ -172,14 +174,14 @@ const resources = {
         deleteRoom: "حذف الغرفة",
         deleteRoomMessage: "هل أنت متأكد أنك تريد حذف هذه الغرفة؟",
 
-        name: "الاسم",
+        name: "المدينة",
         country: "الدولة",
         postOffice: "مكتب البريد",
         numberOfHotels: "عدد الفنادق",
 
         hotelName: "اسم الفندق",
         location: "الموقع",
-        starRating: "التقييم النجمي",
+        starRating: "التقييم ",
         availableRooms: "الغرف المتاحة",
 
         roomNumber: "رقم الغرفة",
