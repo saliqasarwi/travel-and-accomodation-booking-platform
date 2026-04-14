@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { CheckCircleRounded } from "@mui/icons-material";
 import { formatDate } from "@shared/utils/formatters";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   confirmationNumber: string;
@@ -21,6 +22,8 @@ export default function ConfirmationHeaderCard({
   status,
   createdAt,
 }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Card
       sx={{
@@ -40,10 +43,10 @@ export default function ConfirmationHeaderCard({
           >
             <Box>
               <Typography variant="h5" fontWeight={900}>
-                Booking confirmed
+                {t("confirmation.bookingConfirmed")}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Keep this confirmation for your records.
+                {t("confirmation.keepForRecords")}
               </Typography>
             </Box>
 
@@ -64,7 +67,7 @@ export default function ConfirmationHeaderCard({
           >
             <Box>
               <Typography variant="caption" color="text.secondary">
-                Confirmation number
+                {t("confirmation.confirmationNumber")}
               </Typography>
               <Typography
                 sx={{
@@ -78,7 +81,7 @@ export default function ConfirmationHeaderCard({
 
             <Box>
               <Typography variant="caption" color="text.secondary">
-                Created
+                {t("confirmation.created")}
               </Typography>
               <Typography fontWeight={700}>{formatDate(createdAt)}</Typography>
             </Box>

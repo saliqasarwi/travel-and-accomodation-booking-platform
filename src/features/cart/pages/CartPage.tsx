@@ -63,7 +63,7 @@ export default function CartPage() {
               mt: 0,
             }}
           >
-            Proceed to checkout
+            {t("cart.proceedToCheckout")}
           </Button>
         </Box>
       )}

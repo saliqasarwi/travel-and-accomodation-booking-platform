@@ -238,9 +238,9 @@ export default function CartItemsList() {
 
       <ConfirmActionDialog
         open={confirmOpen}
-        title="Remove item"
-        message="Are you sure you want to remove this item from the cart?"
-        confirmText="Remove"
+        title={t("cart.removeItem")}
+        message={t("cart.removeItemMessage")}
+        confirmText={t("cart.remove")}
         confirmColor="error"
         onClose={handleCloseDialog}
         onConfirm={handleConfirmDelete}

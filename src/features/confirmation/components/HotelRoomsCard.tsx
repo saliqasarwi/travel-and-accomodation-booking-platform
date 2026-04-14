@@ -11,10 +11,22 @@ import { ReceiptLongRounded } from "@mui/icons-material";
 import type { CartItem } from "../../cart/types/cart.types";
 import { money } from "@shared/utils/formatters";
 import { nightsBetween } from "@shared/utils/booking";
+import { useTranslation } from "react-i18next";
 
 type Props = { items: CartItem[] };
 
 export default function HotelRoomsCard({ items }: Props) {
+  const { t, i18n } = useTranslation();
+
+  const localized = (value: unknown) => {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") {
+      const obj = value as Record<string, string | undefined>;
+      return obj[i18n.language] ?? obj.en ?? obj.ar ?? "";
+    }
+    return "";
+  };
+
   return (
     <Card
       sx={{
@@ -28,7 +40,7 @@ export default function HotelRoomsCard({ items }: Props) {
         <Stack direction="row" spacing={1} alignItems="center" mb={2}>
           <ReceiptLongRounded />
           <Typography variant="h6" fontWeight={900}>
-            Hotel & Rooms
+            {t("confirmation.hotelAndRooms")}
           </Typography>
         </Stack>
 
@@ -56,7 +68,7 @@ export default function HotelRoomsCard({ items }: Props) {
                   >
                     <Box>
                       <Typography fontWeight={900}>
-                        {item.hotelName} • {item.roomType}
+                        {localized(item.hotelName)} • {localized(item.roomType)}
                       </Typography>
                       <Stack
                         direction="row"
@@ -67,7 +79,7 @@ export default function HotelRoomsCard({ items }: Props) {
                         sx={{ mt: 0.5 }}
                       >
                         <Typography variant="body2" color="text.secondary">
-                          {item.cityName}
+                          {localized(item.cityName)}
                         </Typography>
                         <Rating
                           value={item.starRating}
@@ -85,12 +97,14 @@ export default function HotelRoomsCard({ items }: Props) {
 
                   <Typography variant="body2" color="text.secondary">
                     {item.checkInDate} → {item.checkOutDate} • {item.adults}{" "}
-                    adults • {item.children} children • {item.numberOfRooms}{" "}
-                    room(s)
+                    {t("admin.adults").toLowerCase()} • {item.children}{" "}
+                    {t("admin.children").toLowerCase()} • {item.numberOfRooms}{" "}
+                    {t("confirmation.rooms").toLowerCase()}
                   </Typography>
 
                   <Typography variant="body2" color="text.secondary">
-                    {nights} night(s) • total: {money(lineTotal)}
+                    {nights} {t("confirmation.nightsLabel")} •{" "}
+                    {t("confirmation.totalLabel")}: {money(lineTotal)}
                   </Typography>
                 </Stack>
 

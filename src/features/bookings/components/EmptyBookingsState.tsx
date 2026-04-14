@@ -2,9 +2,11 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import FlightTakeoffRoundedIcon from "@mui/icons-material/FlightTakeoffRounded";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function EmptyBookingsState() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -67,7 +69,7 @@ export default function EmptyBookingsState() {
 
         <Stack spacing={1} alignItems="center">
           <Typography variant="h5" fontWeight={800}>
-            No bookings yet
+            {t("bookings.emptyStateTitle")}
           </Typography>
 
           <Typography
@@ -77,8 +79,7 @@ export default function EmptyBookingsState() {
               lineHeight: 1.7,
             }}
           >
-            Your confirmed trips will appear here. Start exploring destinations
-            and book your next stay with Travelio.
+            {t("bookings.emptyStateHint")}
           </Typography>
         </Stack>
 
@@ -92,7 +93,7 @@ export default function EmptyBookingsState() {
             px: 3,
           }}
         >
-          Explore hotels
+          {t("bookings.exploreHotels")}
         </Button>
       </Stack>
     </Box>

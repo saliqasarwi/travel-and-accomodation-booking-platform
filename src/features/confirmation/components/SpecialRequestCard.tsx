@@ -1,9 +1,13 @@
 import { Card, CardContent, Stack, Typography } from "@mui/material";
 import { NotesRounded } from "@mui/icons-material";
 import type { SpecialRequests } from "@features/checkout/types/checkout.types";
+import { useTranslation } from "react-i18next";
+
 type Props = { notes?: SpecialRequests };
 
 export default function SpecialRequestsCard({ notes }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Card
       sx={{
@@ -18,12 +22,12 @@ export default function SpecialRequestsCard({ notes }: Props) {
         <Stack direction="row" spacing={1} alignItems="center" mb={1.5}>
           <NotesRounded />
           <Typography variant="h6" fontWeight={900}>
-            Special requests
+            {t("confirmation.specialRequests")}
           </Typography>
         </Stack>
 
         <Typography color="text.secondary">
-          {notes?.notes || "No special requests"}
+          {notes?.notes || t("confirmation.noSpecialRequests")}
         </Typography>
       </CardContent>
     </Card>
