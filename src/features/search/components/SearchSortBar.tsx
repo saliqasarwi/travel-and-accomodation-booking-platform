@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   setSearchParamsFromPatch,
   type SearchSort,
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export default function SearchSortBar({ resultsCount }: Props) {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentSort = searchParams.get("sort") ?? "recommended";
 
@@ -46,25 +48,25 @@ export default function SearchSortBar({ resultsCount }: Props) {
     >
       <Box>
         <Typography variant="h6" sx={{ fontWeight: 800 }}>
-          {resultsCount} stays found
+          {t("search.resultsFound", { count: resultsCount })}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Compare options and sort results to find your ideal stay.
+          {t("search.compareAndSort")}
         </Typography>
       </Box>
 
       <FormControl size="small" sx={{ minWidth: 220 }}>
-        <InputLabel id="sort-results-label">Sort by</InputLabel>
+        <InputLabel id="sort-results-label">{t("search.sortBy")}</InputLabel>
         <Select
           labelId="sort-results-label"
           value={currentSort}
-          label="Sort by"
+          label={t("search.sortBy")}
           onChange={(e) => handleSortChange(e.target.value)}
         >
-          <MenuItem value="recommended">Recommended</MenuItem>
-          <MenuItem value="price_asc">Price: low to high</MenuItem>
-          <MenuItem value="price_desc">Price: high to low</MenuItem>
-          <MenuItem value="rating_desc">Rating: high to low</MenuItem>
+          <MenuItem value="recommended">{t("search.recommended")}</MenuItem>
+          <MenuItem value="price_asc">{t("search.priceLowToHigh")}</MenuItem>
+          <MenuItem value="price_desc">{t("search.priceHighToLow")}</MenuItem>
+          <MenuItem value="rating_desc">{t("search.ratingHighToLow")}</MenuItem>
         </Select>
       </FormControl>
     </Stack>

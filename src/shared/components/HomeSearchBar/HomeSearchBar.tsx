@@ -25,6 +25,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 
 import dayjs, { Dayjs } from "dayjs";
+import { useTranslation } from "react-i18next";
 
 import type { HomeSearchBarValues } from "./homeSearchBar.types";
 import { homeSearchBarSchema } from "./homeSearchBar.schema";
@@ -33,6 +34,7 @@ import SearchBlock from "./SearchBlock";
 import GuestRow from "./GuestRow";
 
 export default function HomeSearchBar() {
+  const { t } = useTranslation();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
@@ -116,15 +118,15 @@ export default function HomeSearchBar() {
               >
                 <SearchBlock
                   icon={<SearchRounded />}
-                  label="Destination"
-                  value={values.city || "Where are you going?"}
+                  label={t("search.destinationLabel")}
+                  value={values.city || t("search.destinationFallback")}
                 >
                   <TextField
                     fullWidth
                     variant="standard"
                     id="city"
                     name="city"
-                    placeholder="Where are you going?"
+                    placeholder={t("search.destinationPlaceholder")}
                     value={values.city}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -143,7 +145,7 @@ export default function HomeSearchBar() {
 
                 <SearchBlock
                   icon={<CalendarMonthRounded />}
-                  label="Check-in / out"
+                  label={t("search.checkInOut")}
                   value={formatDateRange(
                     values.checkInDate,
                     values.checkOutDate
@@ -153,7 +155,7 @@ export default function HomeSearchBar() {
 
                 <SearchBlock
                   icon={<PersonOutlineRounded />}
-                  label="Guests and rooms"
+                  label={t("search.guestsAndRooms")}
                   value={formatGuests(
                     values.adults,
                     values.children,
@@ -175,7 +177,7 @@ export default function HomeSearchBar() {
                     boxShadow: "none",
                   }}
                 >
-                  Search
+                  {t("common.search")}
                 </Button>
               </Box>
             </Paper>
@@ -214,7 +216,7 @@ export default function HomeSearchBar() {
               }}
             >
               <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-                Select dates
+                {t("search.selectDates")}
               </Typography>
 
               <Stack
@@ -228,7 +230,7 @@ export default function HomeSearchBar() {
                     color="text.secondary"
                     sx={{ mb: 1 }}
                   >
-                    Check-in
+                    {t("search.checkIn")}
                   </Typography>
 
                   <DateCalendar
@@ -252,11 +254,6 @@ export default function HomeSearchBar() {
                         );
                       }
                     }}
-                    sx={{
-                      "& .MuiPickersDay-root.Mui-selected": {
-                        bgcolor: "primary.main",
-                      },
-                    }}
                   />
                 </Box>
 
@@ -277,7 +274,7 @@ export default function HomeSearchBar() {
                     color="text.secondary"
                     sx={{ mb: 1 }}
                   >
-                    Check-out
+                    {t("search.checkOut")}
                   </Typography>
 
                   <DateCalendar
@@ -295,11 +292,6 @@ export default function HomeSearchBar() {
                         "checkOutDate",
                         newValue.format("YYYY-MM-DD")
                       );
-                    }}
-                    sx={{
-                      "& .MuiPickersDay-root.Mui-selected": {
-                        bgcolor: "primary.main",
-                      },
                     }}
                   />
                 </Box>
@@ -320,7 +312,7 @@ export default function HomeSearchBar() {
                   onClick={() => setDateAnchorEl(null)}
                   sx={{ textTransform: "none" }}
                 >
-                  Done
+                  {t("search.done")}
                 </Button>
               </Stack>
             </Popover>
@@ -342,7 +334,7 @@ export default function HomeSearchBar() {
               }}
             >
               <GuestRow
-                label="Adults"
+                label={t("admin.adults")}
                 value={values.adults}
                 min={1}
                 onDecrease={() => setFieldValue("adults", values.adults - 1)}
@@ -350,7 +342,7 @@ export default function HomeSearchBar() {
               />
 
               <GuestRow
-                label="Children"
+                label={t("admin.children")}
                 value={values.children}
                 min={0}
                 onDecrease={() =>
@@ -362,7 +354,7 @@ export default function HomeSearchBar() {
               />
 
               <GuestRow
-                label="Rooms"
+                label={t("search.roomsSelector")}
                 value={values.numberOfRooms}
                 min={1}
                 onDecrease={() =>
@@ -379,7 +371,7 @@ export default function HomeSearchBar() {
                 sx={{ mt: 1.5, textTransform: "none" }}
                 onClick={() => setGuestAnchorEl(null)}
               >
-                Done
+                {t("search.done")}
               </Button>
             </Popover>
           </>

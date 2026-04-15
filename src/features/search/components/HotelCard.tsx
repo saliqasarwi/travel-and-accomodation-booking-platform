@@ -13,6 +13,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import HotelOutlinedIcon from "@mui/icons-material/HotelOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { useTranslation } from "react-i18next";
 import type { HotelSearchItem } from "../types/types";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export default function HotelCard({ hotel }: Props) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -56,12 +58,7 @@ export default function HotelCard({ hotel }: Props) {
         },
       }}
     >
-      <CardActionArea
-        onClick={onCardClick}
-        sx={{
-          display: "block",
-        }}
-      >
+      <CardActionArea onClick={onCardClick} sx={{ display: "block" }}>
         <Stack direction={{ xs: "column", md: "row" }} spacing={0}>
           <Box
             sx={{
@@ -87,7 +84,7 @@ export default function HotelCard({ hotel }: Props) {
 
             {hotel.discount > 0 && (
               <Chip
-                label={`${hotel.discount}% OFF`}
+                label={t("search.offPercent", { value: hotel.discount })}
                 color="success"
                 size="small"
                 sx={{
@@ -147,7 +144,7 @@ export default function HotelCard({ hotel }: Props) {
                     color="text.secondary"
                     sx={{ fontSize: "0.85rem" }}
                   >
-                    {hotel.starRating} star hotel
+                    {t("search.starHotel", { count: hotel.starRating })}
                   </Typography>
                 </Stack>
               </Box>
@@ -160,7 +157,7 @@ export default function HotelCard({ hotel }: Props) {
                   lineHeight: 1.1,
                 }}
               >
-                ${hotel.roomPrice} / night
+                ${hotel.roomPrice} {t("search.perNight")}
               </Typography>
 
               <Stack direction="row" spacing={0.75} alignItems="center">
@@ -189,9 +186,9 @@ export default function HotelCard({ hotel }: Props) {
                     sx={{ fontSize: 18, color: "text.secondary" }}
                   />
                   <Typography variant="body2" color="text.secondary">
-                    {adults} adult{adults !== 1 ? "s" : ""}
+                    {t("search.adults", { count: adults })}
                     {children > 0
-                      ? ` • ${children} child${children !== 1 ? "ren" : ""}`
+                      ? ` • ${t("search.children", { count: children })}`
                       : ""}
                   </Typography>
                 </Stack>
@@ -201,7 +198,7 @@ export default function HotelCard({ hotel }: Props) {
                     sx={{ fontSize: 18, color: "text.secondary" }}
                   />
                   <Typography variant="body2" color="text.secondary">
-                    {rooms} room{rooms !== 1 ? "s" : ""}
+                    {t("search.rooms", { count: rooms })}
                   </Typography>
                 </Stack>
               </Stack>

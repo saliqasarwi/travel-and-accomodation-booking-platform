@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Stack, CircularProgress, Typography, Alert, Box } from "@mui/material";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import HotelCard from "./HotelCard";
 import type { HotelSearchItem } from "../types/types";
@@ -11,9 +12,11 @@ import { applyFilters } from "../utils/applyFilters";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import { sortResults } from "../utils/sortResults";
 import SearchSortBar from "./SearchSortBar";
+
 const PAGE_SIZE = 6;
 
 export default function HotelResults() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { sentinelRef, page, resetPage } = useInfiniteScroll();
 
@@ -43,7 +46,7 @@ export default function HotelResults() {
         resetPage();
       } catch (err) {
         if (!axios.isCancel(err)) {
-          setError("Failed to load search results");
+          setError(t("search.loadFailed"));
         }
       } finally {
         setLoading(false);
@@ -52,7 +55,7 @@ export default function HotelResults() {
 
     load();
     return () => controller.abort();
-  }, [searchParams, resetPage]);
+  }, [searchParams, resetPage, t]);
 
   if (loading) {
     return (
@@ -90,10 +93,10 @@ export default function HotelResults() {
         }}
       >
         <Typography variant="h6" fontWeight={700} sx={{ mb: 1 }}>
-          No results found
+          {t("search.noResults")}
         </Typography>
         <Typography color="text.secondary">
-          Try changing your destination, dates, or filters.
+          {t("search.noResultsHint")}
         </Typography>
       </Box>
     );
