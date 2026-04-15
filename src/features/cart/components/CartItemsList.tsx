@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../useCart";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { nightsBetween } from "@shared/utils/booking";
-import { money } from "@shared/utils/formatters.ts";
+import { money } from "@shared/utils/formatters";
 import emptyCart from "@assets/empty-cart.webp";
 import { useTranslation } from "react-i18next";
 
@@ -34,10 +34,13 @@ export default function CartItemsList() {
 
   const localized = (value: unknown) => {
     if (typeof value === "string") return value;
+
     if (value && typeof value === "object") {
       const obj = value as Record<string, string | undefined>;
-      return obj[i18n.language] ?? obj.en ?? obj.ar ?? "";
+      const lang = i18n.resolvedLanguage?.startsWith("ar") ? "ar" : "en";
+      return obj[lang] ?? obj.en ?? obj.ar ?? "";
     }
+
     return "";
   };
 
@@ -61,7 +64,7 @@ export default function CartItemsList() {
           <Box
             component="img"
             src={emptyCart}
-            alt="Empty cart"
+            alt={t("cart.emptyTitle")}
             sx={{
               width: 200,
               maxWidth: "100%",
@@ -76,7 +79,7 @@ export default function CartItemsList() {
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 1.5 }}>
-            {t("cart.emptyHint")}
+            {t("cart.startExploring")}
           </Typography>
 
           <Button
@@ -165,7 +168,7 @@ export default function CartItemsList() {
                         "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
                     }}
                   >
-                    {money(item.pricePerNight)} / night
+                    {money(item.pricePerNight)} / {t("hotel.perNight")}
                   </Box>
                 </Box>
 
@@ -197,13 +200,14 @@ export default function CartItemsList() {
                       <Stack direction="row" spacing={1} alignItems="center">
                         <PeopleOutlineIcon sx={{ fontSize: 16 }} />
                         <Typography variant="caption">
-                          {item.adults} adults • {item.children} children
+                          {item.adults} {t("cart.adults")} • {item.children}{" "}
+                          {t("cart.children")}
                         </Typography>
                       </Stack>
 
                       <Typography variant="caption" color="text.secondary">
-                        {roomsCount} room{roomsCount !== 1 ? "s" : ""} •{" "}
-                        {nights} night{nights !== 1 ? "s" : ""}
+                        {roomsCount} {t("cart.rooms")} • {nights}{" "}
+                        {t("cart.nights")}
                       </Typography>
                     </Stack>
 
@@ -218,7 +222,7 @@ export default function CartItemsList() {
                         fontWeight={700}
                         color="primary.main"
                       >
-                        {money(itemTotal)} total
+                        {money(itemTotal)} {t("cart.total")}
                       </Typography>
 
                       <IconButton
