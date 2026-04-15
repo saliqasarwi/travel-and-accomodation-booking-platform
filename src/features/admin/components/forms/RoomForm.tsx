@@ -12,24 +12,25 @@ type Props = {
   innerRef?: React.Ref<FormikProps<RoomFormValues>>;
 };
 
-const roomSchema = Yup.object({
-  roomNumber: Yup.number()
-    .min(1, "Room number must be >= 1")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .required("Room number is required"),
-  adultCapacity: Yup.number()
-    .min(0, "Must be >= 0")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-  childrenCapacity: Yup.number()
-    .min(0, "Must be >= 0")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-  availability: Yup.boolean().optional(),
-});
+const createRoomSchema = (t: (key: string) => string) =>
+  Yup.object({
+    roomNumber: Yup.number()
+      .min(1, t("validation.roomNumberMin"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .required(t("validation.roomNumberRequired")),
+    adultCapacity: Yup.number()
+      .min(0, t("validation.mustBeZeroOrMore"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+    childrenCapacity: Yup.number()
+      .min(0, t("validation.mustBeZeroOrMore"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+    availability: Yup.boolean().optional(),
+  });
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -40,6 +41,7 @@ const fieldSx = {
 
 export default function RoomForm({ initialValues, onSubmit, innerRef }: Props) {
   const { t } = useTranslation();
+  const roomSchema = createRoomSchema(t);
 
   return (
     <Formik<RoomFormValues>

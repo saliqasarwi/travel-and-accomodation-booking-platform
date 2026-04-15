@@ -12,21 +12,22 @@ type Props = {
   innerRef?: React.Ref<FormikProps<HotelFormValues>>;
 };
 
-const hotelSchema = Yup.object({
-  hotelName: Yup.string().trim().required("Hotel name is required"),
-  location: Yup.string().trim().optional(),
-  starRating: Yup.number()
-    .min(1, "Min is 1")
-    .max(5, "Max is 5")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-  availableRooms: Yup.number()
-    .min(0, "Must be >= 0")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-});
+const createHotelSchema = (t: (key: string) => string) =>
+  Yup.object({
+    hotelName: Yup.string().trim().required(t("validation.hotelNameRequired")),
+    location: Yup.string().trim().optional(),
+    starRating: Yup.number()
+      .min(1, t("validation.minOne"))
+      .max(5, t("validation.maxFive"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+    availableRooms: Yup.number()
+      .min(0, t("validation.mustBeZeroOrMore"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+  });
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -41,6 +42,7 @@ export default function HotelForm({
   innerRef,
 }: Props) {
   const { t } = useTranslation();
+  const hotelSchema = createHotelSchema(t);
 
   return (
     <Formik<HotelFormValues>

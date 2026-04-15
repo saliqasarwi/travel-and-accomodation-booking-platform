@@ -12,16 +12,17 @@ type Props = {
   innerRef?: React.Ref<FormikProps<CityFormValues>>;
 };
 
-const citySchema = Yup.object({
-  name: Yup.string().trim().required("Name is required"),
-  country: Yup.string().trim().optional(),
-  postOffice: Yup.string().trim().optional(),
-  numberOfHotels: Yup.number()
-    .min(0, "Must be >= 0")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-});
+const createCitySchema = (t: (key: string) => string) =>
+  Yup.object({
+    name: Yup.string().trim().required(t("validation.nameRequired")),
+    country: Yup.string().trim().optional(),
+    postOffice: Yup.string().trim().optional(),
+    numberOfHotels: Yup.number()
+      .min(0, t("validation.mustBeZeroOrMore"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+  });
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -32,6 +33,7 @@ const fieldSx = {
 
 export default function CityForm({ initialValues, onSubmit, innerRef }: Props) {
   const { t } = useTranslation();
+  const citySchema = createCitySchema(t);
 
   return (
     <Formik<CityFormValues>
