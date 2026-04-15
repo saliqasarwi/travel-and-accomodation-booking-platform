@@ -1,4 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import type { HotelDetails } from "../types/hotel.types";
 
 type Props = {
@@ -6,11 +7,11 @@ type Props = {
 };
 
 export default function HotelLocationMap({ hotel }: Props) {
+  const { t } = useTranslation();
   const lat = hotel.latitude;
   const lng = hotel.longitude;
 
   const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-
   const embedUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=14&output=embed`;
 
   return (
@@ -28,7 +29,7 @@ export default function HotelLocationMap({ hotel }: Props) {
           mb: 1,
         }}
       >
-        Location
+        {t("hotel.location")}
       </Typography>
 
       <Box
@@ -65,7 +66,7 @@ export default function HotelLocationMap({ hotel }: Props) {
           href={googleMapsUrl}
           target="_blank"
         >
-          Open in Google Maps
+          {t("hotel.openInGoogleMaps")}
         </Button>
       </Stack>
     </Stack>

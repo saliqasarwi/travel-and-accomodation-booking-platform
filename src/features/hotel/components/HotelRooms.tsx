@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import type { AvailableRoom } from "../types/room.types";
 
 type Props = {
@@ -16,6 +17,8 @@ type Props = {
 };
 
 export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Stack spacing={2}>
       <Typography
@@ -31,10 +34,13 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
           mb: 1,
         }}
       >
-        Available Rooms
+        {t("hotel.availableRooms")}
       </Typography>
+
       {rooms.length === 0 ? (
-        <Typography color="text.secondary">No available rooms.</Typography>
+        <Typography color="text.secondary">
+          {t("hotel.noAvailableRooms")}
+        </Typography>
       ) : (
         <Grid container spacing={2}>
           {rooms.map((room) => (
@@ -80,9 +86,11 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
                   </Box>
 
                   <Typography variant="body2" color="text.secondary">
-                    Capacity: {room.capacityOfAdults} adults •{" "}
-                    {room.capacityOfChildren} children
+                    {t("hotel.capacity")}: {room.capacityOfAdults}{" "}
+                    {t("hotel.adults")} • {room.capacityOfChildren}{" "}
+                    {t("hotel.children")}
                   </Typography>
+
                   <Typography
                     variant="body2"
                     color="text.secondary"
@@ -92,7 +100,8 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
                       WebkitBoxOrient: "vertical",
                     }}
                   >
-                    Amenities: {room.amenities.map((a) => a.name).join(" • ")}
+                    {t("hotel.amenities")}:{" "}
+                    {room.amenities.map((a) => a.name).join(" • ")}
                   </Typography>
 
                   <Typography
@@ -103,7 +112,7 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
                       mt: 0.5,
                     }}
                   >
-                    ${room.price} / night
+                    ${room.price} / {t("hotel.perNight")}
                   </Typography>
 
                   <Button
@@ -113,7 +122,9 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
                     fullWidth
                     sx={{ mt: 0.5 }}
                   >
-                    {room.availability ? "Add to cart" : "Not available"}
+                    {room.availability
+                      ? t("hotel.addToCart")
+                      : t("admin.notAvailable")}
                   </Button>
                 </CardContent>
               </Card>

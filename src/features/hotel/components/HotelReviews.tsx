@@ -1,4 +1,5 @@
 import { Avatar, Box, Rating, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import type { HotelReview } from "../types/review.types";
 
 interface HotelReviewsSectionProps {
@@ -8,6 +9,8 @@ interface HotelReviewsSectionProps {
 export default function HotelReviewsSection({
   reviews,
 }: HotelReviewsSectionProps) {
+  const { t } = useTranslation();
+
   if (reviews.length === 0) {
     return (
       <Box
@@ -22,9 +25,9 @@ export default function HotelReviewsSection({
         }}
       >
         <Typography variant="h6" fontWeight={800} gutterBottom sx={{ mb: 8 }}>
-          Guest Reviews
+          {t("hotel.guestReviews")}
         </Typography>
-        <Typography color="text.secondary">No reviews yet.</Typography>
+        <Typography color="text.secondary">{t("hotel.noReviews")}</Typography>
       </Box>
     );
   }
@@ -49,7 +52,7 @@ export default function HotelReviewsSection({
             mb: 10,
           }}
         >
-          Guest Reviews
+          {t("hotel.guestReviews")}
         </Typography>
 
         {reviews.map((review) => (
@@ -79,7 +82,7 @@ export default function HotelReviewsSection({
 
               <Box>
                 <Typography variant="subtitle1" fontWeight={700}>
-                  {review.customerName || "Anonymous"}
+                  {review.customerName || t("hotel.anonymous")}
                 </Typography>
                 <Rating
                   value={review.rating}

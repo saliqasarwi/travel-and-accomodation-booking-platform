@@ -1,4 +1,5 @@
 import { Box, Chip, Rating, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import type { HotelDetails } from "../types/hotel.types";
 
 type Props = {
@@ -6,6 +7,8 @@ type Props = {
 };
 
 export default function HotelInformation({ hotel }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -52,6 +55,10 @@ export default function HotelInformation({ hotel }: Props) {
             readOnly
             size="small"
           />
+
+          <Typography variant="body2" color="text.secondary">
+            {t("hotel.starHotel", { count: hotel.starRating })}
+          </Typography>
         </Stack>
 
         <Typography
