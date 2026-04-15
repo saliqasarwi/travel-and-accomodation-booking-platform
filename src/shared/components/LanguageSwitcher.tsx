@@ -2,6 +2,7 @@ import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import TranslateRoundedIcon from "@mui/icons-material/TranslateRounded";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
@@ -11,7 +12,7 @@ export default function LanguageSwitcher() {
 
   return (
     <>
-      <Tooltip title="Language">
+      <Tooltip title={t("nav.language")}>
         <IconButton
           onClick={(e) => setAnchorEl(e.currentTarget)}
           color="inherit"

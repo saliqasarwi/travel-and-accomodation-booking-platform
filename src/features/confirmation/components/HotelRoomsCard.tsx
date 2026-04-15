@@ -99,7 +99,7 @@ export default function HotelRoomsCard({ items }: Props) {
                     {item.checkInDate} → {item.checkOutDate} • {item.adults}{" "}
                     {t("admin.adults").toLowerCase()} • {item.children}{" "}
                     {t("admin.children").toLowerCase()} • {item.numberOfRooms}{" "}
-                    {t("confirmation.rooms").toLowerCase()}
+                    {t("confirmation.roomsLabel").toLowerCase()}
                   </Typography>
 
                   <Typography variant="body2" color="text.secondary">

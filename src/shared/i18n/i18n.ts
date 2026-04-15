@@ -35,6 +35,7 @@ const resources = {
         bookings: "My Bookings",
         logout: "Logout",
         login: "Login",
+        language: "Language",
       },
 
       admin: {
@@ -393,6 +394,7 @@ const resources = {
         bookings: "حجوزاتي",
         logout: "تسجيل الخروج",
         login: "تسجيل الدخول",
+        language: "اللغة",
       },
 
       admin: {
