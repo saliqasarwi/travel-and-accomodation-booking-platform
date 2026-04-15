@@ -335,6 +335,25 @@ const resources = {
         payAtHotelHint:
           "You'll pay during check-in. No card details needed now.",
       },
+      footer: {
+        brandDescription:
+          "Discover the best hotels and destinations worldwide. Plan your next trip with ease, comfort, and unforgettable stays.",
+        company: "Company",
+        about: "About",
+        careers: "Careers",
+        blog: "Blog",
+        support: "Support",
+        helpCenter: "Help Center",
+        contactUs: "Contact Us",
+        faqs: "FAQs",
+        legal: "Legal",
+        privacyPolicy: "Privacy Policy",
+        termsOfService: "Terms of Service",
+        cookies: "Cookies",
+        allRightsReserved: "All rights reserved.",
+        terms: "Terms",
+        privacy: "Privacy",
+      },
       notFound: {
         title: "404 - Page Not Found",
         subtitle:
@@ -670,6 +689,25 @@ const resources = {
         nameOnCard: "الاسم على البطاقة",
         payAtHotelHint:
           "سوف تدفع عند تسجيل الوصول. لا حاجة لإدخال بيانات البطاقة الآن.",
+      },
+      footer: {
+        brandDescription:
+          "اكتشف أفضل الفنادق والوجهات حول العالم. خطط لرحلتك القادمة بسهولة وراحة وإقامات لا تُنسى.",
+        company: "الشركة",
+        about: "من نحن",
+        careers: "الوظائف",
+        blog: "المدونة",
+        support: "الدعم",
+        helpCenter: "مركز المساعدة",
+        contactUs: "اتصل بنا",
+        faqs: "الأسئلة الشائعة",
+        legal: "قانوني",
+        privacyPolicy: "سياسة الخصوصية",
+        termsOfService: "شروط الخدمة",
+        cookies: "ملفات تعريف الارتباط",
+        allRightsReserved: "جميع الحقوق محفوظة.",
+        terms: "الشروط",
+        privacy: "الخصوصية",
       },
       notFound: {
         title: "404 - الصفحة غير موجودة",

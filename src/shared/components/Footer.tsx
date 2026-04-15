@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Link, Stack, Typography } from "@mui/material";
 import TravelExploreRoundedIcon from "@mui/icons-material/TravelExploreRounded";
+import { useTranslation } from "react-i18next";
 
 const footerLinkSx = {
   color: "text.secondary",
@@ -20,6 +21,8 @@ const sectionTitleSx = {
 };
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <Box
       component="footer"
@@ -87,8 +90,7 @@ export default function Footer() {
                   lineHeight: 1.8,
                 }}
               >
-                Discover the best hotels and destinations worldwide. Plan your
-                next trip with ease, comfort, and unforgettable stays.
+                {t("footer.brandDescription")}
               </Typography>
 
               <Box
@@ -104,46 +106,46 @@ export default function Footer() {
           </Grid>
 
           <Grid size={{ xs: 6, sm: 4, md: 2 }}>
-            <Typography sx={sectionTitleSx}>Company</Typography>
+            <Typography sx={sectionTitleSx}>{t("footer.company")}</Typography>
             <Stack spacing={1.2}>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                About
+                {t("footer.about")}
               </Link>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                Careers
+                {t("footer.careers")}
               </Link>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                Blog
+                {t("footer.blog")}
               </Link>
             </Stack>
           </Grid>
 
           <Grid size={{ xs: 6, sm: 4, md: 2 }}>
-            <Typography sx={sectionTitleSx}>Support</Typography>
+            <Typography sx={sectionTitleSx}>{t("footer.support")}</Typography>
             <Stack spacing={1.2}>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                Help Center
+                {t("footer.helpCenter")}
               </Link>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                Contact Us
+                {t("footer.contactUs")}
               </Link>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                FAQs
+                {t("footer.faqs")}
               </Link>
             </Stack>
           </Grid>
 
           <Grid size={{ xs: 6, sm: 4, md: 3 }}>
-            <Typography sx={sectionTitleSx}>Legal</Typography>
+            <Typography sx={sectionTitleSx}>{t("footer.legal")}</Typography>
             <Stack spacing={1.2}>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                Privacy Policy
+                {t("footer.privacyPolicy")}
               </Link>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                Terms of Service
+                {t("footer.termsOfService")}
               </Link>
               <Link href="#" underline="none" sx={footerLinkSx}>
-                Cookies
+                {t("footer.cookies")}
               </Link>
             </Stack>
           </Grid>
@@ -163,18 +165,19 @@ export default function Footer() {
           }}
         >
           <Typography variant="body2" color="text.secondary">
-            © {new Date().getFullYear()} Travelio. All rights reserved.
+            © {new Date().getFullYear()} Travelio.{" "}
+            {t("footer.allRightsReserved")}
           </Typography>
 
           <Stack direction="row" spacing={2}>
             <Link href="#" underline="none" sx={footerLinkSx}>
-              Terms
+              {t("footer.terms")}
             </Link>
             <Link href="#" underline="none" sx={footerLinkSx}>
-              Privacy
+              {t("footer.privacy")}
             </Link>
             <Link href="#" underline="none" sx={footerLinkSx}>
-              Support
+              {t("footer.support")}
             </Link>
           </Stack>
         </Box>
