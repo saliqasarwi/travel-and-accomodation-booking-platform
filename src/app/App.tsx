@@ -10,7 +10,6 @@ export default function App() {
   return (
     <ColorModeProvider>
       <CssBaseline />
-      {/*resets browser styles*/}
       <AuthProvider>
         <CartProvider>
           <RouterProvider router={router} />

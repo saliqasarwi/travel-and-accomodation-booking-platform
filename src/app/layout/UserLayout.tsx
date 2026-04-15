@@ -27,7 +27,7 @@ import { useTranslation } from "react-i18next";
 
 import { useCart } from "@features/cart/useCart";
 import { useAuth } from "@app/providers/AuthContext";
-import { useColorMode } from "@app/providers/ColorModeProvider";
+import { useColorMode } from "@app/providers/useColorMode";
 import Footer from "@shared/components/Footer";
 import LanguageSwitcher from "@shared/components/LanguageSwitcher";
 
