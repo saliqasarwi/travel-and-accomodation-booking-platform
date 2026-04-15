@@ -1,19 +1,24 @@
 import { Box, Typography, Card, CardMedia, Stack, Rating } from "@mui/material";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { useTranslation } from "react-i18next";
 import type { RecentHotel } from "../types/home.types";
 
 type Props = {
   items: RecentHotel[];
 };
 
-function formatVisitDate(date?: string) {
-  if (!date) return "Recently visited";
+function formatVisitDate(
+  date: string | undefined,
+  language: string,
+  fallback: string
+) {
+  if (!date) return fallback;
 
   const parsed = new Date(date);
   if (Number.isNaN(parsed.getTime())) return date;
 
-  return parsed.toLocaleDateString("en-GB", {
+  return parsed.toLocaleDateString(language === "ar" ? "ar-EG" : "en-GB", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -21,11 +26,11 @@ function formatVisitDate(date?: string) {
 }
 
 export default function RecentlyVisited({ items }: Props) {
+  const { t, i18n } = useTranslation();
+
   if (items.length === 0) {
     return (
-      <Typography color="text.secondary">
-        No recently visited hotels available.
-      </Typography>
+      <Typography color="text.secondary">{t("home.noRecentHotels")}</Typography>
     );
   }
 
@@ -45,11 +50,11 @@ export default function RecentlyVisited({ items }: Props) {
             },
           }}
         >
-          Recently Visited
+          {t("home.recentlyVisited")}
         </Typography>
 
         <Typography variant="body2" color="text.secondary">
-          Pick up where you left off and revisit hotels you explored before.
+          {t("home.recentlyVisitedSubtitle")}
         </Typography>
 
         <Box
@@ -162,9 +167,14 @@ export default function RecentlyVisited({ items }: Props) {
                   <Stack direction="row" spacing={0.75} alignItems="center">
                     <AccessTimeOutlinedIcon sx={{ fontSize: 17 }} />
                     <Typography variant="body2">
-                      {formatVisitDate(item.visitDate)}
+                      {formatVisitDate(
+                        item.visitDate,
+                        i18n.language,
+                        t("home.recentlyVisitedFallback")
+                      )}
                     </Typography>
                   </Stack>
+
                   <Rating
                     value={item.starRating}
                     precision={0.5}

@@ -163,6 +163,31 @@ const resources = {
         startExploring:
           "Start exploring stays and add your favorite rooms here.",
       },
+      home: {
+        heroTitle: "Find your perfect stay",
+        heroSubtitle:
+          "Discover hotels, featured deals, and trending destinations for your next trip",
+        loadFailed: "Failed to load homepage content",
+
+        featuredDeals: "Featured Deals",
+        featuredDealsSubtitle:
+          "Handpicked offers with great prices for your next stay",
+        noFeaturedDeals: "No featured deals available",
+        savePercent: "Save {{value}}%",
+        startingFrom: "Starting from",
+        perNight: "per night",
+
+        trendingDestinations: "Trending Destinations",
+        trendingDestinationsSubtitle:
+          "Explore the most popular places travelers are loving right now.",
+        noTrendingDestinations: "No trending destinations available",
+
+        recentlyVisited: "Recently Visited",
+        recentlyVisitedSubtitle:
+          "Pick up where you left off and revisit hotels you explored before.",
+        noRecentHotels: "No recently visited hotels available.",
+        recentlyVisitedFallback: "Recently visited",
+      },
 
       notFound: {
         title: "404 - Page Not Found",
@@ -330,7 +355,30 @@ const resources = {
         total: "الإجمالي",
         startExploring: "ابدأ باستكشاف الإقامات وأضف غرفك المفضلة هنا.",
       },
+      home: {
+        heroTitle: "اعثر على إقامتك المثالية",
+        heroSubtitle:
+          "اسكتشف الفنادق والعروض المميزة والوجهات الرائجة لرحلتك القادمة",
+        loadFailed: "فشل تحميل محتوى الصفحة الرئيسية",
 
+        featuredDeals: "العروض المميزة",
+        featuredDealsSubtitle: "عروض مختارة بأسعار رائعة لإقامتك القادمة",
+        noFeaturedDeals: "لا توجد عروض مميزة متاحة",
+        savePercent: "وفّر {{value}}٪",
+        startingFrom: "تبدأ من",
+        perNight: "لكل ليلة",
+
+        trendingDestinations: "الوجهات الرائجة",
+        trendingDestinationsSubtitle:
+          "استكشف أكثر الأماكن شعبية التي يحبها المسافرون الآن.",
+        noTrendingDestinations: "لا توجد وجهات رائجة متاحة",
+
+        recentlyVisited: "الفنادق التي زرتها مؤخرًا",
+        recentlyVisitedSubtitle:
+          "أكمل من حيث توقفت وأعد زيارة الفنادق التي استكشفتها سابقًا.",
+        noRecentHotels: "لا توجد فنادق تمت زيارتها مؤخرًا.",
+        recentlyVisitedFallback: "تمت الزيارة مؤخرًا",
+      },
       notFound: {
         title: "404 - الصفحة غير موجودة",
         subtitle: "الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.",
