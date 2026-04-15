@@ -1,6 +1,7 @@
 import { Card, CardContent, Stack, Typography, TextField } from "@mui/material";
 import type { GuestInfo } from "../types/checkout.types";
 import type { FormikErrors, FormikTouched } from "formik";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   value: GuestInfo;
@@ -17,6 +18,8 @@ export default function GuestInfoStep({
   touched = {},
   onBlur,
 }: Props) {
+  const { t } = useTranslation();
+
   const fieldError = (field: keyof GuestInfo) =>
     touched[field] ? errors[field] : undefined;
 
@@ -34,17 +37,17 @@ export default function GuestInfoStep({
         <Stack spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h6" fontWeight={800}>
-              Guest information
+              {t("checkout.guestInformation")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Please enter the primary guest details.
+              {t("checkout.guestInformationHint")}
             </Typography>
           </Stack>
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <TextField
               name="guestInfo.firstName"
-              label="First name"
+              label={t("checkout.firstName")}
               size="small"
               value={value.firstName}
               onChange={(e) =>
@@ -59,7 +62,7 @@ export default function GuestInfoStep({
 
             <TextField
               name="guestInfo.lastName"
-              label="Last name"
+              label={t("checkout.lastName")}
               size="small"
               value={value.lastName}
               onChange={(e) => onChange({ ...value, lastName: e.target.value })}
@@ -74,7 +77,7 @@ export default function GuestInfoStep({
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <TextField
               name="guestInfo.email"
-              label="Email"
+              label={t("checkout.email")}
               size="small"
               value={value.email}
               onChange={(e) => onChange({ ...value, email: e.target.value })}
@@ -87,7 +90,7 @@ export default function GuestInfoStep({
 
             <TextField
               name="guestInfo.phone"
-              label="Phone number"
+              label={t("checkout.phone")}
               size="small"
               value={value.phone}
               onChange={(e) => onChange({ ...value, phone: e.target.value })}

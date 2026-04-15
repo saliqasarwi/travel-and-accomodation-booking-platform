@@ -1,4 +1,5 @@
 import { Button, Stack } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   isLastStep: boolean;
@@ -17,6 +18,8 @@ export default function CheckoutActions({
   onNext,
   onConfirm,
 }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Stack
       direction={{ xs: "column-reverse", sm: "row" }}
@@ -33,7 +36,7 @@ export default function CheckoutActions({
           alignSelf: { xs: "flex-start", sm: "auto" },
         }}
       >
-        Back
+        {t("checkout.back")}
       </Button>
 
       <Button
@@ -45,7 +48,7 @@ export default function CheckoutActions({
           borderRadius: 2,
         }}
       >
-        {isLastStep ? "Confirm booking" : "Next"}
+        {isLastStep ? t("checkout.confirmBooking") : t("checkout.next")}
       </Button>
     </Stack>
   );

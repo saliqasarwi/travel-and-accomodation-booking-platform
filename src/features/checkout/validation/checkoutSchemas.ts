@@ -1,61 +1,77 @@
 import * as Yup from "yup";
 import type { PaymentInfo } from "../types/checkout.types";
+import i18n from "@shared/i18n/i18n";
 
-export const guestInfoSchema = Yup.object({
-  firstName: Yup.string().trim().required("First name is required"),
-  lastName: Yup.string().trim().required("Last name is required"),
-  email: Yup.string()
-    .trim()
-    .email("Invalid email")
-    .required("Email is required"),
-  phone: Yup.string().trim().required("Phone is required"),
-});
+const guestInfoSchema = () =>
+  Yup.object({
+    firstName: Yup.string()
+      .trim()
+      .required(i18n.t("validation.firstNameRequired")),
+    lastName: Yup.string()
+      .trim()
+      .required(i18n.t("validation.lastNameRequired")),
+    email: Yup.string()
+      .trim()
+      .email(i18n.t("validation.emailInvalid"))
+      .required(i18n.t("validation.emailRequired")),
+    phone: Yup.string().trim().required(i18n.t("validation.phoneRequired")),
+  });
 
-export const paymentSchema = Yup.object({
-  method: Yup.mixed<PaymentInfo["method"]>()
-    .oneOf(["credit_card", "pay_at_hotel"])
-    .required("Payment method is required"),
-  cardNumber: Yup.string().when("method", {
-    is: "credit_card",
-    then: (schema) =>
-      schema
-        .trim()
-        .required("Card number is required")
-        .matches(/^[0-9 ]+$/, "Only digits/spaces")
-        .min(12, "Too short"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  expiry: Yup.string().when("method", {
-    is: "credit_card",
-    then: (schema) =>
-      schema
-        .trim()
-        .required("Expiry is required")
-        .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Use MM/YY"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  cvv: Yup.string().when("method", {
-    is: "credit_card",
-    then: (schema) =>
-      schema
-        .trim()
-        .required("CVV is required")
-        .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  cardholderName: Yup.string().when("method", {
-    is: "credit_card",
-    then: (schema) => schema.trim().required("Cardholder name is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-});
+const paymentSchema = () =>
+  Yup.object({
+    method: Yup.mixed<PaymentInfo["method"]>()
+      .oneOf(["credit_card", "pay_at_hotel"])
+      .required(i18n.t("validation.paymentMethodRequired")),
 
-export const requestsSchema = Yup.object({
-  notes: Yup.string().max(500, "Too long (max 500 chars)").nullable(),
-});
+    cardNumber: Yup.string().when("method", {
+      is: "credit_card",
+      then: (schema) =>
+        schema
+          .trim()
+          .required(i18n.t("validation.cardNumberRequired"))
+          .matches(/^[0-9 ]+$/, i18n.t("validation.digitsOnly"))
+          .min(12, i18n.t("validation.cardNumberTooShort")),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
+    expiry: Yup.string().when("method", {
+      is: "credit_card",
+      then: (schema) =>
+        schema
+          .trim()
+          .required(i18n.t("validation.expiryRequired"))
+          .matches(
+            /^(0[1-9]|1[0-2])\/\d{2}$/,
+            i18n.t("validation.expiryFormat")
+          ),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
+    cvv: Yup.string().when("method", {
+      is: "credit_card",
+      then: (schema) =>
+        schema
+          .trim()
+          .required(i18n.t("validation.cvvRequired"))
+          .matches(/^\d{3,4}$/, i18n.t("validation.cvvInvalid")),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
+    cardholderName: Yup.string().when("method", {
+      is: "credit_card",
+      then: (schema) =>
+        schema.trim().required(i18n.t("validation.cardholderNameRequired")),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+  });
+
+const requestsSchema = () =>
+  Yup.object({
+    notes: Yup.string().max(500, i18n.t("validation.notesTooLong")).nullable(),
+  });
 
 export function getStepSchema(step: number) {
-  if (step === 0) return Yup.object({ guestInfo: guestInfoSchema });
-  if (step === 1) return Yup.object({ paymentInfo: paymentSchema });
-  return Yup.object({ specialRequests: requestsSchema });
+  if (step === 0) return Yup.object({ guestInfo: guestInfoSchema() });
+  if (step === 1) return Yup.object({ paymentInfo: paymentSchema() });
+  return Yup.object({ specialRequests: requestsSchema() });
 }

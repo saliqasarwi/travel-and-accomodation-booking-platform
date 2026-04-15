@@ -3,6 +3,7 @@ import { Box, CircularProgress, Stack, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 import { useCart } from "@features/cart/useCart";
 import { createBooking } from "../api/checkout.api";
@@ -30,6 +31,7 @@ export default function CheckoutPage() {
 
   const navigate = useNavigate();
   const { state, clearCart } = useCart();
+  const { t } = useTranslation();
 
   const formik = useFormik<CheckoutFormValues>({
     initialValues: checkoutInitialValues,
@@ -136,7 +138,7 @@ export default function CheckoutPage() {
   }
 
   if (!state.items.length) {
-    return <Alert severity="warning">Your cart is empty.</Alert>;
+    return <Alert severity="warning">{t("checkout.emptyCart")}</Alert>;
   }
 
   return (
@@ -236,10 +238,10 @@ export default function CheckoutPage() {
 
       <ConfirmActionDialog
         open={confirmOpen}
-        title="Confirm booking"
-        message="Are you sure you want to confirm this booking?"
-        confirmText="Confirm booking"
-        cancelText="Cancel"
+        title={t("checkout.confirmBooking")}
+        message={t("checkout.confirmBookingMessage")}
+        confirmText={t("checkout.confirmBooking")}
+        cancelText={t("common.cancel")}
         confirmColor="primary"
         loading={formik.isSubmitting}
         onClose={handleCloseConfirm}

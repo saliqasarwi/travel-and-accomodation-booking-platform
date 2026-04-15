@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import type { PaymentInfo, PaymentMethod } from "../types/checkout.types";
 import type { FormikErrors, FormikTouched } from "formik";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   value: PaymentInfo;
@@ -28,6 +29,8 @@ export default function PaymentStep({
   touched = {},
   onBlur,
 }: Props) {
+  const { t } = useTranslation();
+
   const setField = <K extends keyof PaymentInfo>(
     key: K,
     nextValue: PaymentInfo[K]
@@ -58,10 +61,10 @@ export default function PaymentStep({
         <Stack spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h6" fontWeight={800}>
-              Payment method
+              {t("checkout.paymentMethod")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Choose how you'd like to pay.
+              {t("checkout.paymentMethodHint")}
             </Typography>
           </Stack>
 
@@ -76,12 +79,12 @@ export default function PaymentStep({
             <FormControlLabel
               value="credit_card"
               control={<Radio />}
-              label="Credit card"
+              label={t("checkout.creditCard")}
             />
             <FormControlLabel
               value="pay_at_hotel"
               control={<Radio />}
-              label="Pay at hotel"
+              label={t("checkout.payAtHotel")}
             />
           </RadioGroup>
 
@@ -96,7 +99,7 @@ export default function PaymentStep({
               <TextField
                 name="paymentInfo.cardNumber"
                 size="small"
-                label="Card number"
+                label={t("checkout.cardNumber")}
                 placeholder="1234 5678 9012 3456"
                 value={value.cardNumber}
                 onChange={(e) => setField("cardNumber", e.target.value)}
@@ -108,7 +111,7 @@ export default function PaymentStep({
               <TextField
                 name="paymentInfo.expiry"
                 size="small"
-                label="Expiry"
+                label={t("checkout.expiry")}
                 placeholder="MM/YY"
                 value={value.expiry}
                 onChange={(e) => setField("expiry", e.target.value)}
@@ -120,7 +123,7 @@ export default function PaymentStep({
               <TextField
                 name="paymentInfo.cvv"
                 size="small"
-                label="CVV"
+                label={t("checkout.cvv")}
                 placeholder="123"
                 value={value.cvv}
                 onChange={(e) => setField("cvv", e.target.value)}
@@ -133,8 +136,8 @@ export default function PaymentStep({
                 name="paymentInfo.cardholderName"
                 size="small"
                 fullWidth
-                label="Cardholder name"
-                placeholder="Name on card"
+                label={t("checkout.cardholderName")}
+                placeholder={t("checkout.nameOnCard")}
                 value={value.cardholderName}
                 onChange={(e) => setField("cardholderName", e.target.value)}
                 onBlur={onBlur}
@@ -144,7 +147,7 @@ export default function PaymentStep({
             </Box>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              You'll pay during check-in. No card details needed now.
+              {t("checkout.payAtHotelHint")}
             </Typography>
           )}
         </Stack>
