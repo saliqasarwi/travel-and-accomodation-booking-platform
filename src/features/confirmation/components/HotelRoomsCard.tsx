@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { ReceiptLongRounded } from "@mui/icons-material";
 import type { CartItem } from "../../cart/types/cart.types";
-import { money } from "@shared/utils/formatters";
+import { money, formatVisitDate } from "@shared/utils/formatters";
 import { nightsBetween } from "@shared/utils/booking";
 import { useTranslation } from "react-i18next";
 
@@ -91,14 +91,25 @@ export default function HotelRoomsCard({ items }: Props) {
                     </Box>
 
                     <Typography fontWeight={900} whiteSpace="nowrap">
-                      {money(item.pricePerNight)} / night
+                      {money(item.pricePerNight)} / {t("confirmation.night")}
                     </Typography>
                   </Stack>
 
                   <Typography variant="body2" color="text.secondary">
-                    {item.checkInDate} → {item.checkOutDate} • {item.adults}{" "}
-                    {t("admin.adults").toLowerCase()} • {item.children}{" "}
-                    {t("admin.children").toLowerCase()} • {item.numberOfRooms}{" "}
+                    {formatVisitDate(
+                      item.checkInDate,
+                      i18n.language,
+                      t("home.recentlyVisitedFallback")
+                    )}{" "}
+                    →{" "}
+                    {formatVisitDate(
+                      item.checkOutDate,
+                      i18n.language,
+                      t("home.recentlyVisitedFallback")
+                    )}{" "}
+                    • {item.adults} {t("admin.adults").toLowerCase()} •{" "}
+                    {item.children} {t("admin.children").toLowerCase()} •{" "}
+                    {item.numberOfRooms}{" "}
                     {t("confirmation.roomsLabel").toLowerCase()}
                   </Typography>
 

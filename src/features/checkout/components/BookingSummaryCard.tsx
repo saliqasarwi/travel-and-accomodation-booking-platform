@@ -11,7 +11,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import HotelIcon from "@mui/icons-material/Hotel";
 import { useCart } from "@features/cart/useCart";
 import { calculateBookingTotals, nightsBetween } from "@shared/utils/booking";
-import { money } from "@shared/utils/formatters";
+import { money, formatVisitDate } from "@shared/utils/formatters";
 import { useTranslation } from "react-i18next";
 
 export default function BookingSummaryCard() {
@@ -108,7 +108,17 @@ export default function BookingSummaryCard() {
                           color="text.secondary"
                           noWrap
                         >
-                          {item.checkInDate} → {item.checkOutDate}
+                          {formatVisitDate(
+                            item.checkInDate,
+                            i18n.resolvedLanguage || "en",
+                            "-"
+                          )}{" "}
+                          →{" "}
+                          {formatVisitDate(
+                            item.checkOutDate,
+                            i18n.resolvedLanguage || "en",
+                            "-"
+                          )}
                         </Typography>
                       </Stack>
 

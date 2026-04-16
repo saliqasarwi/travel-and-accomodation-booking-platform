@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../useCart";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { nightsBetween } from "@shared/utils/booking";
-import { money } from "@shared/utils/formatters";
+import { money, formatVisitDate } from "@shared/utils/formatters";
 import emptyCart from "@assets/empty-cart.webp";
 import { useTranslation } from "react-i18next";
 
@@ -193,7 +193,17 @@ export default function CartItemsList() {
                       <Stack direction="row" spacing={1} alignItems="center">
                         <CalendarMonthIcon sx={{ fontSize: 16 }} />
                         <Typography variant="caption">
-                          {item.checkInDate} → {item.checkOutDate}
+                          {formatVisitDate(
+                            item.checkInDate,
+                            i18n.resolvedLanguage || "en",
+                            "-"
+                          )}{" "}
+                          →{" "}
+                          {formatVisitDate(
+                            item.checkOutDate,
+                            i18n.resolvedLanguage || "en",
+                            "-"
+                          )}
                         </Typography>
                       </Stack>
 

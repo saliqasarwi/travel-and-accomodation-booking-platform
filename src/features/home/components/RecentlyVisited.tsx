@@ -3,27 +3,11 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { useTranslation } from "react-i18next";
 import type { RecentHotel } from "../types/home.types";
+import { formatVisitDate } from "@shared/utils/formatters";
 
 type Props = {
   items: RecentHotel[];
 };
-
-function formatVisitDate(
-  date: string | undefined,
-  language: string,
-  fallback: string
-) {
-  if (!date) return fallback;
-
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) return date;
-
-  return parsed.toLocaleDateString(language === "ar" ? "ar-EG" : "en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 export default function RecentlyVisited({ items }: Props) {
   const { t, i18n } = useTranslation();

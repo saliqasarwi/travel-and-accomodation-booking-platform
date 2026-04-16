@@ -147,6 +147,12 @@ const resources = {
         roomLabel: "Room",
         hotelLabel: "Hotel",
         thankYou: "Thank you for your booking",
+        night: "night",
+        nights: "nights",
+        room: "room",
+        rooms: "rooms",
+        guest: "guest",
+        guests: "guests",
       },
 
       cart: {
@@ -513,6 +519,12 @@ const resources = {
         roomLabel: "الغرفة",
         hotelLabel: "الفندق",
         thankYou: "شكرًا لحجزك",
+        night: "ليلة",
+        nights: "ليالي",
+        room: "غرفة",
+        rooms: "غرف",
+        guest: "ضيف",
+        guests: "ضيوف",
       },
 
       cart: {
