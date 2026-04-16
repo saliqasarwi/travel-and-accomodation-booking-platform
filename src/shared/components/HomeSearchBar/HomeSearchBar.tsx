@@ -34,7 +34,7 @@ import SearchBlock from "./SearchBlock";
 import GuestRow from "./GuestRow";
 
 export default function HomeSearchBar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
@@ -148,7 +148,8 @@ export default function HomeSearchBar() {
                   label={t("search.checkInOut")}
                   value={formatDateRange(
                     values.checkInDate,
-                    values.checkOutDate
+                    values.checkOutDate,
+                    i18n.language
                   )}
                   onClick={(event) => setDateAnchorEl(event.currentTarget)}
                 />
@@ -159,7 +160,8 @@ export default function HomeSearchBar() {
                   value={formatGuests(
                     values.adults,
                     values.children,
-                    values.numberOfRooms
+                    values.numberOfRooms,
+                    t
                   )}
                   onClick={(event) => setGuestAnchorEl(event.currentTarget)}
                 />
@@ -304,7 +306,11 @@ export default function HomeSearchBar() {
                 sx={{ mt: 2 }}
               >
                 <Typography color="text.secondary">
-                  {formatDateRange(values.checkInDate, values.checkOutDate)}
+                  {formatDateRange(
+                    values.checkInDate,
+                    values.checkOutDate,
+                    i18n.language
+                  )}
                 </Typography>
 
                 <Button
@@ -334,7 +340,7 @@ export default function HomeSearchBar() {
               }}
             >
               <GuestRow
-                label={t("admin.adults")}
+                label={t("search.adultsLabel")}
                 value={values.adults}
                 min={1}
                 onDecrease={() => setFieldValue("adults", values.adults - 1)}
@@ -342,7 +348,7 @@ export default function HomeSearchBar() {
               />
 
               <GuestRow
-                label={t("admin.children")}
+                label={t("search.childrenLabel")}
                 value={values.children}
                 min={0}
                 onDecrease={() =>

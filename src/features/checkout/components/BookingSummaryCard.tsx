@@ -48,7 +48,7 @@ export default function BookingSummaryCard() {
               {t("checkout.bookingSummary")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {t("checkout.itemsInCart", { count: totalItems })}
+              {t("checkout.itemsInCart_other", { count: totalItems })}
             </Typography>
           </Stack>
 

@@ -1,17 +1,39 @@
-import dayjs from "dayjs";
+export function formatDateRange(
+  checkInDate: string,
+  checkOutDate: string,
+  language: string
+) {
+  if (!checkInDate || !checkOutDate) return "";
 
-export function formatGuests(adults: number, children: number, rooms: number) {
-  return `${adults} adult${adults > 1 ? "s" : ""} · ${children} child${
-    children > 1 ? "ren" : ""
-  } · ${rooms} room${rooms > 1 ? "s" : ""}`;
+  const checkIn = new Date(checkInDate);
+  const checkOut = new Date(checkOutDate);
+
+  if (Number.isNaN(checkIn.getTime()) || Number.isNaN(checkOut.getTime())) {
+    return `${checkInDate} — ${checkOutDate}`;
+  }
+
+  const locale = language.startsWith("ar") ? "ar-EG" : "en-GB";
+
+  const formatOptions: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "short",
+  };
+
+  return `${checkIn.toLocaleDateString(
+    locale,
+    formatOptions
+  )} — ${checkOut.toLocaleDateString(locale, formatOptions)}`;
 }
 
-export function formatDate(date: string) {
-  if (!date) return "";
-  return dayjs(date).format("ddd D MMM");
-}
-
-export function formatDateRange(checkInDate: string, checkOutDate: string) {
-  if (!checkInDate || !checkOutDate) return "Select dates";
-  return `${formatDate(checkInDate)} — ${formatDate(checkOutDate)}`;
+export function formatGuests(
+  adults: number,
+  children: number,
+  numberOfRooms: number,
+  t: (key: string, options?: Record<string, unknown>) => string
+) {
+  return [
+    t("search.adults", { count: adults }),
+    t("search.children", { count: children }),
+    t("search.rooms", { count: numberOfRooms }),
+  ].join(" • ");
 }

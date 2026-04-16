@@ -248,6 +248,15 @@ const resources = {
         checkIn: "Check-in",
         checkOut: "Check-out",
         done: "Done",
+        adults_one: "{{count}} adult",
+        adults_other: "{{count}} adults",
+        children_one: "{{count}} child",
+        children_other: "{{count}} children",
+        rooms_one: "{{count}} room",
+        rooms_other: "{{count}} rooms",
+
+        adultsLabel: "Adults",
+        childrenLabel: "Children",
       },
       validation: {
         cityRequired: "City is required",
@@ -617,6 +626,16 @@ const resources = {
         checkIn: "تسجيل الدخول",
         checkOut: "تسجيل الخروج",
         done: "تم",
+
+        adults_one: "{{count}} بالغ",
+        adults_other: "{{count}} بالغين",
+        children_one: "{{count}} طفل",
+        children_other: "{{count}} أطفال",
+        rooms_one: "{{count}} غرفة",
+        rooms_other: "{{count}} غرف",
+
+        adultsLabel: "البالغون",
+        childrenLabel: "الأطفال",
         roomsSelector: "الغرف",
       },
       validation: {
