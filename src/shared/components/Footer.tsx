@@ -30,20 +30,21 @@ export default function Footer() {
         mt: 10,
         position: "relative",
         overflow: "hidden",
-        background:
-          "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(240,247,255,0.95) 100%)",
+        bgcolor: "background.paper",
         borderTop: "1px solid",
-        borderColor: "rgba(21,101,192,0.10)",
+        borderColor: "divider",
       }}
     >
       <Box
-        sx={{
+        sx={(theme) => ({
           position: "absolute",
           inset: 0,
           pointerEvents: "none",
           background:
-            "radial-gradient(circle at top left, rgba(21,101,192,0.08), transparent 28%), radial-gradient(circle at bottom right, rgba(15,157,148,0.08), transparent 24%)",
-        }}
+            theme.palette.mode === "dark"
+              ? "radial-gradient(circle at top left, rgba(21,101,192,0.12), transparent 28%), radial-gradient(circle at bottom right, rgba(15,157,148,0.10), transparent 24%)"
+              : "radial-gradient(circle at top left, rgba(21,101,192,0.08), transparent 28%), radial-gradient(circle at bottom right, rgba(15,157,148,0.08), transparent 24%)",
+        })}
       />
 
       <Container
@@ -156,7 +157,7 @@ export default function Footer() {
             mt: { xs: 4, md: 5 },
             pt: 2.5,
             borderTop: "1px solid",
-            borderColor: "rgba(31,41,55,0.08)",
+            borderColor: "divider",
             display: "flex",
             flexDirection: { xs: "column", sm: "row" },
             alignItems: "center",
