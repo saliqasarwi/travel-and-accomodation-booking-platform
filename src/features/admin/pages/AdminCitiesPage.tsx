@@ -14,6 +14,7 @@ import {
 } from "../api/admin.api";
 import type { CityFormValues, CityRow } from "../types/admin.types";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
+import { localizeField } from "@features/checkout/utils/localize";
 
 const EMPTY_CITY: CityFormValues = {
   name: "",
@@ -23,7 +24,7 @@ const EMPTY_CITY: CityFormValues = {
 };
 
 export default function AdminCitiesPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [rows, setRows] = useState<CityRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -69,9 +70,9 @@ export default function AdminCitiesPage() {
     setDrawerMode("edit");
     setSelectedId(row.id);
     setDrawerInitialValues({
-      name: row.name ?? "",
-      country: row.country ?? "",
-      postOffice: row.postOffice ?? "",
+      name: localizeField(row.name, i18n.language),
+      country: localizeField(row.country, i18n.language),
+      postOffice: localizeField(row.postOffice, i18n.language),
       numberOfHotels: row.numberOfHotels,
     });
     setDrawerOpen(true);
@@ -116,18 +117,28 @@ export default function AdminCitiesPage() {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "name", headerName: t("admin.name"), flex: 1, minWidth: 160 },
+      {
+        field: "name",
+        headerName: t("admin.name"),
+        flex: 1,
+        minWidth: 160,
+        renderCell: (params) => localizeField(params.row.name, i18n.language),
+      },
       {
         field: "country",
         headerName: t("admin.country"),
         flex: 1,
         minWidth: 140,
+        renderCell: (params) =>
+          localizeField(params.row.country, i18n.language),
       },
       {
         field: "postOffice",
         headerName: t("admin.postOffice"),
         flex: 1,
         minWidth: 160,
+        renderCell: (params) =>
+          localizeField(params.row.postOffice, i18n.language),
       },
       {
         field: "numberOfHotels",
@@ -165,7 +176,7 @@ export default function AdminCitiesPage() {
         ),
       },
     ],
-    [t]
+    [t, i18n.language]
   );
 
   return (

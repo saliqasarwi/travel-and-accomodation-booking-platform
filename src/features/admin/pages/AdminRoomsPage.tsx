@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Chip } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -109,73 +109,78 @@ export default function AdminRoomsPage() {
     }
   };
 
-  const columns: GridColDef[] = [
-    {
-      field: "roomNumber",
-      headerName: t("admin.roomNumber"),
-      flex: 1,
-      minWidth: 80,
-    },
-    {
-      field: "availability",
-      headerName: t("admin.availability"),
-      width: 160,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        const isAvailable = Boolean(params.value);
-        return (
-          <Chip
-            size="small"
-            label={isAvailable ? t("admin.available") : t("admin.notAvailable")}
-            color={isAvailable ? "success" : "default"}
-            variant={isAvailable ? "filled" : "outlined"}
-          />
-        );
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: "roomNumber",
+        headerName: t("admin.roomNumber"),
+        flex: 1,
+        minWidth: 80,
       },
-    },
-    {
-      field: "adultCapacity",
-      headerName: t("admin.adults"),
-      width: 120,
-    },
-    {
-      field: "childrenCapacity",
-      headerName: t("admin.children"),
-      width: 120,
-    },
-    {
-      field: "createdAt",
-      headerName: t("admin.created"),
-      flex: 1,
-      minWidth: 170,
-    },
-    {
-      field: "modifiedAt",
-      headerName: t("admin.modified"),
-      flex: 1,
-      minWidth: 170,
-    },
-    {
-      field: "actions",
-      headerName: t("admin.actions"),
-      width: 110,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <IconButton
-          color="error"
-          onClick={(e) => {
-            e.stopPropagation();
-            openDeleteDialog(params.row.roomId);
-          }}
-        >
-          <DeleteRoundedIcon />
-        </IconButton>
-      ),
-    },
-  ];
+      {
+        field: "availability",
+        headerName: t("admin.availability"),
+        width: 160,
+        sortable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const isAvailable = Boolean(params.value);
+          return (
+            <Chip
+              size="small"
+              label={
+                isAvailable ? t("admin.available") : t("admin.notAvailable")
+              }
+              color={isAvailable ? "success" : "default"}
+              variant={isAvailable ? "filled" : "outlined"}
+            />
+          );
+        },
+      },
+      {
+        field: "adultCapacity",
+        headerName: t("admin.adults"),
+        width: 120,
+      },
+      {
+        field: "childrenCapacity",
+        headerName: t("admin.children"),
+        width: 120,
+      },
+      {
+        field: "createdAt",
+        headerName: t("admin.created"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "modifiedAt",
+        headerName: t("admin.modified"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "actions",
+        headerName: t("admin.actions"),
+        width: 110,
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => (
+          <IconButton
+            color="error"
+            onClick={(e) => {
+              e.stopPropagation();
+              openDeleteDialog(params.row.roomId);
+            }}
+          >
+            <DeleteRoundedIcon />
+          </IconButton>
+        ),
+      },
+    ],
+    [t]
+  );
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Rating } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -15,6 +15,7 @@ import {
 } from "../api/admin.api";
 import type { HotelFormValues, HotelRow } from "../types/admin.types";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
+import { localizeField } from "@features/checkout/utils/localize";
 
 const EMPTY_HOTEL: HotelFormValues = {
   hotelName: "",
@@ -24,7 +25,7 @@ const EMPTY_HOTEL: HotelFormValues = {
 };
 
 export default function AdminHotelsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [rows, setRows] = useState<HotelRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -70,8 +71,8 @@ export default function AdminHotelsPage() {
     setDrawerMode("edit");
     setSelectedId(row.id);
     setDrawerInitialValues({
-      hotelName: row.hotelName ?? "",
-      location: row.location ?? "",
+      hotelName: localizeField(row.hotelName, i18n.language),
+      location: localizeField(row.location, i18n.language),
       starRating: row.starRating,
       availableRooms: row.availableRooms,
     });
@@ -115,70 +116,77 @@ export default function AdminHotelsPage() {
     }
   };
 
-  const columns: GridColDef[] = [
-    {
-      field: "hotelName",
-      headerName: t("admin.hotelName"),
-      flex: 1,
-      minWidth: 180,
-    },
-    {
-      field: "starRating",
-      headerName: t("admin.starRating"),
-      width: 160,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => (
-        <Rating
-          value={params.value || 0}
-          readOnly
-          precision={0.5}
-          size="small"
-        />
-      ),
-    },
-    {
-      field: "availableRooms",
-      headerName: t("admin.availableRooms"),
-      width: 140,
-    },
-    {
-      field: "location",
-      headerName: t("admin.location"),
-      flex: 1,
-      minWidth: 140,
-    },
-    {
-      field: "createdAt",
-      headerName: t("admin.created"),
-      flex: 1,
-      minWidth: 170,
-    },
-    {
-      field: "modifiedAt",
-      headerName: t("admin.modified"),
-      flex: 1,
-      minWidth: 170,
-    },
-    {
-      field: "actions",
-      headerName: t("admin.actions"),
-      width: 110,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <IconButton
-          color="error"
-          onClick={(e) => {
-            e.stopPropagation();
-            openDeleteDialog(params.row.id);
-          }}
-        >
-          <DeleteRoundedIcon />
-        </IconButton>
-      ),
-    },
-  ];
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: "hotelName",
+        headerName: t("admin.hotelName"),
+        flex: 1,
+        minWidth: 180,
+        renderCell: (params) =>
+          localizeField(params.row.hotelName, i18n.language),
+      },
+      {
+        field: "starRating",
+        headerName: t("admin.starRating"),
+        width: 160,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <Rating
+            value={params.value || 0}
+            readOnly
+            precision={0.5}
+            size="small"
+          />
+        ),
+      },
+      {
+        field: "availableRooms",
+        headerName: t("admin.availableRooms"),
+        width: 140,
+      },
+      {
+        field: "location",
+        headerName: t("admin.location"),
+        flex: 1,
+        minWidth: 140,
+        renderCell: (params) =>
+          localizeField(params.row.location, i18n.language),
+      },
+      {
+        field: "createdAt",
+        headerName: t("admin.created"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "modifiedAt",
+        headerName: t("admin.modified"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "actions",
+        headerName: t("admin.actions"),
+        width: 110,
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => (
+          <IconButton
+            color="error"
+            onClick={(e) => {
+              e.stopPropagation();
+              openDeleteDialog(params.row.id);
+            }}
+          >
+            <DeleteRoundedIcon />
+          </IconButton>
+        ),
+      },
+    ],
+    [t, i18n.language]
+  );
 
   return (
     <>
