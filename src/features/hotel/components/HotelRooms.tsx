@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { AvailableRoom } from "../types/room.types";
+import { localizeField } from "@shared/utils/localize";
 
 type Props = {
   rooms: AvailableRoom[];
@@ -17,7 +18,7 @@ type Props = {
 };
 
 export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <Stack spacing={2}>
@@ -63,7 +64,7 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
                 <CardMedia
                   component="img"
                   image={room.roomPhotoUrl}
-                  alt={room.roomType}
+                  alt={localizeField(room.roomType, i18n.language)}
                   sx={{
                     width: "100%",
                     height: 180,
@@ -81,7 +82,7 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
                 >
                   <Box>
                     <Typography variant="h6" fontWeight={800} sx={{ mb: 0.5 }}>
-                      {room.roomType}
+                      {localizeField(room.roomType, i18n.language)}
                     </Typography>
                   </Box>
 
@@ -101,7 +102,9 @@ export default function HotelRoomsSection({ rooms, onAddToCart }: Props) {
                     }}
                   >
                     {t("hotel.amenities")}:{" "}
-                    {room.amenities.map((a) => a.name).join(" • ")}
+                    {room.amenities
+                      .map((a) => localizeField(a.name, i18n.language))
+                      .join(" • ")}
                   </Typography>
 
                   <Typography

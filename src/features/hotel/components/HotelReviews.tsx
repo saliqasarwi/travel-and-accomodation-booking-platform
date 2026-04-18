@@ -1,6 +1,7 @@
 import { Avatar, Box, Rating, Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import type { HotelReview } from "../types/review.types";
+import { localizeField } from "@shared/utils/localize";
 
 interface HotelReviewsSectionProps {
   reviews: HotelReview[];
@@ -9,7 +10,7 @@ interface HotelReviewsSectionProps {
 export default function HotelReviewsSection({
   reviews,
 }: HotelReviewsSectionProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   if (reviews.length === 0) {
     return (
@@ -55,56 +56,67 @@ export default function HotelReviewsSection({
           {t("hotel.guestReviews")}
         </Typography>
 
-        {reviews.map((review) => (
-          <Box
-            key={review.reviewId}
-            sx={{
-              p: 1.5,
-              borderRadius: 1,
-              bgcolor: "background.paper",
-              border: "1px solid",
-              borderColor: "divider",
-              boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
-            }}
-          >
-            <Stack direction="row" spacing={1.5} sx={{ mb: 1.5 }}>
-              <Avatar
-                sx={{
-                  bgcolor: "primary.main",
-                  width: 42,
-                  height: 42,
-                  fontSize: "1rem",
-                  fontWeight: 700,
-                }}
-              >
-                {review.customerName?.[0]?.toUpperCase() || "?"}
-              </Avatar>
+        {reviews.map((review) => {
+          const customerName = localizeField(
+            review.customerName,
+            i18n.language
+          );
+          const reviewDescription = localizeField(
+            review.description,
+            i18n.language
+          );
 
-              <Box>
-                <Typography variant="subtitle1" fontWeight={700}>
-                  {review.customerName || t("hotel.anonymous")}
-                </Typography>
-                <Rating
-                  value={review.rating}
-                  readOnly
-                  size="small"
-                  sx={{ mt: 0.5 }}
-                />
-              </Box>
-            </Stack>
-
-            <Typography
-              variant="body1"
+          return (
+            <Box
+              key={review.reviewId}
               sx={{
-                lineHeight: 1.8,
-                fontStyle: "italic",
-                color: "text.primary",
+                p: 1.5,
+                borderRadius: 1,
+                bgcolor: "background.paper",
+                border: "1px solid",
+                borderColor: "divider",
+                boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
               }}
             >
-              "{review.description}"
-            </Typography>
-          </Box>
-        ))}
+              <Stack direction="row" spacing={1.5} sx={{ mb: 1.5 }}>
+                <Avatar
+                  sx={{
+                    bgcolor: "primary.main",
+                    width: 42,
+                    height: 42,
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  {customerName?.[0]?.toUpperCase() || "?"}
+                </Avatar>
+
+                <Box>
+                  <Typography variant="subtitle1" fontWeight={700}>
+                    {customerName || t("hotel.anonymous")}
+                  </Typography>
+                  <Rating
+                    value={review.rating}
+                    readOnly
+                    size="small"
+                    sx={{ mt: 0.5 }}
+                  />
+                </Box>
+              </Stack>
+
+              <Typography
+                variant="body1"
+                sx={{
+                  lineHeight: 1.8,
+                  fontStyle: "italic",
+                  color: "text.primary",
+                }}
+              >
+                "{reviewDescription}"
+              </Typography>
+            </Box>
+          );
+        })}
       </Stack>
     </Box>
   );
