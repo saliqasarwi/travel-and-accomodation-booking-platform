@@ -19,7 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../useCart";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { nightsBetween } from "@shared/utils/booking";
-import { money, formatVisitDate } from "@shared/utils/formatters";
+import { money, formatDate } from "@shared/utils/formatters";
+import { localizeField } from "@shared/utils/localize";
 import emptyCart from "@assets/empty-cart.webp";
 import { useTranslation } from "react-i18next";
 
@@ -31,18 +32,6 @@ export default function CartItemsList() {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-
-  const localized = (value: unknown) => {
-    if (typeof value === "string") return value;
-
-    if (value && typeof value === "object") {
-      const obj = value as Record<string, string | undefined>;
-      const lang = i18n.resolvedLanguage?.startsWith("ar") ? "ar" : "en";
-      return obj[lang] ?? obj.en ?? obj.ar ?? "";
-    }
-
-    return "";
-  };
 
   if (items.length === 0) {
     return (
@@ -146,7 +135,7 @@ export default function CartItemsList() {
                   <CardMedia
                     component="img"
                     image={item.roomPhotoUrl}
-                    alt={localized(item.roomType)}
+                    alt={localizeField(item.roomType, i18n.language)}
                     sx={{
                       height: 180,
                       objectFit: "cover",
@@ -168,14 +157,14 @@ export default function CartItemsList() {
                         "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
                     }}
                   >
-                    {money(item.pricePerNight)} / {t("hotel.perNight")}
+                    {money(item.pricePerNight)} {t("hotel.perNight")}
                   </Box>
                 </Box>
 
                 <CardContent sx={{ p: 2 }}>
                   <Stack spacing={1.2}>
                     <Typography variant="h6" fontWeight={800}>
-                      {localized(item.hotelName)}
+                      {localizeField(item.hotelName, i18n.language)}
                     </Typography>
 
                     <Rating
@@ -186,24 +175,16 @@ export default function CartItemsList() {
                     />
 
                     <Typography variant="body2" color="text.secondary">
-                      {localized(item.roomType)} • {localized(item.cityName)}
+                      {localizeField(item.roomType, i18n.language)} •{" "}
+                      {localizeField(item.cityName, i18n.language)}
                     </Typography>
 
                     <Stack spacing={0.5}>
                       <Stack direction="row" spacing={1} alignItems="center">
                         <CalendarMonthIcon sx={{ fontSize: 16 }} />
                         <Typography variant="caption">
-                          {formatVisitDate(
-                            item.checkInDate,
-                            i18n.resolvedLanguage || "en",
-                            "-"
-                          )}{" "}
-                          →{" "}
-                          {formatVisitDate(
-                            item.checkOutDate,
-                            i18n.resolvedLanguage || "en",
-                            "-"
-                          )}
+                          {formatDate(item.checkInDate)} →{" "}
+                          {formatDate(item.checkOutDate)}
                         </Typography>
                       </Stack>
 
