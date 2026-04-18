@@ -20,6 +20,7 @@ import {
   Button,
 } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   setSearchParamsFromPatch,
@@ -27,6 +28,7 @@ import {
 } from "../utils/searchParams";
 import { useAmenities } from "../hooks/useAmenities";
 import { useRoomTypes } from "../hooks/useRoomTypes";
+import { localizeField } from "@shared/utils/localize";
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
@@ -38,6 +40,7 @@ const sectionTitleSx = {
   color: "text.primary",
   mb: 1.5,
 };
+
 const filterContainerSx = {
   p: 3,
   border: "1px solid",
@@ -49,23 +52,10 @@ const filterContainerSx = {
   overflowY: { lg: "auto" },
   overflowX: { lg: "hidden" },
   pr: { lg: 1.5 },
-  scrollbarWidth: "thin",
-  scrollbarColor: "#cbd5e1 transparent",
-  "&::-webkit-scrollbar": {
-    width: 8,
-  },
-  "&::-webkit-scrollbar-track": {
-    background: "transparent",
-  },
-  "&::-webkit-scrollbar-thumb": {
-    backgroundColor: "#cbd5e1",
-    borderRadius: 999,
-  },
-  "&::-webkit-scrollbar-thumb:hover": {
-    backgroundColor: "#94a3b8",
-  },
 };
+
 export default function SearchFilters() {
+  const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const PRICE_MIN = 0;
@@ -188,12 +178,14 @@ export default function SearchFilters() {
 
     updateParams({ amenities: next });
   };
+
   const hasActiveFilters =
     !!searchParams.get("minPrice") ||
     !!searchParams.get("maxPrice") ||
     selectedStars.length > 0 ||
     selectedAmenities.length > 0 ||
     !!selectedRoomType;
+
   const handleClearFilters = () => {
     const next = setSearchParamsFromPatch(searchParams, {
       minPrice: undefined,
@@ -205,6 +197,7 @@ export default function SearchFilters() {
 
     setSearchParams(next);
   };
+
   return (
     <Box
       sx={{
@@ -223,7 +216,7 @@ export default function SearchFilters() {
           spacing={2}
         >
           <Typography variant="h6" fontWeight={800}>
-            Filters
+            {t("search.filters")}
           </Typography>
 
           <Button
@@ -238,14 +231,16 @@ export default function SearchFilters() {
               px: 0,
             }}
           >
-            Clear all
+            {t("search.clearAll")}
           </Button>
         </Stack>
 
         <Divider />
 
         <Box>
-          <Typography sx={sectionTitleSx}>Your budget (per night)</Typography>
+          <Typography sx={sectionTitleSx}>
+            {t("search.budgetPerNight")}
+          </Typography>
 
           <Slider
             value={priceRange}
@@ -264,7 +259,7 @@ export default function SearchFilters() {
                 fontWeight={700}
                 sx={{ letterSpacing: 1 }}
               >
-                MIN
+                {t("search.min")}
               </Typography>
               <TextField
                 fullWidth
@@ -289,7 +284,7 @@ export default function SearchFilters() {
                 fontWeight={700}
                 sx={{ letterSpacing: 1 }}
               >
-                MAX
+                {t("search.max")}
               </Typography>
               <TextField
                 fullWidth
@@ -313,7 +308,7 @@ export default function SearchFilters() {
         <Divider />
 
         <Box>
-          <Typography sx={sectionTitleSx}>Star rating</Typography>
+          <Typography sx={sectionTitleSx}>{t("search.starRating")}</Typography>
 
           <FormGroup>
             {[5, 4, 3, 2, 1].map((star) => (
@@ -334,34 +329,42 @@ export default function SearchFilters() {
         <Divider />
 
         <Box>
-          <Typography sx={sectionTitleSx}>Room type</Typography>
+          <Typography sx={sectionTitleSx}>{t("search.roomType")}</Typography>
 
           {roomTypesLoading ? (
             <Stack direction="row" spacing={1} alignItems="center">
               <CircularProgress size={18} />
               <Typography variant="body2" color="text.secondary">
-                Loading room types…
+                {t("search.loadingRoomTypes")}
               </Typography>
             </Stack>
           ) : roomTypesError ? (
             <Alert severity="error">{roomTypesError}</Alert>
           ) : (
             <FormControl fullWidth size="small">
-              <InputLabel id="roomType-label">Room type</InputLabel>
+              <InputLabel id="roomType-label">
+                {t("search.roomType")}
+              </InputLabel>
               <Select
                 labelId="roomType-label"
-                label="Room type"
+                label={t("search.roomType")}
                 value={selectedRoomType}
                 onChange={(e) =>
                   updateParams({ roomType: e.target.value || undefined })
                 }
               >
-                <MenuItem value="">All</MenuItem>
-                {roomTypes.map((t) => (
-                  <MenuItem key={t} value={t}>
-                    {t}
-                  </MenuItem>
-                ))}
+                <MenuItem value="">{t("search.all")}</MenuItem>
+                {roomTypes.map((roomType) => {
+                  const localizedRoomType = localizeField(
+                    roomType,
+                    i18n.language
+                  );
+                  return (
+                    <MenuItem key={roomType} value={roomType}>
+                      {localizedRoomType}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
           )}
@@ -370,13 +373,13 @@ export default function SearchFilters() {
         <Divider />
 
         <Box>
-          <Typography sx={sectionTitleSx}>Amenities</Typography>
+          <Typography sx={sectionTitleSx}>{t("search.amenities")}</Typography>
 
           {amenitiesLoading ? (
             <Stack direction="row" spacing={1} alignItems="center">
               <CircularProgress size={18} />
               <Typography variant="body2" color="text.secondary">
-                Loading amenities…
+                {t("search.loadingAmenities")}
               </Typography>
             </Stack>
           ) : amenitiesError ? (
@@ -392,7 +395,7 @@ export default function SearchFilters() {
                       onChange={() => toggleAmenity(a.id)}
                     />
                   }
-                  label={a.name}
+                  label={localizeField(a.name, i18n.language)}
                 />
               ))}
             </FormGroup>

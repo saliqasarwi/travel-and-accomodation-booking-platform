@@ -24,20 +24,26 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import HotelIcon from "@mui/icons-material/Hotel";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-
-import { useState } from "react";
-import { useAuth } from "@app/providers/AuthContext";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
-import { useColorMode } from "@app/providers/ColorModeProvider";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { useAuth } from "@app/providers/AuthContext";
+import { useColorMode } from "@app/providers/useColorMode";
+import LanguageSwitcher from "@shared/components/LanguageSwitcher";
+
 const drawerWidth = 260;
 const collapsedWidth = 72;
 
 export default function AdminLayout() {
   const { userType, logout } = useAuth();
+  const { mode, toggleColorMode } = useColorMode();
+  const { t } = useTranslation();
+
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { mode, toggleColorMode } = useColorMode();
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -51,7 +57,6 @@ export default function AdminLayout() {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      {/* Top AppBar - Cleaner & Modern */}
       <AppBar
         position="fixed"
         elevation={1}
@@ -73,18 +78,17 @@ export default function AdminLayout() {
               {open ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
 
-            <Typography
-              variant="h6"
-              fontWeight={700}
-              sx={{ letterSpacing: "-0.02em" }}
-            >
-              Admin
+            <Typography variant="h6" fontWeight={700}>
+              {t("admin.panel")}
             </Typography>
           </Stack>
 
-          {/* Account / Logout */}
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Tooltip title={mode === "light" ? "Dark mode" : "Light mode"}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <LanguageSwitcher />
+
+            <Tooltip
+              title={mode === "light" ? t("theme.dark") : t("theme.light")}
+            >
               <IconButton onClick={toggleColorMode} color="inherit">
                 {mode === "light" ? (
                   <DarkModeRoundedIcon />
@@ -93,6 +97,7 @@ export default function AdminLayout() {
                 )}
               </IconButton>
             </Tooltip>
+
             <IconButton onClick={handleMenuOpen} sx={{ p: 0.5 }}>
               <Avatar
                 sx={{
@@ -114,19 +119,18 @@ export default function AdminLayout() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <MenuItem disabled sx={{ opacity: 0.8 }}>
-                Signed in as <strong>{userType || "Admin"}</strong>
+                {t("admin.signedInAsAdmin")}
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
                 <LogoutIcon sx={{ mr: 1.5 }} fontSize="small" />
-                Logout
+                {t("nav.logout")}
               </MenuItem>
             </Menu>
           </Stack>
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar */}
       <Drawer
         variant="permanent"
         open={open}
@@ -149,26 +153,18 @@ export default function AdminLayout() {
           },
         }}
       >
-        <Toolbar /> {/* Spacer under AppBar */}
+        <Toolbar />
         <List sx={{ pt: 2, px: open ? 2 : 1 }}>
           <ListItemButton
             component={RouterLink}
             to="/admin/cities"
-            sx={{
-              borderRadius: 2,
-              mb: 0.5,
-              "&.Mui-selected": {
-                bgcolor: "primary.light",
-                color: "primary.main",
-                "&:hover": { bgcolor: "primary.light" },
-              },
-            }}
+            sx={{ borderRadius: 2, mb: 0.5 }}
           >
             <ListItemIcon>
               <LocationCityIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Cities"
+              primary={t("admin.cities")}
               sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
             />
           </ListItemButton>
@@ -182,7 +178,7 @@ export default function AdminLayout() {
               <HotelIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Hotels"
+              primary={t("admin.hotels")}
               sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
             />
           </ListItemButton>
@@ -196,14 +192,13 @@ export default function AdminLayout() {
               <MeetingRoomIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Rooms"
+              primary={t("admin.rooms")}
               sx={{ opacity: open ? 1 : 0, transition: "opacity 0.2s" }}
             />
           </ListItemButton>
         </List>
       </Drawer>
 
-      {/* Main Content Area */}
       <Box
         component="main"
         sx={{

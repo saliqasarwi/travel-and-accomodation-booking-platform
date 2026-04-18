@@ -3,6 +3,8 @@ import { Box, Typography, IconButton, Stack, Chip } from "@mui/material";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { useTranslation } from "react-i18next";
+import { localizeField } from "@shared/utils/localize";
 import type { TrendingDestination } from "../types/home.types";
 
 type Props = {
@@ -10,6 +12,7 @@ type Props = {
 };
 
 export default function TrendingDestinations({ items }: Props) {
+  const { t, i18n } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const scroll = (direction: "left" | "right") => {
@@ -27,7 +30,7 @@ export default function TrendingDestinations({ items }: Props) {
   if (items.length === 0) {
     return (
       <Typography color="text.secondary">
-        No trending destinations available.
+        {t("home.noTrendingDestinations")}
       </Typography>
     );
   }
@@ -53,7 +56,7 @@ export default function TrendingDestinations({ items }: Props) {
             },
           }}
         >
-          Trending Destinations
+          {t("home.trendingDestinations")}
         </Typography>
 
         <Typography
@@ -64,7 +67,7 @@ export default function TrendingDestinations({ items }: Props) {
             fontSize: { xs: "0.9rem", sm: "0.95rem" },
           }}
         >
-          Explore the most popular places travelers are loving right now.
+          {t("home.trendingDestinationsSubtitle")}
         </Typography>
 
         <Box
@@ -91,10 +94,6 @@ export default function TrendingDestinations({ items }: Props) {
             boxShadow: "0 10px 24px rgba(15, 23, 42, 0.14)",
             zIndex: 3,
             display: { xs: "none", md: "flex" },
-            "&:hover": {
-              bgcolor: "background.default",
-              transform: "translateY(-50%) scale(1.04)",
-            },
           }}
         >
           <ArrowBackIosNewRoundedIcon
@@ -158,7 +157,6 @@ export default function TrendingDestinations({ items }: Props) {
                   transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               >
-                {/* Front side */}
                 <Box
                   sx={{
                     position: "absolute",
@@ -173,7 +171,7 @@ export default function TrendingDestinations({ items }: Props) {
                   <Box
                     component="img"
                     src={item.thumbnailUrl}
-                    alt={item.cityName}
+                    alt={localizeField(item.cityName, i18n.language)}
                     className="front-image"
                     sx={{
                       width: "100%",
@@ -185,7 +183,6 @@ export default function TrendingDestinations({ items }: Props) {
                   />
                 </Box>
 
-                {/* Back side */}
                 <Box
                   sx={{
                     position: "absolute",
@@ -230,7 +227,7 @@ export default function TrendingDestinations({ items }: Props) {
                           },
                         }}
                       >
-                        {item.cityName}
+                        {localizeField(item.cityName, i18n.language)}
                       </Typography>
 
                       <Chip
@@ -239,7 +236,7 @@ export default function TrendingDestinations({ items }: Props) {
                             sx={{ color: "#FFFFFF", fontSize: 18 }}
                           />
                         }
-                        label={item.countryName}
+                        label={localizeField(item.countryName, i18n.language)}
                         size="small"
                         sx={{
                           bgcolor: "rgba(255,255,255,0.2)",
@@ -247,12 +244,8 @@ export default function TrendingDestinations({ items }: Props) {
                           border: "1px solid rgba(255,255,255,0.3)",
                           fontWeight: 600,
                           backdropFilter: "blur(4px)",
-                          maxWidth: "100%",
                           "& .MuiChip-icon": {
                             color: "#FFFFFF !important",
-                          },
-                          "& .MuiChip-label": {
-                            px: 1,
                           },
                         }}
                       />
@@ -269,14 +262,9 @@ export default function TrendingDestinations({ items }: Props) {
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                         flexGrow: 1,
-                        textShadow: "0 1px 2px rgba(0,0,0,0.1)",
-                        fontSize: {
-                          xs: "0.88rem",
-                          sm: "0.95rem",
-                        },
                       }}
                     >
-                      {item.description}
+                      {localizeField(item.description, i18n.language)}
                     </Typography>
                   </Box>
                 </Box>
@@ -298,10 +286,6 @@ export default function TrendingDestinations({ items }: Props) {
             boxShadow: "0 10px 24px rgba(15, 23, 42, 0.14)",
             zIndex: 3,
             display: { xs: "none", md: "flex" },
-            "&:hover": {
-              bgcolor: "background.default",
-              transform: "translateY(-50%) scale(1.04)",
-            },
           }}
         >
           <ArrowForwardIosRoundedIcon

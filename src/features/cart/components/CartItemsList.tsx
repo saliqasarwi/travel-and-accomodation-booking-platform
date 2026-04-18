@@ -19,12 +19,16 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../useCart";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
 import { nightsBetween } from "@shared/utils/booking";
-import { money } from "@shared/utils/formatters.ts";
+import { money, formatDate } from "@shared/utils/formatters";
+import { localizeField } from "@shared/utils/localize";
 import emptyCart from "@assets/empty-cart.webp";
+import { useTranslation } from "react-i18next";
+
 export default function CartItemsList() {
   const { state, removeItem } = useCart();
   const items = state.items;
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -49,7 +53,7 @@ export default function CartItemsList() {
           <Box
             component="img"
             src={emptyCart}
-            alt="Empty cart"
+            alt={t("cart.emptyTitle")}
             sx={{
               width: 200,
               maxWidth: "100%",
@@ -60,11 +64,11 @@ export default function CartItemsList() {
           />
 
           <Typography variant="h5" fontWeight={900}>
-            Your cart is empty
+            {t("cart.emptyTitle")}
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 1.5 }}>
-            Start exploring stays and add your favorite rooms here.
+            {t("cart.startExploring")}
           </Typography>
 
           <Button
@@ -78,12 +82,13 @@ export default function CartItemsList() {
               fontWeight: 700,
             }}
           >
-            Explore hotels
+            {t("cart.exploreHotels")}
           </Button>
         </Stack>
       </Box>
     );
   }
+
   const openDeleteDialog = (itemId: string) => {
     setSelectedItemId(itemId);
     setConfirmOpen(true);
@@ -130,7 +135,7 @@ export default function CartItemsList() {
                   <CardMedia
                     component="img"
                     image={item.roomPhotoUrl}
-                    alt={item.roomType}
+                    alt={localizeField(item.roomType, i18n.language)}
                     sx={{
                       height: 180,
                       objectFit: "cover",
@@ -152,14 +157,14 @@ export default function CartItemsList() {
                         "linear-gradient(135deg, #1565C0 0%, #0F9D94 100%)",
                     }}
                   >
-                    {money(item.pricePerNight)} / night
+                    {money(item.pricePerNight)} {t("hotel.perNight")}
                   </Box>
                 </Box>
 
                 <CardContent sx={{ p: 2 }}>
                   <Stack spacing={1.2}>
                     <Typography variant="h6" fontWeight={800}>
-                      {item.hotelName}
+                      {localizeField(item.hotelName, i18n.language)}
                     </Typography>
 
                     <Rating
@@ -170,27 +175,30 @@ export default function CartItemsList() {
                     />
 
                     <Typography variant="body2" color="text.secondary">
-                      {item.roomType} • {item.cityName}
+                      {localizeField(item.roomType, i18n.language)} •{" "}
+                      {localizeField(item.cityName, i18n.language)}
                     </Typography>
 
                     <Stack spacing={0.5}>
                       <Stack direction="row" spacing={1} alignItems="center">
                         <CalendarMonthIcon sx={{ fontSize: 16 }} />
                         <Typography variant="caption">
-                          {item.checkInDate} → {item.checkOutDate}
+                          {formatDate(item.checkInDate)} →{" "}
+                          {formatDate(item.checkOutDate)}
                         </Typography>
                       </Stack>
 
                       <Stack direction="row" spacing={1} alignItems="center">
                         <PeopleOutlineIcon sx={{ fontSize: 16 }} />
                         <Typography variant="caption">
-                          {item.adults} adults • {item.children} children
+                          {item.adults} {t("cart.adults")} • {item.children}{" "}
+                          {t("cart.children")}
                         </Typography>
                       </Stack>
 
                       <Typography variant="caption" color="text.secondary">
-                        {roomsCount} room{roomsCount !== 1 ? "s" : ""} •{" "}
-                        {nights} night{nights !== 1 ? "s" : ""}
+                        {roomsCount} {t("cart.rooms")} • {nights}{" "}
+                        {t("cart.nights")}
                       </Typography>
                     </Stack>
 
@@ -205,7 +213,7 @@ export default function CartItemsList() {
                         fontWeight={700}
                         color="primary.main"
                       >
-                        {money(itemTotal)} total
+                        {money(itemTotal)} {t("cart.total")}
                       </Typography>
 
                       <IconButton
@@ -225,9 +233,9 @@ export default function CartItemsList() {
 
       <ConfirmActionDialog
         open={confirmOpen}
-        title="Remove item"
-        message="Are you sure you want to remove this item from the cart?"
-        confirmText="Remove"
+        title={t("cart.removeItem")}
+        message={t("cart.removeItemMessage")}
+        confirmText={t("cart.remove")}
         confirmColor="error"
         onClose={handleCloseDialog}
         onConfirm={handleConfirmDelete}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Box, Container, Skeleton, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import HomeSearchBar from "../../../shared/components/HomeSearchBar/HomeSearchBar";
 import FeaturedDeals from "../components/FeaturedDeals";
@@ -31,6 +32,8 @@ const initialState = <T,>(): LoadState<T> => ({
 });
 
 export default function HomePage() {
+  const { t } = useTranslation();
+
   const [featured, setFeatured] =
     useState<LoadState<FeaturedDeal[]>>(initialState());
   const [trending, setTrending] =
@@ -72,10 +75,9 @@ export default function HomePage() {
         const message =
           typeof err === "object" && err !== null && "message" in err
             ? String(
-                (err as { message?: unknown }).message ??
-                  "Failed to load homepage content"
+                (err as { message?: unknown }).message ?? t("home.loadFailed")
               )
-            : "Failed to load homepage content";
+            : t("home.loadFailed");
 
         setFeatured((s) => ({ ...s, loading: false, error: message }));
         setTrending((s) => ({ ...s, loading: false, error: message }));
@@ -88,13 +90,12 @@ export default function HomePage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   const anyError = featured.error || trending.error || recent.error;
 
   return (
     <Box sx={{ mx: 5 }}>
-      {/*hero*/}
       <Box
         sx={{
           position: "relative",
@@ -132,7 +133,7 @@ export default function HomePage() {
                 textShadow: "0 4px 18px rgba(31, 2, 2, 0.93)",
               }}
             >
-              Find your perfect stay
+              {t("home.heroTitle")}
             </Typography>
 
             <Typography
@@ -145,8 +146,7 @@ export default function HomePage() {
                 textShadow: "0 2px 10px rgba(0,0,0,0.20)",
               }}
             >
-              Discover hotels, featured deals, and trending destinations for
-              your next trip
+              {t("home.heroSubtitle")}
             </Typography>
 
             <Box sx={{ minWidth: "1120" }}>
@@ -154,6 +154,7 @@ export default function HomePage() {
             </Box>
           </Box>
         </Container>
+
         <Box
           sx={{
             display: { xs: "none", md: "block" },
@@ -184,11 +185,13 @@ export default function HomePage() {
           <BsMouse />
         </Box>
       </Box>
+
       {anyError && (
         <Alert severity="error" sx={{ mb: 4 }}>
           {anyError}
         </Alert>
       )}
+
       <Box
         sx={{
           display: "flex",

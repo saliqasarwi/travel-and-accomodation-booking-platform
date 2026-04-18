@@ -1,31 +1,21 @@
 import { Box, Typography, Card, CardMedia, Stack, Rating } from "@mui/material";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { useTranslation } from "react-i18next";
+import { localizeField } from "@shared/utils/localize";
 import type { RecentHotel } from "../types/home.types";
+import { formatVisitDate } from "@shared/utils/formatters";
 
 type Props = {
   items: RecentHotel[];
 };
 
-function formatVisitDate(date?: string) {
-  if (!date) return "Recently visited";
-
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) return date;
-
-  return parsed.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
 export default function RecentlyVisited({ items }: Props) {
+  const { t, i18n } = useTranslation();
+
   if (items.length === 0) {
     return (
-      <Typography color="text.secondary">
-        No recently visited hotels available.
-      </Typography>
+      <Typography color="text.secondary">{t("home.noRecentHotels")}</Typography>
     );
   }
 
@@ -45,11 +35,11 @@ export default function RecentlyVisited({ items }: Props) {
             },
           }}
         >
-          Recently Visited
+          {t("home.recentlyVisited")}
         </Typography>
 
         <Typography variant="body2" color="text.secondary">
-          Pick up where you left off and revisit hotels you explored before.
+          {t("home.recentlyVisitedSubtitle")}
         </Typography>
 
         <Box
@@ -103,7 +93,7 @@ export default function RecentlyVisited({ items }: Props) {
               <CardMedia
                 component="img"
                 image={item.thumbnailUrl}
-                alt={item.hotelName}
+                alt={localizeField(item.hotelName, i18n.language)}
                 className="recent-image"
                 sx={{
                   width: "100%",
@@ -139,7 +129,7 @@ export default function RecentlyVisited({ items }: Props) {
                     mb: 0.75,
                   }}
                 >
-                  {item.hotelName}
+                  {localizeField(item.hotelName, i18n.language)}
                 </Typography>
 
                 <Stack
@@ -149,7 +139,9 @@ export default function RecentlyVisited({ items }: Props) {
                   sx={{ mb: 1 }}
                 >
                   <LocationOnOutlinedIcon sx={{ fontSize: 17 }} />
-                  <Typography variant="body2">{item.cityName}</Typography>
+                  <Typography variant="body2">
+                    {localizeField(item.cityName, i18n.language)}
+                  </Typography>
                 </Stack>
 
                 <Stack
@@ -162,9 +154,14 @@ export default function RecentlyVisited({ items }: Props) {
                   <Stack direction="row" spacing={0.75} alignItems="center">
                     <AccessTimeOutlinedIcon sx={{ fontSize: 17 }} />
                     <Typography variant="body2">
-                      {formatVisitDate(item.visitDate)}
+                      {formatVisitDate(
+                        item.visitDate,
+                        i18n.language,
+                        t("home.recentlyVisitedFallback")
+                      )}
                     </Typography>
                   </Stack>
+
                   <Rating
                     value={item.starRating}
                     precision={0.5}

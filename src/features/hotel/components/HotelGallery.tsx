@@ -4,12 +4,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   items: { url: string }[];
 };
 
 export default function HotelGallery({ items }: Props) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -48,7 +50,9 @@ export default function HotelGallery({ items }: Props) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, goToPrevious, goToNext]);
+
   const mainImage = urls[activeIndex] ?? urls[0];
+
   return (
     <>
       <Box
@@ -64,7 +68,7 @@ export default function HotelGallery({ items }: Props) {
         <Box
           component="img"
           src={mainImage}
-          alt="Hotel main"
+          alt={t("hotel.hotelMainImageAlt")}
           sx={{
             width: "100%",
             height: { xs: 240, md: 360 },
@@ -89,6 +93,7 @@ export default function HotelGallery({ items }: Props) {
           <ZoomInIcon sx={{ color: "white", fontSize: 36 }} />
         </Box>
       </Box>
+
       <Stack direction="row" spacing={1.25} sx={{ overflowX: "auto", pb: 0.5 }}>
         {urls.map((url, index) => (
           <Box
@@ -111,7 +116,7 @@ export default function HotelGallery({ items }: Props) {
             <Box
               component="img"
               src={url}
-              alt={`Thumbnail ${index + 1}`}
+              alt={t("hotel.thumbnailAlt", { index: index + 1 })}
               sx={{
                 width: "100%",
                 height: "100%",
@@ -122,6 +127,7 @@ export default function HotelGallery({ items }: Props) {
           </Box>
         ))}
       </Stack>
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -198,7 +204,7 @@ export default function HotelGallery({ items }: Props) {
             <Box
               component="img"
               src={mainImage}
-              alt={`Hotel image ${activeIndex + 1}`}
+              alt={t("hotel.hotelImageAlt", { index: activeIndex + 1 })}
               sx={{
                 maxWidth: "100%",
                 maxHeight: "85vh",

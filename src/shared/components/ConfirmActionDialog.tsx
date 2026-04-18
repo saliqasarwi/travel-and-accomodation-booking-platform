@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Stack,
 } from "@mui/material";
+import { t } from "i18next";
 
 type Props = {
   open: boolean;
@@ -31,7 +32,6 @@ export default function ConfirmActionDialog({
   title,
   message,
   confirmText = "Confirm",
-  cancelText = "Cancel",
   confirmColor = "error",
   loading = false,
   onClose,
@@ -53,7 +53,7 @@ export default function ConfirmActionDialog({
           width={"100%"}
         >
           <Button onClick={onClose} disabled={loading}>
-            {cancelText}
+            {t("common.cancel")}
           </Button>
 
           <Button

@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Chip } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import { useTranslation } from "react-i18next";
 
 import AdminToolbar from "../components/AdminToolbar";
 import AdminEntityDrawer from "../components/AdminEntityDrawer";
@@ -17,6 +18,8 @@ const EMPTY_ROOM: RoomFormValues = {
 };
 
 export default function AdminRoomsPage() {
+  const { t } = useTranslation();
+
   const [rows, setRows] = useState<RoomRow[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -106,64 +109,84 @@ export default function AdminRoomsPage() {
     }
   };
 
-  const columns: GridColDef[] = [
-    { field: "roomNumber", headerName: "Number", flex: 1, minWidth: 80 },
-    {
-      field: "availability",
-      headerName: "Availability",
-      width: 160,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        const isAvailable = Boolean(params.value);
-        return (
-          <Chip
-            size="small"
-            label={isAvailable ? "Available" : "Not available"}
-            color={isAvailable ? "success" : "default"}
-            variant={isAvailable ? "filled" : "outlined"}
-          />
-        );
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: "roomNumber",
+        headerName: t("admin.roomNumber"),
+        flex: 1,
+        minWidth: 80,
       },
-    },
-    {
-      field: "adultCapacity",
-      headerName: "Adults",
-      width: 120,
-    },
-    {
-      field: "childrenCapacity",
-      headerName: "Children",
-      width: 120,
-    },
-    { field: "createdAt", headerName: "Created", flex: 1, minWidth: 170 },
-    { field: "modifiedAt", headerName: "Modified", flex: 1, minWidth: 170 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 110,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <IconButton
-          color="error"
-          onClick={(e) => {
-            e.stopPropagation();
-            openDeleteDialog(params.row.roomId);
-          }}
-        >
-          <DeleteRoundedIcon />
-        </IconButton>
-      ),
-    },
-  ];
+      {
+        field: "availability",
+        headerName: t("admin.availability"),
+        width: 160,
+        sortable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const isAvailable = Boolean(params.value);
+          return (
+            <Chip
+              size="small"
+              label={
+                isAvailable ? t("admin.available") : t("admin.notAvailable")
+              }
+              color={isAvailable ? "success" : "default"}
+              variant={isAvailable ? "filled" : "outlined"}
+            />
+          );
+        },
+      },
+      {
+        field: "adultCapacity",
+        headerName: t("admin.adults"),
+        width: 120,
+      },
+      {
+        field: "childrenCapacity",
+        headerName: t("admin.children"),
+        width: 120,
+      },
+      {
+        field: "createdAt",
+        headerName: t("admin.created"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "modifiedAt",
+        headerName: t("admin.modified"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "actions",
+        headerName: t("admin.actions"),
+        width: 110,
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => (
+          <IconButton
+            color="error"
+            onClick={(e) => {
+              e.stopPropagation();
+              openDeleteDialog(params.row.roomId);
+            }}
+          >
+            <DeleteRoundedIcon />
+          </IconButton>
+        ),
+      },
+    ],
+    [t]
+  );
 
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <AdminToolbar
-          title="Rooms"
+          title={t("admin.rooms")}
           searchValue={inputValue}
           onSearchChange={setInputValue}
           onSearchSubmit={() => setSearchValue(inputValue.trim())}
@@ -172,6 +195,7 @@ export default function AdminRoomsPage() {
             setSearchValue("");
           }}
           onCreateClick={openCreate}
+          createLabel={t("common.create")}
         />
 
         <Box
@@ -230,7 +254,11 @@ export default function AdminRoomsPage() {
           open={drawerOpen}
           mode={drawerMode}
           entity="rooms"
-          title={drawerMode === "create" ? "Create Room" : "Edit Room"}
+          title={
+            drawerMode === "create"
+              ? t("admin.createRoom")
+              : t("admin.editRoom")
+          }
           initialValues={drawerInitialValues}
           onClose={() => setDrawerOpen(false)}
           onSubmit={handleSubmit}
@@ -240,9 +268,9 @@ export default function AdminRoomsPage() {
 
       <ConfirmActionDialog
         open={confirmOpen}
-        title="Delete room"
-        message="Are you sure you want to delete this room?"
-        confirmText="Delete"
+        title={t("admin.deleteRoom")}
+        message={t("admin.deleteRoomMessage")}
+        confirmText={t("common.delete")}
         confirmColor="error"
         loading={deleting}
         onClose={() => {

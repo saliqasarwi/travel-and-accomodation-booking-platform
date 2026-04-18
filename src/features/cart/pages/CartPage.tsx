@@ -2,10 +2,14 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import CartItemsList from "../components/CartItemsList";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../useCart";
+import { useTranslation } from "react-i18next";
+
 export default function CartPage() {
   const navigate = useNavigate();
   const { state } = useCart();
+  const { t } = useTranslation();
   const items = state.items;
+
   return (
     <Stack sx={{ px: { xs: 2, md: 8 }, gap: 3 }}>
       <Box>
@@ -21,10 +25,11 @@ export default function CartPage() {
             mb: 0.75,
           }}
         >
-          Cart
+          {t("cart.title")}
         </Typography>
+
         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          Review selected rooms before checkout.
+          {t("cart.subtitle")}
         </Typography>
 
         <Box
@@ -38,6 +43,7 @@ export default function CartPage() {
       </Box>
 
       <CartItemsList />
+
       {items.length > 0 && (
         <Box
           sx={{
@@ -57,7 +63,7 @@ export default function CartPage() {
               mt: 0,
             }}
           >
-            Proceed to checkout
+            {t("cart.proceedToCheckout")}
           </Button>
         </Box>
       )}

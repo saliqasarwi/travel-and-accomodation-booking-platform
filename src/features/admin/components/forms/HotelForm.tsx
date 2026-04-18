@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Stack, TextField } from "@mui/material";
 import type { HotelFormValues } from "../../types/admin.types";
 import type { FormikProps } from "formik";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   initialValues: HotelFormValues;
@@ -11,21 +12,23 @@ type Props = {
   innerRef?: React.Ref<FormikProps<HotelFormValues>>;
 };
 
-const hotelSchema = Yup.object({
-  hotelName: Yup.string().trim().required("Hotel name is required"),
-  location: Yup.string().trim().optional(),
-  starRating: Yup.number()
-    .min(1, "Min is 1")
-    .max(5, "Max is 5")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-  availableRooms: Yup.number()
-    .min(0, "Must be >= 0")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-});
+const createHotelSchema = (t: (key: string) => string) =>
+  Yup.object({
+    hotelName: Yup.string().trim().required(t("validation.hotelNameRequired")),
+    location: Yup.string().trim().optional(),
+    starRating: Yup.number()
+      .min(1, t("validation.minOne"))
+      .max(5, t("validation.maxFive"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+    availableRooms: Yup.number()
+      .min(0, t("validation.mustBeZeroOrMore"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+  });
+
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: 2,
@@ -38,6 +41,9 @@ export default function HotelForm({
   onSubmit,
   innerRef,
 }: Props) {
+  const { t } = useTranslation();
+  const hotelSchema = createHotelSchema(t);
+
   return (
     <Formik<HotelFormValues>
       innerRef={innerRef}
@@ -58,7 +64,7 @@ export default function HotelForm({
           <Stack spacing={2}>
             <TextField
               name="hotelName"
-              label="Hotel Name"
+              label={t("admin.hotelName")}
               value={values.hotelName}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -71,7 +77,7 @@ export default function HotelForm({
 
             <TextField
               name="location"
-              label="Location"
+              label={t("admin.location")}
               value={values.location ?? ""}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -83,7 +89,7 @@ export default function HotelForm({
 
             <TextField
               name="starRating"
-              label="Star Rating"
+              label={t("admin.starRating")}
               type="number"
               slotProps={{ htmlInput: { min: 1, max: 5 } }}
               value={values.starRating ?? ""}
@@ -102,7 +108,7 @@ export default function HotelForm({
 
             <TextField
               name="availableRooms"
-              label="Available Rooms"
+              label={t("admin.availableRooms")}
               type="number"
               slotProps={{ htmlInput: { min: 0 } }}
               value={values.availableRooms ?? ""}

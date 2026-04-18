@@ -1,6 +1,7 @@
 import { Card, CardContent, Stack, TextField, Typography } from "@mui/material";
 import type { SpecialRequests } from "../types/checkout.types";
 import type { FormikErrors, FormikTouched } from "formik";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   value: SpecialRequests;
@@ -17,6 +18,8 @@ export default function SpecialRequestsStep({
   touched = {},
   onBlur,
 }: Props) {
+  const { t } = useTranslation();
+
   const fieldError = (field: keyof SpecialRequests) =>
     touched[field] ? (errors[field] as string | undefined) : undefined;
 
@@ -34,10 +37,10 @@ export default function SpecialRequestsStep({
         <Stack spacing={2}>
           <Stack spacing={0.5}>
             <Typography variant="h6" fontWeight={800}>
-              Special requests
+              {t("checkout.specialRequests")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Let the hotel know about any special needs or remarks.
+              {t("checkout.specialRequestsHint")}
             </Typography>
           </Stack>
 
@@ -46,7 +49,7 @@ export default function SpecialRequestsStep({
             fullWidth
             multiline
             minRows={3}
-            placeholder="Add your special requests..."
+            placeholder={t("checkout.specialRequestsPlaceholder")}
             value={value.notes}
             onChange={(e) => onChange({ ...value, notes: e.target.value })}
             onBlur={onBlur}

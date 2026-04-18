@@ -1,6 +1,9 @@
 import { Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 export default function CheckoutHeader() {
+  const { t } = useTranslation();
+
   return (
     <Box>
       <Typography
@@ -15,11 +18,11 @@ export default function CheckoutHeader() {
           mb: 0.75,
         }}
       >
-        Checkout
+        {t("checkout.title")}
       </Typography>
 
       <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-        Complete your booking details and confirm your stay.
+        {t("checkout.subtitle")}
       </Typography>
 
       <Box

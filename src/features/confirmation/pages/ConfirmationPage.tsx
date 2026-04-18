@@ -22,13 +22,25 @@ import SpecialRequestsCard from "../components/SpecialRequestCard";
 import { calculateBookingTotals } from "@shared/utils/booking";
 import TotalsCard from "../components/TotalsCard";
 import { printBookingDocument } from "../components/printBookingDocument";
+import { useTranslation } from "react-i18next";
+
 export default function ConfirmationPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [booking, setBooking] = useState<BookingApiResponse | null>(null);
+
+  const localized = (value: unknown) => {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") {
+      const obj = value as Record<string, string | undefined>;
+      return obj[i18n.language] ?? obj.en ?? obj.ar ?? "";
+    }
+    return "";
+  };
 
   useEffect(() => {
     let alive = true;
@@ -64,7 +76,7 @@ export default function ConfirmationPage() {
     return (
       <Stack alignItems="center" mt={8} spacing={2}>
         <CircularProgress />
-        <Typography color="text.secondary">Loading confirmation…</Typography>
+        <Typography color="text.secondary">{t("common.loading")}</Typography>
       </Stack>
     );
   }
@@ -79,7 +91,7 @@ export default function ConfirmationPage() {
           onClick={() => navigate("/")}
           sx={{ width: "fit-content" }}
         >
-          Back to Home
+          {t("common.backToHome")}
         </Button>
       </Stack>
     );
@@ -110,10 +122,10 @@ export default function ConfirmationPage() {
               mb: 0.75,
             }}
           >
-            Confirmation
+            {t("confirmation.title")}
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-            Your booking has been confirmed successfully.
+            {t("confirmation.subtitle")}
           </Typography>
           <Box
             sx={{
@@ -124,14 +136,16 @@ export default function ConfirmationPage() {
             }}
           />
         </Box>
+
         <Grid container spacing={3} alignItems="stretch">
           <Grid size={{ xs: 12, lg: 8 }}>
             <ConfirmationHeaderCard
               confirmationNumber={booking.confirmationNumber}
-              status={booking.bookingStatus}
+              status={localized(booking.bookingStatus)}
               createdAt={booking.createdAt}
             />
           </Grid>
+
           <Grid size={{ xs: 12, lg: 4 }}>
             <Card
               sx={{
@@ -159,7 +173,7 @@ export default function ConfirmationPage() {
                     fullWidth
                     sx={{ fontWeight: 700, borderRadius: 2 }}
                   >
-                    Print Booking
+                    {t("common.printBooking")}
                   </Button>
 
                   <Button
@@ -169,15 +183,17 @@ export default function ConfirmationPage() {
                     fullWidth
                     sx={{ fontWeight: 700, borderRadius: 2 }}
                   >
-                    Back to Home
+                    {t("common.backToHome")}
                   </Button>
                 </Stack>
               </CardContent>
             </Card>
           </Grid>
+
           <Grid size={{ xs: 12, lg: 8 }}>
             <HotelRoomsCard items={booking.request.items} />
           </Grid>
+
           <Grid size={{ xs: 12, lg: 4 }}>
             <Box
               sx={{
@@ -192,6 +208,7 @@ export default function ConfirmationPage() {
               />
             </Box>
           </Grid>
+
           <Grid size={{ xs: 12, md: 6 }}>
             <GuestInfoCard guest={booking.request.guestInfo} />
           </Grid>

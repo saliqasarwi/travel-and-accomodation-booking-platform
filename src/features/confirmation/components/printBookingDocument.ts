@@ -1,13 +1,17 @@
+import i18n from "@shared/i18n/i18n";
 import type { BookingApiResponse } from "../types/confirmation.types";
 import { calculateBookingTotals, nightsBetween } from "@shared/utils/booking";
 import { money, formatDate } from "@shared/utils/formatters";
 
 export function printBookingDocument(booking: BookingApiResponse) {
+  const t = i18n.t.bind(i18n);
+
   const {
     subtotal: sub,
     discounts: disc,
     total: tot,
   } = calculateBookingTotals(booking.request.items);
+
   const guest = booking.request.guestInfo;
   const notes = booking.request.specialRequests?.notes;
 
@@ -37,7 +41,7 @@ export function printBookingDocument(booking: BookingApiResponse) {
   printWindow.document.write(`<!DOCTYPE html>
 <html>
 <head>
-  <title>Booking ${booking.confirmationNumber}</title>
+  <title>${t("confirmation.title")} ${booking.confirmationNumber}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -146,7 +150,7 @@ export function printBookingDocument(booking: BookingApiResponse) {
 <body>
   <div class="header">
     <div>
-      <h1>Booking Confirmation</h1>
+      <h1>${t("confirmation.bookingConfirmed")}</h1>
       <span class="badge">${booking.bookingStatus}</span>
     </div>
     <div class="meta">
@@ -156,13 +160,13 @@ export function printBookingDocument(booking: BookingApiResponse) {
   </div>
 
   <div class="section">
-    <div class="section-title">Guest Information</div>
+    <div class="section-title">${t("confirmation.guestInformation")}</div>
     <div class="info-grid">
-      <span class="label">Name</span>
+      <span class="label">${t("confirmation.name")}</span>
       <span class="value">${guest.firstName} ${guest.lastName}</span>
-      <span class="label">Email</span>
+      <span class="label">${t("confirmation.email")}</span>
       <span class="value">${guest.email}</span>
-      <span class="label">Phone</span>
+      <span class="label">${t("confirmation.phone")}</span>
       <span class="value">${guest.phone}</span>
     </div>
   </div>
@@ -171,26 +175,26 @@ export function printBookingDocument(booking: BookingApiResponse) {
     notes
       ? `
   <div class="section">
-    <div class="section-title">Special Requests</div>
+    <div class="section-title">${t("confirmation.specialRequests")}</div>
     <p style="font-size:14px">${notes}</p>
   </div>`
       : ""
   }
 
   <div class="section">
-    <div class="section-title">Room Details</div>
+    <div class="section-title">${t("confirmation.hotelAndRooms")}</div>
     <table>
       <thead>
         <tr>
-          <th>Hotel</th>
-          <th>Room</th>
-          <th style="text-align:center">Check-in</th>
-          <th style="text-align:center">Check-out</th>
-          <th style="text-align:center">Nights</th>
-          <th style="text-align:center">Rooms</th>
-          <th style="text-align:center">Guests</th>
-          <th style="text-align:right">Rate</th>
-          <th style="text-align:right">Total</th>
+          <th>${t("confirmation.hotelLabel")}</th>
+          <th>${t("confirmation.roomLabel")}</th>
+          <th style="text-align:center">${t("confirmation.checkInLabel")}</th>
+          <th style="text-align:center">${t("confirmation.checkOutLabel")}</th>
+          <th style="text-align:center">${t("confirmation.nightsLabel")}</th>
+          <th style="text-align:center">${t("confirmation.roomsLabel")}</th>
+          <th style="text-align:center">${t("confirmation.guestsLabel")}</th>
+          <th style="text-align:right">${t("confirmation.rateLabel")}</th>
+          <th style="text-align:right">${t("confirmation.total")}</th>
         </tr>
       </thead>
       <tbody>${roomRows}</tbody>
@@ -200,22 +204,22 @@ export function printBookingDocument(booking: BookingApiResponse) {
   <div class="section">
     <table class="totals-table">
       <tr>
-        <td class="label">Subtotal</td>
+        <td class="label">${t("confirmation.subtotal")}</td>
         <td class="value">${money(sub)}</td>
       </tr>
       <tr>
-        <td class="label">Discounts</td>
+        <td class="label">${t("confirmation.discounts")}</td>
         <td class="value">-${money(disc)}</td>
       </tr>
       <tr class="total-row">
-        <td>Total</td>
+        <td>${t("confirmation.total")}</td>
         <td class="value">${money(tot)}</td>
       </tr>
     </table>
   </div>
 
   <div class="footer">
-    Thank you for your booking &bull; ${booking.confirmationNumber}
+    ${t("confirmation.thankYou")} • ${booking.confirmationNumber}
   </div>
 </body>
 </html>`);

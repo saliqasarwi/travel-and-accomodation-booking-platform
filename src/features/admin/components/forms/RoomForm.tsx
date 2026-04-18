@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Stack, TextField, Checkbox, FormControlLabel } from "@mui/material";
 import type { RoomFormValues } from "../../types/admin.types";
 import type { FormikProps } from "formik";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   initialValues: RoomFormValues;
@@ -11,24 +12,26 @@ type Props = {
   innerRef?: React.Ref<FormikProps<RoomFormValues>>;
 };
 
-const roomSchema = Yup.object({
-  roomNumber: Yup.number()
-    .min(1, "Room number must be >= 1")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .required("Room number is required"),
-  adultCapacity: Yup.number()
-    .min(0, "Must be >= 0")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-  childrenCapacity: Yup.number()
-    .min(0, "Must be >= 0")
-    .nullable()
-    .transform((val, originalVal) => (originalVal === "" ? undefined : val))
-    .optional(),
-  availability: Yup.boolean().optional(),
-});
+const createRoomSchema = (t: (key: string) => string) =>
+  Yup.object({
+    roomNumber: Yup.number()
+      .min(1, t("validation.roomNumberMin"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .required(t("validation.roomNumberRequired")),
+    adultCapacity: Yup.number()
+      .min(0, t("validation.mustBeZeroOrMore"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+    childrenCapacity: Yup.number()
+      .min(0, t("validation.mustBeZeroOrMore"))
+      .nullable()
+      .transform((val, originalVal) => (originalVal === "" ? undefined : val))
+      .optional(),
+    availability: Yup.boolean().optional(),
+  });
+
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: 2,
@@ -37,6 +40,9 @@ const fieldSx = {
 };
 
 export default function RoomForm({ initialValues, onSubmit, innerRef }: Props) {
+  const { t } = useTranslation();
+  const roomSchema = createRoomSchema(t);
+
   return (
     <Formik<RoomFormValues>
       innerRef={innerRef}
@@ -50,7 +56,7 @@ export default function RoomForm({ initialValues, onSubmit, innerRef }: Props) {
           <Stack spacing={2}>
             <TextField
               name="roomNumber"
-              label="Room Number"
+              label={t("admin.roomNumber")}
               type="number"
               value={values.roomNumber ?? ""}
               onBlur={handleBlur}
@@ -68,7 +74,7 @@ export default function RoomForm({ initialValues, onSubmit, innerRef }: Props) {
 
             <TextField
               name="adultCapacity"
-              label="Adults"
+              label={t("admin.adults")}
               type="number"
               slotProps={{ htmlInput: { min: 0 } }}
               value={values.adultCapacity ?? ""}
@@ -89,7 +95,7 @@ export default function RoomForm({ initialValues, onSubmit, innerRef }: Props) {
 
             <TextField
               name="childrenCapacity"
-              label="Children"
+              label={t("admin.children")}
               type="number"
               slotProps={{ htmlInput: { min: 0 } }}
               value={values.childrenCapacity ?? ""}
@@ -120,7 +126,7 @@ export default function RoomForm({ initialValues, onSubmit, innerRef }: Props) {
                   name="availability"
                 />
               }
-              label="Available"
+              label={t("admin.available")}
             />
           </Stack>
         </Form>

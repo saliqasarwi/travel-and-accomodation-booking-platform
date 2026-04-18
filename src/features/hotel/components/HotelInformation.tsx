@@ -1,11 +1,15 @@
 import { Box, Chip, Rating, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import type { HotelDetails } from "../types/hotel.types";
+import { localizeField } from "@shared/utils/localize";
 
 type Props = {
   hotel: HotelDetails;
 };
 
 export default function HotelInformation({ hotel }: Props) {
+  const { t, i18n } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -29,7 +33,7 @@ export default function HotelInformation({ hotel }: Props) {
             WebkitTextFillColor: "transparent",
           }}
         >
-          {hotel.hotelName}
+          {localizeField(hotel.hotelName, i18n.language)}
         </Typography>
 
         <Stack
@@ -43,7 +47,7 @@ export default function HotelInformation({ hotel }: Props) {
             variant="body1"
             sx={{ color: "text.secondary", fontWeight: 500 }}
           >
-            {hotel.location}
+            {localizeField(hotel.location, i18n.language)}
           </Typography>
 
           <Rating
@@ -52,6 +56,10 @@ export default function HotelInformation({ hotel }: Props) {
             readOnly
             size="small"
           />
+
+          <Typography variant="body2" color="text.secondary">
+            {t("hotel.starHotel", { count: hotel.starRating })}
+          </Typography>
         </Stack>
 
         <Typography
@@ -59,14 +67,14 @@ export default function HotelInformation({ hotel }: Props) {
           color="text.secondary"
           sx={{ lineHeight: 1.8 }}
         >
-          {hotel.description}
+          {localizeField(hotel.description, i18n.language)}
         </Typography>
 
         <Stack direction="row" spacing={0.75} flexWrap="wrap" useFlexGap>
           {hotel.amenities.map((amenity) => (
             <Chip
               key={amenity.id}
-              label={amenity.name}
+              label={localizeField(amenity.name, i18n.language)}
               size="small"
               sx={{
                 bgcolor: "rgba(21,101,192,0.08)",

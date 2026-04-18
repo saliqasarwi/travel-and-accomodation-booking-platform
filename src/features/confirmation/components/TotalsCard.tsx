@@ -1,10 +1,13 @@
 import { Card, CardContent, Divider, Stack, Typography } from "@mui/material";
 import { PaidRounded } from "@mui/icons-material";
 import { money } from "@shared/utils/formatters";
+import { useTranslation } from "react-i18next";
 
 type Props = { subtotal: number; discounts: number; total: number };
 
 export default function TotalsCard({ subtotal, discounts, total }: Props) {
+  const { t } = useTranslation();
+
   return (
     <Card
       sx={{
@@ -18,18 +21,22 @@ export default function TotalsCard({ subtotal, discounts, total }: Props) {
         <Stack direction="row" spacing={1} alignItems="center" mb={1.5}>
           <PaidRounded />
           <Typography variant="h6" fontWeight={900}>
-            Totals
+            {t("confirmation.totals")}
           </Typography>
         </Stack>
 
         <Stack spacing={1}>
           <Stack direction="row" justifyContent="space-between">
-            <Typography color="text.secondary">Subtotal</Typography>
+            <Typography color="text.secondary">
+              {t("confirmation.subtotal")}
+            </Typography>
             <Typography fontWeight={800}>{money(subtotal)}</Typography>
           </Stack>
 
           <Stack direction="row" justifyContent="space-between">
-            <Typography color="text.secondary">Discounts</Typography>
+            <Typography color="text.secondary">
+              {t("confirmation.discounts")}
+            </Typography>
             <Typography fontWeight={800}>-{money(discounts)}</Typography>
           </Stack>
 
@@ -37,7 +44,7 @@ export default function TotalsCard({ subtotal, discounts, total }: Props) {
 
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="h6" fontWeight={900}>
-              Total
+              {t("confirmation.total")}
             </Typography>
             <Typography variant="h6" fontWeight={900}>
               {money(total)}

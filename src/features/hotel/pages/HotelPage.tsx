@@ -8,6 +8,7 @@ import {
   Grid,
   Stack,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import { useCart } from "@features/cart/useCart";
 
@@ -29,6 +30,7 @@ import HotelReviews from "../components/HotelReviews";
 import HotelInformation from "../components/HotelInformation";
 
 export default function HotelPage() {
+  const { t } = useTranslation();
   const { hotelId } = useParams();
   const numericHotelId = useMemo(() => Number(hotelId), [hotelId]);
 
@@ -89,7 +91,7 @@ export default function HotelPage() {
   }
 
   if (!hotel) {
-    return <Alert color="error">Hotel not found</Alert>;
+    return <Alert color="error">{t("hotel.notFound")}</Alert>;
   }
 
   return (

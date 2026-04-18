@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import type { FormikProps } from "formik";
+import { useTranslation } from "react-i18next";
 
 import type {
   CityFormValues,
@@ -57,6 +58,7 @@ type Props =
 
 export default function AdminEntityDrawer(props: Props) {
   const { open, onClose, saving } = props;
+  const { t } = useTranslation();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formikRef = useRef<FormikProps<any> | null>(null);
@@ -68,7 +70,6 @@ export default function AdminEntityDrawer(props: Props) {
       return;
     }
 
-    // show errors even if fields not touched
     const allTouched = Object.keys(formik.values ?? {}).reduce<
       Record<string, boolean>
     >((acc, key) => {
@@ -93,7 +94,7 @@ export default function AdminEntityDrawer(props: Props) {
         paper: {
           sx: {
             width: 420,
-            top: "64px", // AppBar height
+            top: "64px",
             height: "calc(100% - 64px)",
             borderTopLeftRadius: 8,
             borderBottomLeftRadius: 8,
@@ -147,7 +148,7 @@ export default function AdminEntityDrawer(props: Props) {
 
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button variant="outlined" onClick={onClose} disabled={saving}>
-            Cancel
+            {t("common.cancel")}
           </Button>
 
           <Button
@@ -155,7 +156,7 @@ export default function AdminEntityDrawer(props: Props) {
             onClick={handleSaveClick}
             disabled={saving}
           >
-            Save
+            {t("common.save")}
           </Button>
         </Stack>
       </Box>

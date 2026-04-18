@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Box, Stack, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import HomeSearchBar from "@shared/components/HomeSearchBar/HomeSearchBar";
-
 import SearchFilters from "../components/SearchFilters";
 import HotelResults from "../components/HotelResults";
 import { parseSearchParams } from "../utils/searchParams";
 
 export default function SearchResultsPage() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
   const query = useMemo(() => {
@@ -39,13 +40,16 @@ export default function SearchResultsPage() {
 
       <Box sx={{ py: 0.5, mb: 2 }}>
         <Typography variant="body1" color="text.secondary">
-          Explore available stays in{" "}
+          {t("search.summaryPrefix")}{" "}
           <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>
-            {query.city || "your destination"}
+            {query.city || t("search.yourDestination")}
           </Box>{" "}
           {query.checkInDate &&
             query.checkOutDate &&
-            `from ${query.checkInDate} to ${query.checkOutDate}.`}
+            t("search.fromTo", {
+              checkIn: query.checkInDate,
+              checkOut: query.checkOutDate,
+            })}
         </Typography>
 
         <Box
@@ -64,7 +68,6 @@ export default function SearchResultsPage() {
         alignItems="flex-start"
       >
         <SearchFilters />
-
         <HotelResults />
       </Stack>
     </Stack>

@@ -13,8 +13,10 @@ import {
   updateProfile,
   type UserProfile,
 } from "../api/profile.api";
+import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const [, setProfile] = useState<UserProfile>();
   const [form, setForm] = useState<UserProfile>();
   const [loading, setLoading] = useState(true);
@@ -32,14 +34,14 @@ export default function ProfilePage() {
         setForm(data);
       } catch (error) {
         console.error(error);
-        setErrorMessage("Failed to load profile.");
+        setErrorMessage(t("profile.loadFailed"));
       } finally {
         setLoading(false);
       }
     }
 
     loadProfile();
-  }, []);
+  }, [t]);
 
   const handleChange =
     (field: keyof UserProfile) =>
@@ -70,10 +72,10 @@ export default function ProfilePage() {
 
       setProfile(updated);
       setForm(updated);
-      setSuccessMessage("Profile updated successfully.");
+      setSuccessMessage(t("profile.updatedSuccessfully"));
     } catch (error) {
       console.error(error);
-      setErrorMessage("Failed to update profile.");
+      setErrorMessage(t("profile.updateFailed"));
     } finally {
       setSaving(false);
     }
@@ -88,7 +90,7 @@ export default function ProfilePage() {
   }
 
   if (!form) {
-    return <Alert severity="error">Profile not found.</Alert>;
+    return <Alert severity="error">{t("profile.loadFailed")}</Alert>;
   }
 
   return (
@@ -112,11 +114,11 @@ export default function ProfilePage() {
             mb: 0.75,
           }}
         >
-          Profile
+          {t("profile.title")}
         </Typography>
 
         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          Manage your personal information.
+          {t("profile.subtitle")}
         </Typography>
 
         <Box
@@ -143,20 +145,20 @@ export default function ProfilePage() {
         }}
       >
         <Stack spacing={2.5}>
-          <Typography variant="h6" fontWeight={800} sx={{}}>
-            Personal information
+          <Typography variant="h6" fontWeight={800}>
+            {t("confirmation.guestInformation")}
           </Typography>
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <TextField
-              label="First name"
+              label={t("profile.firstName")}
               value={form.firstName ?? ""}
               onChange={handleChange("firstName")}
               fullWidth
               size="small"
             />
             <TextField
-              label="Last name"
+              label={t("profile.lastName")}
               value={form.lastName ?? ""}
               onChange={handleChange("lastName")}
               fullWidth
@@ -166,14 +168,14 @@ export default function ProfilePage() {
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <TextField
-              label="Email"
+              label={t("profile.email")}
               value={form.email ?? ""}
               onChange={handleChange("email")}
               fullWidth
               size="small"
             />
             <TextField
-              label="Phone"
+              label={t("profile.phone")}
               value={form.phone ?? ""}
               onChange={handleChange("phone")}
               fullWidth
@@ -183,14 +185,14 @@ export default function ProfilePage() {
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <TextField
-              label="Country"
+              label={t("admin.country")}
               value={form.country ?? ""}
               onChange={handleChange("country")}
               fullWidth
               size="small"
             />
             <TextField
-              label="City"
+              label={t("profile.city")}
               value={form.city ?? ""}
               onChange={handleChange("city")}
               fullWidth
@@ -209,7 +211,7 @@ export default function ProfilePage() {
                 borderRadius: 2,
               }}
             >
-              {saving ? "Saving..." : "Save changes"}
+              {saving ? t("common.loading") : t("profile.saveChanges")}
             </Button>
           </Box>
         </Stack>

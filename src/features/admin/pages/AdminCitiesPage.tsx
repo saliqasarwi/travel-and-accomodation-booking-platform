@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import { useTranslation } from "react-i18next";
 
 import AdminToolbar from "../components/AdminToolbar";
 import AdminEntityDrawer from "../components/AdminEntityDrawer";
@@ -13,6 +14,7 @@ import {
 } from "../api/admin.api";
 import type { CityFormValues, CityRow } from "../types/admin.types";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
+import { localizeField } from "@shared/utils/localize";
 
 const EMPTY_CITY: CityFormValues = {
   name: "",
@@ -22,6 +24,8 @@ const EMPTY_CITY: CityFormValues = {
 };
 
 export default function AdminCitiesPage() {
+  const { t, i18n } = useTranslation();
+
   const [rows, setRows] = useState<CityRow[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -66,9 +70,9 @@ export default function AdminCitiesPage() {
     setDrawerMode("edit");
     setSelectedId(row.id);
     setDrawerInitialValues({
-      name: row.name ?? "",
-      country: row.country ?? "",
-      postOffice: row.postOffice ?? "",
+      name: localizeField(row.name, i18n.language),
+      country: localizeField(row.country, i18n.language),
+      postOffice: localizeField(row.postOffice, i18n.language),
       numberOfHotels: row.numberOfHotels,
     });
     setDrawerOpen(true);
@@ -113,20 +117,49 @@ export default function AdminCitiesPage() {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "name", headerName: "Name", flex: 1, minWidth: 160 },
-      { field: "country", headerName: "Country", flex: 1, minWidth: 140 },
       {
-        field: "postOffice",
-        headerName: "Post Office",
+        field: "name",
+        headerName: t("admin.name"),
         flex: 1,
         minWidth: 160,
+        renderCell: (params) => localizeField(params.row.name, i18n.language),
       },
-      { field: "numberOfHotels", headerName: "# Hotels", width: 110 },
-      { field: "createdAt", headerName: "Created", flex: 1, minWidth: 170 },
-      { field: "modifiedAt", headerName: "Modified", flex: 1, minWidth: 170 },
+      {
+        field: "country",
+        headerName: t("admin.country"),
+        flex: 1,
+        minWidth: 140,
+        renderCell: (params) =>
+          localizeField(params.row.country, i18n.language),
+      },
+      {
+        field: "postOffice",
+        headerName: t("admin.postOffice"),
+        flex: 1,
+        minWidth: 160,
+        renderCell: (params) =>
+          localizeField(params.row.postOffice, i18n.language),
+      },
+      {
+        field: "numberOfHotels",
+        headerName: t("admin.numberOfHotels"),
+        width: 140,
+      },
+      {
+        field: "createdAt",
+        headerName: t("admin.created"),
+        flex: 1,
+        minWidth: 170,
+      },
+      {
+        field: "modifiedAt",
+        headerName: t("admin.modified"),
+        flex: 1,
+        minWidth: 170,
+      },
       {
         field: "actions",
-        headerName: "Actions",
+        headerName: t("admin.actions"),
         width: 90,
         sortable: false,
         filterable: false,
@@ -143,14 +176,14 @@ export default function AdminCitiesPage() {
         ),
       },
     ],
-    []
+    [t, i18n.language]
   );
 
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <AdminToolbar
-          title="Cities"
+          title={t("admin.cities")}
           searchValue={inputValue}
           onSearchChange={setInputValue}
           onSearchSubmit={() => setSearchValue(inputValue.trim())}
@@ -159,6 +192,7 @@ export default function AdminCitiesPage() {
             setSearchValue("");
           }}
           onCreateClick={openCreate}
+          createLabel={t("common.create")}
         />
 
         <Box
@@ -219,7 +253,11 @@ export default function AdminCitiesPage() {
           open={drawerOpen}
           mode={drawerMode}
           entity="cities"
-          title={drawerMode === "create" ? "Create City" : "Edit City"}
+          title={
+            drawerMode === "create"
+              ? t("admin.createCity")
+              : t("admin.editCity")
+          }
           initialValues={drawerInitialValues}
           onClose={() => setDrawerOpen(false)}
           onSubmit={handleSubmit}
@@ -229,9 +267,9 @@ export default function AdminCitiesPage() {
 
       <ConfirmActionDialog
         open={confirmOpen}
-        title="Delete city"
-        message="Are you sure you want to delete this city?"
-        confirmText="Delete"
+        title={t("admin.deleteCity")}
+        message={t("admin.deleteCityMessage")}
+        confirmText={t("common.delete")}
         confirmColor="error"
         loading={deleting}
         onClose={() => {
