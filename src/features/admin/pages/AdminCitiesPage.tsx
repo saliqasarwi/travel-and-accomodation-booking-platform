@@ -14,7 +14,7 @@ import {
 } from "../api/admin.api";
 import type { CityFormValues, CityRow } from "../types/admin.types";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
-import { localizeField } from "@features/checkout/utils/localize";
+import { localizeField } from "@shared/utils/localize";
 
 const EMPTY_CITY: CityFormValues = {
   name: "",

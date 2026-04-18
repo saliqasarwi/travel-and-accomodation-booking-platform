@@ -4,6 +4,7 @@ import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRound
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { useTranslation } from "react-i18next";
+import { localizeField } from "@shared/utils/localize";
 import type { TrendingDestination } from "../types/home.types";
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export default function TrendingDestinations({ items }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const scroll = (direction: "left" | "right") => {
@@ -170,7 +171,7 @@ export default function TrendingDestinations({ items }: Props) {
                   <Box
                     component="img"
                     src={item.thumbnailUrl}
-                    alt={item.cityName}
+                    alt={localizeField(item.cityName, i18n.language)}
                     className="front-image"
                     sx={{
                       width: "100%",
@@ -226,7 +227,7 @@ export default function TrendingDestinations({ items }: Props) {
                           },
                         }}
                       >
-                        {item.cityName}
+                        {localizeField(item.cityName, i18n.language)}
                       </Typography>
 
                       <Chip
@@ -235,7 +236,7 @@ export default function TrendingDestinations({ items }: Props) {
                             sx={{ color: "#FFFFFF", fontSize: 18 }}
                           />
                         }
-                        label={item.countryName}
+                        label={localizeField(item.countryName, i18n.language)}
                         size="small"
                         sx={{
                           bgcolor: "rgba(255,255,255,0.2)",
@@ -263,7 +264,7 @@ export default function TrendingDestinations({ items }: Props) {
                         flexGrow: 1,
                       }}
                     >
-                      {item.description}
+                      {localizeField(item.description, i18n.language)}
                     </Typography>
                   </Box>
                 </Box>

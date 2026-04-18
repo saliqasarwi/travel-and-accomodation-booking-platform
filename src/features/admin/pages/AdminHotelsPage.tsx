@@ -15,7 +15,7 @@ import {
 } from "../api/admin.api";
 import type { HotelFormValues, HotelRow } from "../types/admin.types";
 import ConfirmActionDialog from "@shared/components/ConfirmActionDialog";
-import { localizeField } from "@features/checkout/utils/localize";
+import { localizeField } from "@shared/utils/localize";
 
 const EMPTY_HOTEL: HotelFormValues = {
   hotelName: "",

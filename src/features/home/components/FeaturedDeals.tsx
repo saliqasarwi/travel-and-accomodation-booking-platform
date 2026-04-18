@@ -10,6 +10,7 @@ import {
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { useTranslation } from "react-i18next";
+import { localizeField } from "@shared/utils/localize";
 import type { FeaturedDeal } from "../types/home.types";
 
 type Props = {
@@ -17,7 +18,7 @@ type Props = {
 };
 
 export default function FeaturedDeals({ items }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   if (items.length === 0) {
     return (
@@ -98,7 +99,7 @@ export default function FeaturedDeals({ items }: Props) {
               <CardMedia
                 component="img"
                 image={deal.roomPhotoUrl}
-                alt={deal.hotelName}
+                alt={localizeField(deal.hotelName, i18n.language)}
                 className="featured-image"
                 sx={{
                   height: 220,
@@ -138,7 +139,7 @@ export default function FeaturedDeals({ items }: Props) {
                       mb: 0.6,
                     }}
                   >
-                    {deal.hotelName}
+                    {localizeField(deal.hotelName, i18n.language)}
                   </Typography>
 
                   <Stack
@@ -151,7 +152,7 @@ export default function FeaturedDeals({ items }: Props) {
                       sx={{ fontSize: 18, color: "text.secondary" }}
                     />
                     <Typography variant="body2" color="text.secondary">
-                      {deal.cityName}
+                      {localizeField(deal.cityName, i18n.language)}
                     </Typography>
                   </Stack>
                 </Box>
