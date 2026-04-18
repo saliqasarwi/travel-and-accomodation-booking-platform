@@ -16,13 +16,14 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { useTranslation } from "react-i18next";
 import type { HotelSearchItem } from "../types/types";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { localizeField } from "@shared/utils/localize";
 
 type Props = {
   hotel: HotelSearchItem;
 };
 
 export default function HotelCard({ hotel }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -72,7 +73,7 @@ export default function HotelCard({ hotel }: Props) {
             <CardMedia
               component="img"
               image={hotel.roomPhotoUrl}
-              alt={hotel.hotelName}
+              alt={localizeField(hotel.hotelName, i18n.language)}
               className="hotel-image"
               sx={{
                 width: "100%",
@@ -124,7 +125,7 @@ export default function HotelCard({ hotel }: Props) {
                     fontSize: { xs: "1.2rem", md: "1.5rem" },
                   }}
                 >
-                  {hotel.hotelName}
+                  {localizeField(hotel.hotelName, i18n.language)}
                 </Typography>
 
                 <Stack
@@ -165,7 +166,8 @@ export default function HotelCard({ hotel }: Props) {
                   sx={{ fontSize: 18, color: "text.secondary" }}
                 />
                 <Typography variant="body1" color="text.secondary">
-                  {hotel.roomType} • {hotel.cityName}
+                  {localizeField(hotel.roomType, i18n.language)} •{" "}
+                  {localizeField(hotel.cityName, i18n.language)}
                 </Typography>
               </Stack>
 

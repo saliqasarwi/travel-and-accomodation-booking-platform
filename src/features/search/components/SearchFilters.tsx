@@ -28,6 +28,7 @@ import {
 } from "../utils/searchParams";
 import { useAmenities } from "../hooks/useAmenities";
 import { useRoomTypes } from "../hooks/useRoomTypes";
+import { localizeField } from "@shared/utils/localize";
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
@@ -54,7 +55,7 @@ const filterContainerSx = {
 };
 
 export default function SearchFilters() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const PRICE_MIN = 0;
@@ -353,11 +354,17 @@ export default function SearchFilters() {
                 }
               >
                 <MenuItem value="">{t("search.all")}</MenuItem>
-                {roomTypes.map((roomType) => (
-                  <MenuItem key={roomType} value={roomType}>
-                    {roomType}
-                  </MenuItem>
-                ))}
+                {roomTypes.map((roomType) => {
+                  const localizedRoomType = localizeField(
+                    roomType,
+                    i18n.language
+                  );
+                  return (
+                    <MenuItem key={roomType} value={roomType}>
+                      {localizedRoomType}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
           )}
@@ -388,7 +395,7 @@ export default function SearchFilters() {
                       onChange={() => toggleAmenity(a.id)}
                     />
                   }
-                  label={a.name}
+                  label={localizeField(a.name, i18n.language)}
                 />
               ))}
             </FormGroup>
