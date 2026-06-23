@@ -8,7 +8,7 @@ vi.mock("react-i18next", () => ({
     t: (key: string, options?: Record<string, unknown>) => {
       if (key === "search.resultsFound")
         return `${options?.count} results found`;
-      if (key === "search.compareAndSort") return "شCompare and sort hotels";
+      if (key === "search.compareAndSort") return "Compare and sort hotels";
       if (key === "search.sortBy") return "Sort by";
       if (key === "search.recommended") return "Recommended";
       if (key === "search.priceLowToHigh") return "Price low to high";

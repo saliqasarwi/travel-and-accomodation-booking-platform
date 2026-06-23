@@ -25,14 +25,12 @@ vi.mock("react-i18next", () => ({
         "common.loading": "Loading",
         "common.backToHome": "Back to Home",
         "common.printBooking": "Print Booking",
-
         "confirmation.title": "Booking Confirmation",
         "confirmation.subtitle": "Your booking has been confirmed.",
         "confirmation.bookingConfirmed": "Booking Confirmed",
         "confirmation.keepForRecords": "Keep this for your records",
         "confirmation.confirmationNumber": "Confirmation Number",
         "confirmation.created": "Created",
-        "confirmation.hotelAndRooms": "Hotel and Rooms",
         "confirmation.night": "night",
         "confirmation.roomsLabel": "Rooms",
         "confirmation.nightsLabel": "nights",
@@ -47,12 +45,11 @@ vi.mock("react-i18next", () => ({
         "confirmation.phone": "Phone",
         "confirmation.specialRequests": "Special Requests",
         "confirmation.noSpecialRequests": "No special requests",
-
         "admin.adults": "Adults",
         "admin.children": "Children",
         "home.recentlyVisitedFallback": "Unknown date",
+        "search.compareAndSort": "Compare and sort hotels",
       };
-
       return translations[key] ?? key;
     },
   }),
@@ -98,8 +95,8 @@ const bookingMock: BookingApiResponse = {
       {
         id: "cart-1",
         hotelId: 1,
-        hotelName: "Cinema Hotel",
-        cityName: "Jenin",
+        hotelName: "Royal Hotel",
+        cityName: "Nablus",
         starRating: 5,
         roomType: "Deluxe Room",
         roomPhotoUrl: "room.jpg",
