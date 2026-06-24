@@ -3,15 +3,15 @@ import type { HotelDetails } from "../types/hotel.types";
 import HotelLocationMap from "./HotelLocationMap";
 
 const hotel: HotelDetails = {
-  hotelName: "Azure Bay Resort",
-  location: "Tel Aviv waterfront",
-  description: "A relaxed seaside hotel.",
+  hotelName: "Ramallah Hills Hotel",
+  location: "Ramallah city center",
+  description: "A relaxed city hotel.",
   amenities: [],
   starRating: 4.7,
   availableRooms: 24,
   imageUrl: "",
-  latitude: 32.0853,
-  longitude: 34.7818,
+  latitude: 31.9038,
+  longitude: 35.2034,
 };
 
 const meta = {

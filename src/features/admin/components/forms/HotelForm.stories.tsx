@@ -11,8 +11,8 @@ const meta = {
   tags: ["autodocs"],
   args: {
     initialValues: {
-      hotelName: "Azure Bay Resort",
-      location: "Tel Aviv waterfront",
+      hotelName: "Ramallah Hills Hotel",
+      location: "Ramallah city center",
       starRating: 5,
       availableRooms: 24,
     },

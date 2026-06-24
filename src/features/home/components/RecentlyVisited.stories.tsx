@@ -8,8 +8,8 @@ const image = (id: string) =>
 const hotels: RecentHotel[] = [
   {
     hotelId: 201,
-    hotelName: "Azure Bay Resort",
-    cityName: "Tel Aviv",
+    hotelName: "Ramallah Hills Hotel",
+    cityName: "Ramallah",
     starRating: 4.7,
     visitDate: "2026-06-20T12:15:00Z",
     thumbnailUrl: image("photo-1566073771259-6a8506099945"),
@@ -18,8 +18,8 @@ const hotels: RecentHotel[] = [
   },
   {
     hotelId: 202,
-    hotelName: "Old City Boutique Hotel",
-    cityName: "Jerusalem",
+    hotelName: "Bethlehem Stone Inn",
+    cityName: "Bethlehem",
     starRating: 4.4,
     visitDate: "2026-06-18T09:10:00Z",
     thumbnailUrl: image("photo-1551882547-ff40c63fe5fa"),
@@ -28,8 +28,8 @@ const hotels: RecentHotel[] = [
   },
   {
     hotelId: 203,
-    hotelName: "Carmel Garden Suites",
-    cityName: "Haifa",
+    hotelName: "Nablus Heritage Suites",
+    cityName: "Nablus",
     starRating: 5,
     visitDate: "2026-06-12T17:45:00Z",
     thumbnailUrl: image("photo-1578683010236-d716f9a3f461"),

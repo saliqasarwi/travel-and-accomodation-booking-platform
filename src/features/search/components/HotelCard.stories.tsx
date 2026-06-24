@@ -4,13 +4,13 @@ import HotelCard from "./HotelCard";
 
 const hotel: HotelSearchItem = {
   hotelId: 101,
-  hotelName: "Azure Bay Resort",
+  hotelName: "Ramallah Hills Hotel",
   starRating: 4.7,
-  latitude: 32.0853,
-  longitude: 34.7818,
+  latitude: 31.9038,
+  longitude: 35.2034,
   roomPrice: 184,
-  roomType: "Deluxe Sea View",
-  cityName: "Tel Aviv",
+  roomType: "Deluxe City View",
+  cityName: "Ramallah",
   roomPhotoUrl:
     "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
   discount: 18,
@@ -33,7 +33,7 @@ const meta = {
   parameters: {
     router: {
       initialEntries: [
-        "/search?city=Tel%20Aviv&checkInDate=2026-07-12&checkOutDate=2026-07-16&adults=2&children=1&numberOfRooms=1",
+        "/search?city=Ramallah&checkInDate=2026-07-12&checkOutDate=2026-07-16&adults=2&children=1&numberOfRooms=1",
       ],
     },
   },
@@ -60,8 +60,8 @@ export const WithoutDiscount: Story = {
     hotel: {
       ...hotel,
       hotelId: 102,
-      hotelName: "Old City Boutique Hotel",
-      cityName: "Jerusalem",
+      hotelName: "Bethlehem Stone Inn",
+      cityName: "Bethlehem",
       roomType: "Superior King Room",
       roomPrice: 142,
       starRating: 4.4,

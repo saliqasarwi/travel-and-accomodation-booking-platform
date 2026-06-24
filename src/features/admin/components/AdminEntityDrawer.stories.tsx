@@ -44,8 +44,8 @@ export const HotelDrawer: Story = {
     title: "Edit hotel",
     mode: "edit",
     initialValues: {
-      hotelName: "Carmel Garden Suites",
-      location: "Haifa",
+      hotelName: "Nablus Heritage Suites",
+      location: "Nablus",
       starRating: 4,
       availableRooms: 18,
     },

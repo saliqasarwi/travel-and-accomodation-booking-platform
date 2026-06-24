@@ -8,7 +8,7 @@ const reviews: HotelReview[] = [
     customerName: "Maya Cohen",
     rating: 5,
     description:
-      "The room was spotless, the breakfast was generous, and the staff helped us plan a perfect day by the beach.",
+      "The room was spotless, the breakfast was generous, and the staff helped us plan a perfect day in the old city.",
   },
   {
     reviewId: 2,

@@ -9,12 +9,12 @@ const image = (id: string) =>
 
 const checkoutItems: CartItem[] = [
   {
-    id: "101|Deluxe Sea View|2026-07-12|2026-07-16|2|1|1",
+    id: "101|Deluxe City View|2026-07-12|2026-07-16|2|1|1",
     hotelId: 101,
-    hotelName: "Azure Bay Resort",
-    cityName: "Tel Aviv",
+    hotelName: "Ramallah Hills Hotel",
+    cityName: "Ramallah",
     starRating: 4.7,
-    roomType: "Deluxe Sea View",
+    roomType: "Deluxe City View",
     roomPhotoUrl: image("photo-1566073771259-6a8506099945"),
     checkInDate: "2026-07-12",
     checkOutDate: "2026-07-16",
@@ -27,8 +27,8 @@ const checkoutItems: CartItem[] = [
   {
     id: "103|Executive Suite|2026-09-10|2026-09-13|2|2|2",
     hotelId: 103,
-    hotelName: "Carmel Garden Suites",
-    cityName: "Haifa",
+    hotelName: "Nablus Heritage Suites",
+    cityName: "Nablus",
     starRating: 5,
     roomType: "Executive Suite",
     roomPhotoUrl: image("photo-1578683010236-d716f9a3f461"),

@@ -8,26 +8,26 @@ const image = (id: string) =>
 const destinations: TrendingDestination[] = [
   {
     cityId: 301,
-    cityName: "Tel Aviv",
-    countryName: "Israel",
+    cityName: "Ramallah",
+    countryName: "Palestine",
     description:
-      "Mediterranean beaches, excellent restaurants, and energetic neighborhoods for a coastal city break.",
+      "Lively cafes, hillside views, cultural venues, and easy access to central West Bank day trips.",
     thumbnailUrl: image("photo-1544971587-b842c27f8e14"),
   },
   {
     cityId: 302,
-    cityName: "Jerusalem",
-    countryName: "Israel",
+    cityName: "Bethlehem",
+    countryName: "Palestine",
     description:
       "Historic streets, sacred landmarks, boutique stays, and stone courtyards full of atmosphere.",
     thumbnailUrl: image("photo-1542743408-218cc173cda0"),
   },
   {
     cityId: 303,
-    cityName: "Haifa",
-    countryName: "Israel",
+    cityName: "Nablus",
+    countryName: "Palestine",
     description:
-      "Gardens, sea views, and hillside neighborhoods with easy access to northern coast trips.",
+      "Historic markets, olive-soap workshops, mountain views, and easy access to northern West Bank trips.",
     thumbnailUrl: image("photo-1570722750791-5f14fbb57d72"),
   },
 ];

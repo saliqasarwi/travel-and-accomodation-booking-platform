@@ -12,7 +12,7 @@ const rooms: AvailableRoom[] = [
     roomId: 501,
     roomNumber: "501",
     roomPhotoUrl: image("photo-1590490360182-c33d57733427"),
-    roomType: "Deluxe Sea View",
+    roomType: "Deluxe City View",
     capacityOfAdults: 2,
     capacityOfChildren: 1,
     amenities: [
@@ -34,7 +34,7 @@ const rooms: AvailableRoom[] = [
     amenities: [
       { id: 1, name: "Free WiFi" },
       { id: 4, name: "Kitchenette" },
-      { id: 5, name: "Sea view" },
+      { id: 5, name: "Mountain view" },
     ],
     price: 236,
     availability: false,

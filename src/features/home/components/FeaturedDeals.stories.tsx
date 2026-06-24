@@ -8,8 +8,8 @@ const image = (id: string) =>
 const deals: FeaturedDeal[] = [
   {
     hotelId: 101,
-    hotelName: "Azure Bay Resort",
-    cityName: "Tel Aviv",
+    hotelName: "Ramallah Hills Hotel",
+    cityName: "Ramallah",
     originalRoomPrice: 230,
     discount: 20,
     finalPrice: 184,
@@ -17,8 +17,8 @@ const deals: FeaturedDeal[] = [
   },
   {
     hotelId: 102,
-    hotelName: "Old City Boutique Hotel",
-    cityName: "Jerusalem",
+    hotelName: "Bethlehem Stone Inn",
+    cityName: "Bethlehem",
     originalRoomPrice: 178,
     discount: 15,
     finalPrice: 151,
@@ -26,8 +26,8 @@ const deals: FeaturedDeal[] = [
   },
   {
     hotelId: 103,
-    hotelName: "Carmel Garden Suites",
-    cityName: "Haifa",
+    hotelName: "Nablus Heritage Suites",
+    cityName: "Nablus",
     originalRoomPrice: 268,
     discount: 12,
     finalPrice: 236,

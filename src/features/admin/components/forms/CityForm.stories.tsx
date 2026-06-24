@@ -11,7 +11,7 @@ const meta = {
   tags: ["autodocs"],
   args: {
     initialValues: {
-      name: "Jerusalem",
+      name: "Bethlehem",
       country: "Palestine",
       postOffice: "9103401",
       numberOfHotels: 12,
