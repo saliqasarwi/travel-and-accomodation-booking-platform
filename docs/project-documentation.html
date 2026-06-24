@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Travelio Project Documentation</title>
+    <style>
+      :root {
+        color: #14213d;
+        font-family:
+          Inter, Segoe UI, Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+
+      body {
+        margin: 0;
+        background: #ffffff;
+      }
+
+      main {
+        padding: 44px 54px;
+      }
+
+      .cover {
+        border-bottom: 4px solid #1565c0;
+        margin-bottom: 34px;
+        padding-bottom: 24px;
+      }
+
+      h1 {
+        color: #0d47a1;
+        font-size: 34px;
+        line-height: 1.15;
+        margin: 0 0 12px;
+      }
+
+      h2 {
+        border-bottom: 1px solid #d9e2ef;
+        color: #0d47a1;
+        font-size: 22px;
+        margin: 32px 0 12px;
+        padding-bottom: 6px;
+      }
+
+      h3 {
+        color: #1565c0;
+        font-size: 17px;
+        margin: 22px 0 8px;
+      }
+
+      p {
+        margin: 8px 0;
+      }
+
+      ul {
+        margin: 8px 0 8px 22px;
+        padding: 0;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+
+      table {
+        border-collapse: collapse;
+        font-size: 12px;
+        margin: 12px 0 22px;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border: 1px solid #d7dfeb;
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: #eef5ff;
+        color: #0d47a1;
+        font-weight: 700;
+      }
+
+      code {
+        background: #eef5ff;
+        border-radius: 4px;
+        color: #0d47a1;
+        padding: 2px 5px;
+      }
+
+      .meta {
+        color: #41516b;
+        font-size: 13px;
+      }
+
+      .tag {
+        background: #e8f2ff;
+        border: 1px solid #b8d4fa;
+        border-radius: 999px;
+        color: #0d47a1;
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        margin: 2px 4px 2px 0;
+        padding: 3px 8px;
+      }
+
+      .note {
+        background: #f7fbff;
+        border-left: 4px solid #1565c0;
+        margin: 14px 0;
+        padding: 10px 14px;
+      }
+
+      .screenshot-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 14px 0 22px;
+      }
+
+      .screenshot-card {
+        break-inside: avoid;
+        border: 1px solid #d7dfeb;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      .screenshot-card img {
+        border: 1px solid #e5edf7;
+        border-radius: 6px;
+        display: block;
+        max-height: 360px;
+        object-fit: contain;
+        width: 100%;
+      }
+
+      .screenshot-card p {
+        color: #0d47a1;
+        font-size: 12px;
+        font-weight: 700;
+        margin: 8px 0 0;
+      }
+
+      .single-screenshot {
+        grid-template-columns: 1fr;
+      }
+
+      .page-break {
+        break-before: page;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="cover">
+        <h1>Travel & Accommodation Booking Platform</h1>
+        <p>
+          <strong>Project Documentation Report</strong>
+        </p>
+        <p class="meta">
+          Frontend: React, TypeScript, Vite, Material UI<br />
+          Backend: Express API deployed on Render<br />
+          Author: Sali Qasarwi
+        </p>
+      </section>
+
+      <section>
+        <h2>1. Project Overview</h2>
+        <p>
+          Travelio is a web application for browsing hotels, searching
+          accommodations, viewing hotel details, adding rooms to a cart,
+          completing bookings, and managing travel reservations. The project
+          also includes an admin dashboard for managing cities, hotels, and
+          rooms.
+        </p>
+        <p>
+          The application was built to satisfy the required travel and
+          accommodation booking platform features, including authentication,
+          home page discovery sections, search results, hotel details, checkout
+          and confirmation, and admin management.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Live Links</h2>
+        <table>
+          <tr>
+            <th>Resource</th>
+            <th>URL</th>
+          </tr>
+          <tr>
+            <td>Frontend Deployment</td>
+            <td>https://travilio-ten.vercel.app</td>
+          </tr>
+          <tr>
+            <td>Backend API</td>
+            <td>https://travel-and-accomodation-booking-backend.onrender.com/api</td>
+          </tr>
+          <tr>
+            <td>Backend Swagger Documentation</td>
+            <td>https://travel-and-accomodation-booking-backend.onrender.com/api-docs</td>
+          </tr>
+        </table>
+
+      </section>
+
+      <section>
+        <h2>3. Demo Accounts</h2>
+        <table>
+          <tr>
+            <th>Role</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Purpose</th>
+          </tr>
+          <tr>
+            <td>User</td>
+            <td><code>user</code></td>
+            <td><code>user</code></td>
+            <td>Browse hotels, use cart, checkout, profile, and bookings.</td>
+          </tr>
+          <tr>
+            <td>Admin</td>
+            <td><code>admin</code></td>
+            <td><code>admin</code></td>
+            <td>Access admin management pages for cities, hotels, and rooms.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="page-break">
+        <h2>4. Requirements Coverage</h2>
+        <table>
+          <tr>
+            <th>Required Feature</th>
+            <th>Implementation in Travelio</th>
+            <th>Status</th>
+          </tr>
+          <tr>
+            <td>Login Page</td>
+            <td>
+              Login form with username and password fields, validation, role
+              based navigation, and error handling.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Home Search Functionality</td>
+            <td>
+              Central search bar with destination, check-in/check-out dates,
+              adults, children, and room selection.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Featured Deals</td>
+            <td>
+              Displays featured hotel deals with images, hotel names, city,
+              discount, original price, final price, and rating.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Recently Visited Hotels</td>
+            <td>
+              Shows recently visited hotels with image, hotel name, city,
+              rating, and visit information.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Trending Destinations</td>
+            <td>
+              Displays popular destination cards using destination images and
+              city information.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Search Results Page</td>
+            <td>
+              Shows matching hotels and includes filtering controls for price,
+              star rating, amenities, and room type.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Hotel Listings</td>
+            <td>
+              Hotel cards include image, name, star rating, room price, city,
+              room type, and relevant booking data.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Hotel Gallery</td>
+            <td>
+              Hotel details page includes a visual gallery section for hotel
+              images.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Hotel Information</td>
+            <td>
+              Hotel details include name, star rating, location, description,
+              amenities, reviews, and location section.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Room Availability and Selection</td>
+            <td>
+              Available rooms show room image, room type, capacity, amenities,
+              price, availability, and add-to-cart action.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Checkout and Payment</td>
+            <td>
+              Checkout flow collects guest information, payment details, and
+              special requests.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Confirmation Page</td>
+            <td>
+              Shows booking confirmation details and includes print/save
+              support for the booking document.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Admin Navigation</td>
+            <td>
+              Admin layout includes navigation links for Cities, Hotels, and
+              Rooms.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Admin Search and Grids</td>
+            <td>
+              Admin pages include search controls, detailed data grids, delete
+              actions, and table pagination.
+            </td>
+            <td>Implemented</td>
+          </tr>
+          <tr>
+            <td>Create and Update Entities</td>
+            <td>
+              Admin create buttons and edit drawers/forms support creating and
+              updating cities, hotels, and rooms.
+            </td>
+            <td>Implemented</td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>5. Main User Flows</h2>
+        <h3>User Flow</h3>
+        <ul>
+          <li>User logs in using the user demo account.</li>
+          <li>User searches for hotels by destination, dates, guests, and rooms.</li>
+          <li>User filters and reviews available hotel results.</li>
+          <li>User opens a hotel details page and reviews rooms, gallery, reviews, and location.</li>
+          <li>User adds a room to the cart and continues to checkout.</li>
+          <li>User completes guest information, payment details, and special requests.</li>
+          <li>User receives a booking confirmation.</li>
+        </ul>
+
+        <h3>Admin Flow</h3>
+        <ul>
+          <li>Admin logs in using the admin demo account.</li>
+          <li>Admin navigates between Cities, Hotels, and Rooms.</li>
+          <li>Admin searches and reviews entity tables.</li>
+          <li>Admin creates new entities using form drawers.</li>
+          <li>Admin updates existing records by selecting table rows.</li>
+          <li>Admin deletes records using row actions.</li>
+        </ul>
+      </section>
+
+      <section class="page-break">
+        <h2>6. Technical Stack</h2>
+        <table>
+          <tr>
+            <th>Area</th>
+            <th>Technology</th>
+          </tr>
+          <tr>
+            <td>Frontend Framework</td>
+            <td>React 19 with TypeScript</td>
+          </tr>
+          <tr>
+            <td>Build Tool</td>
+            <td>Vite</td>
+          </tr>
+          <tr>
+            <td>UI System</td>
+            <td>Material UI, MUI X Data Grid, Emotion</td>
+          </tr>
+          <tr>
+            <td>Routing</td>
+            <td>React Router</td>
+          </tr>
+          <tr>
+            <td>API Communication</td>
+            <td>Axios with a shared HTTP client</td>
+          </tr>
+          <tr>
+            <td>Forms and Validation</td>
+            <td>Formik and Yup</td>
+          </tr>
+          <tr>
+            <td>Localization</td>
+            <td>i18next and react-i18next for Arabic and English support</td>
+          </tr>
+          <tr>
+            <td>Testing</td>
+            <td>Vitest, React Testing Library, Playwright browser provider</td>
+          </tr>
+          <tr>
+            <td>Component Documentation</td>
+            <td>Storybook</td>
+          </tr>
+          <tr>
+            <td>Code Quality</td>
+            <td>ESLint, Prettier, Husky, lint-staged</td>
+          </tr>
+          <tr>
+            <td>Deployment</td>
+            <td>Vercel for frontend and Render for backend</td>
+          </tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>7. Architecture and Folder Structure</h2>
+        <p>
+          The frontend uses a feature-based folder structure. This keeps each
+          domain area close to its pages, components, API calls, types, tests,
+          and utilities.
+        </p>
+        <p>
+          Key folders:
+        </p>
+        <ul>
+          <li><code>src/app</code>: application layout, providers, and router.</li>
+          <li><code>src/features/auth</code>: login, auth API, guards, and auth storage.</li>
+          <li><code>src/features/home</code>: home page sections and API calls.</li>
+          <li><code>src/features/search</code>: search results, filters, sorting, and search utilities.</li>
+          <li><code>src/features/hotel</code>: hotel details, gallery, rooms, reviews, and location.</li>
+          <li><code>src/features/cart</code>: cart context, storage, and cart page.</li>
+          <li><code>src/features/checkout</code>: checkout steps and validation.</li>
+          <li><code>src/features/confirmation</code>: booking confirmation display and print support.</li>
+          <li><code>src/features/admin</code>: admin pages, grids, forms, and management API.</li>
+          <li><code>src/shared</code>: reusable API client, components, theme, i18n, and utilities.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>8. API Integration</h2>
+        <p>
+          The frontend reads the backend base URL from <code>VITE_API_URL</code>.
+          The shared Axios client sends requests to the deployed Express API.
+        </p>
+        <p>
+          Current API base URL:
+          <code>https://travel-and-accomodation-booking-backend.onrender.com/api</code>
+        </p>
+        <p>
+          Main integrated endpoint groups:
+        </p>
+        <ul>
+          <li>Authentication: login/authenticate user and admin accounts.</li>
+          <li>Home: featured deals, trending destinations, and recently visited hotels.</li>
+          <li>Search: hotel search and amenities.</li>
+          <li>Hotel: details, gallery, available rooms, and reviews.</li>
+          <li>Booking: create bookings and retrieve booking details.</li>
+          <li>Admin: navigation, cities, hotels, and rooms management.</li>
+        </ul>
+      </section>
+
+      <section class="page-break">
+        <h2>9. UI and UX Features</h2>
+        <p>
+          The interface supports common user expectations for a booking
+          platform:
+        </p>
+        <ul>
+          <li>Clear login page with validation and API error feedback.</li>
+          <li>Persistent top navigation for user pages.</li>
+          <li>Admin layout with side navigation for management tasks.</li>
+          <li>Arabic and English localization.</li>
+          <li>Light and dark theme switching.</li>
+          <li>Responsive layouts for desktop and mobile screens.</li>
+          <li>Reusable cards, forms, data grids, dialogs, and toolbar patterns.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>10. Testing and Quality</h2>
+        <p>
+          The project includes unit and component tests across major features.
+          It also uses formatting and linting tools to keep the codebase
+          consistent.
+        </p>
+        <p>
+          Useful commands:
+        </p>
+        <ul>
+          <li><code>npm run build</code>: production build check.</li>
+          <li><code>npm run test:run</code>: run the test suite once.</li>
+          <li><code>npm run lint</code>: run ESLint checks.</li>
+          <li><code>npm run format:check</code>: verify formatting.</li>
+          <li><code>npm run storybook</code>: view isolated component stories.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>11. Deployment Summary</h2>
+        <h3>Frontend on Vercel</h3>
+        <ul>
+          <li>Framework preset: Vite.</li>
+          <li>Build command: <code>npm run build</code>.</li>
+          <li>Output directory: <code>dist</code>.</li>
+          <li>Environment variable: <code>VITE_API_URL</code>.</li>
+        </ul>
+
+        <h3>Backend on Render</h3>
+        <ul>
+          <li>Runtime: Node.js.</li>
+          <li>Build command: <code>npm install</code>.</li>
+          <li>Start command: <code>npm start</code>.</li>
+          <li>Swagger documentation available at <code>/api-docs</code>.</li>
+        </ul>
+      </section>
+
+      <section class="page-break">
+        <h2>12. Project Management and Tracking</h2>
+        <p>
+          This project was planned and tracked using <strong>Notion</strong>.
+          Notion was used to organize tasks, track progress, document
+          requirements, manage feature priorities, and record implementation
+          notes during development.
+        </p>
+        <p>
+          The implementation also focused on reusable components across the
+          application, including cards, forms, data grids, dialogs, layout
+          components, API helpers, and cart-related UI patterns.
+        </p>
+      </section>
+
+      <section class="page-break">
+        <h2>13. Screenshot Documentation</h2>
+        <p>
+          The following screenshots document the final implemented pages and
+          states. Screenshots ending with <code>1</code> and <code>2</code> are
+          continuation screenshots for the same page after scrolling.
+        </p>
+
+        <h3>Authentication</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/login.png" alt="Login page" />
+            <p>Login page</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/login-validation.png" alt="Login validation" />
+            <p>Login validation</p>
+          </div>
+        </div>
+
+        <h3>Home Page</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/home-hero.png" alt="Home hero and search" />
+            <p>Home hero and search</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/home-featured-deals.png" alt="Featured deals" />
+            <p>Featured deals</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/home-destinations.png" alt="Trending destinations" />
+            <p>Trending destinations</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/home-recent-hotels.png" alt="Recently visited hotels" />
+            <p>Recently visited hotels</p>
+          </div>
+        </div>
+
+        <h3>Search</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/search-results.png" alt="Search results" />
+            <p>Search results</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/search-filters.png" alt="Search filters" />
+            <p>Search filters</p>
+          </div>
+        </div>
+
+        <h3>Hotel Details</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/hotel-details-overview1.png" alt="Hotel details part 1" />
+            <p>Hotel details - part 1</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/hotel-details-overview2.png" alt="Hotel details part 2" />
+            <p>Hotel details - part 2</p>
+          </div>
+        </div>
+
+        <h3>Cart and Checkout</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/cart-empty.png" alt="Empty cart" />
+            <p>Empty cart</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/cart-items.png" alt="Cart with selected rooms" />
+            <p>Cart with selected rooms</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/checkout-guest-info.png" alt="Checkout guest information" />
+            <p>Checkout guest information</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/checkout-payment.png" alt="Checkout payment" />
+            <p>Checkout payment</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/checkout-special-request.png" alt="Checkout special request" />
+            <p>Checkout special request</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/booking-confirmation1.png" alt="Booking confirmation part 1" />
+            <p>Booking confirmation - part 1</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/booking-confirmation2.png" alt="Booking confirmation part 2" />
+            <p>Booking confirmation - part 2</p>
+          </div>
+        </div>
+
+        <h3>User Account</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/profile.png" alt="Profile page" />
+            <p>Profile page</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/my-bookings.png" alt="My bookings page" />
+            <p>My bookings page</p>
+          </div>
+        </div>
+
+        <h3>Language and Theme</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/language-arabic1.png" alt="Arabic view part 1" />
+            <p>Arabic view - part 1</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/language-arabic2.png" alt="Arabic view part 2" />
+            <p>Arabic view - part 2</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/theme-dark.png" alt="Dark theme" />
+            <p>Dark theme</p>
+          </div>
+        </div>
+
+        <h3>Admin Dashboard</h3>
+        <div class="screenshot-grid">
+          <div class="screenshot-card">
+            <img src="screenshots/admin-cities.png" alt="Admin cities" />
+            <p>Admin cities</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/admin-hotels.png" alt="Admin hotels" />
+            <p>Admin hotels</p>
+          </div>
+          <div class="screenshot-card">
+            <img src="screenshots/admin-rooms.png" alt="Admin rooms" />
+            <p>Admin rooms</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
