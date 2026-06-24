@@ -34,7 +34,7 @@ const meta = {
 } satisfies Meta<typeof AdminEntityDrawer>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AdminEntityDrawer>;
 
 export const CityDrawer: Story = {};
 
