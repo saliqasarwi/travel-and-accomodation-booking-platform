@@ -1,19 +1,35 @@
 import type { Preview } from "@storybook/react-vite";
-import React from "react";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { theme } from "../src/shared/theme/theme";
+import { CssBaseline } from "@mui/material";
+import { MemoryRouter } from "react-router-dom";
+import { ColorModeProvider } from "../src/app/providers/ColorModeProvider";
+import { installStorybookApiMocks } from "./mockApi";
+import "../src/shared/i18n/i18n";
+import "../src/styles/index.css";
+
+installStorybookApiMocks();
+
 const preview: Preview = {
   decorators: [
-    (Story) => (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div style={{ padding: 16 }}>
-          <Story />
-        </div>
-      </ThemeProvider>
-    ),
+    (Story, context) => {
+      const routerParameters = context.parameters.router as
+        | { initialEntries?: string[] }
+        | undefined;
+      const initialEntries = routerParameters?.initialEntries ?? ["/"];
+
+      return (
+        <MemoryRouter initialEntries={initialEntries}>
+          <ColorModeProvider>
+            <CssBaseline />
+            <div style={{ padding: 16 }}>
+              <Story />
+            </div>
+          </ColorModeProvider>
+        </MemoryRouter>
+      );
+    },
   ],
   parameters: {
+    layout: "fullscreen",
     controls: {
       matchers: {
         color: /(background|color)$/i,
