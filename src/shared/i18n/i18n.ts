@@ -257,6 +257,7 @@ const resources = {
 
         adultsLabel: "Adults",
         childrenLabel: "Children",
+        roomsSelector: "Rooms",
       },
       validation: {
         cityRequired: "City is required",
